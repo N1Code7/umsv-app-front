@@ -1,10 +1,10 @@
-import '../styles/globals.scss'
+import '../sass/globals.scss'
 import { AppProps } from 'next/app';
 
 function App({ Component, pageProps }: AppProps) {
   return (
     <div suppressHydrationWarning>
-      {typeof window === 'undefined' ? null : <Component {...pageProps} />}
+      {typeof window === undefined ? null : <Component {...pageProps} />}
     </div>
   );
 }
