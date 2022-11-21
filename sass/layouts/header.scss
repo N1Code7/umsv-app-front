@@ -1,0 +1,17 @@
+header.header {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100px;
+  background: $bg-1;
+  border-radius: 0 0 20px 20px;
+
+  .img-container {
+    width: 90px;
+    height: 30px;
+    margin-left: 0.6rem;
+  }
+}

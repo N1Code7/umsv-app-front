@@ -1,10 +1,15 @@
-// import styles from "../sass/components/Header.module.scss";
+import Image from "next/image";
+import { imgPath } from "../../config";
+import Navigation from "./Navigation";
 
 const Header = () => {
   return (
-    // <header className={styles.header}>
-      <button>HELLO</button>
-    // {/* </header> */}
+    <header className="header">
+      <div className="img-container">
+        <Image src={"/assets/img/logo-club.png"} width={120} height={30} alt="logo du club" />
+      </div>
+      <Navigation />
+    </header>
   )
 }
 
