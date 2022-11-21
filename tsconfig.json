@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "components/head.jsx"
+    "SPA/components/head.jsx"
   ],
   "exclude": [
     "node_modules"
