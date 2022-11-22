@@ -11,9 +11,17 @@ header.header {
   background: $bg-1;
   border-radius: 0 0 20px 20px;
 
+  @include ptt {
+    height: 5rem;
+  }
+
   .img-logo {
     width: 90px;
     height: 30px;
+
+    @include ptt {
+      display: none;
+    }
   }
 
   .switch-container {

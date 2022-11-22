@@ -7,12 +7,26 @@ nav.nav-mobile {
   background: $bg-1;
   border-radius: 20px 20px 0 0;
 
+  @include ptt {
+    width: 70vw;
+    top: 0;
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0;
+  }
+
   ul {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     height: 4.5rem;
     border-top: 1px solid rgba(0, 0, 0, 0.194);
     border-radius: 20px 20px 0 0;
+
+    @include ptt {
+      height: 5rem;
+      border-radius: 0;
+    }
   }
 
   li {
@@ -23,16 +37,34 @@ nav.nav-mobile {
     font-size: clamp(0.6rem, 3vmin, 0.7rem);
     font-weight: 500;
 
+    @include ptt {
+      &:last-of-type {
+        border-right: 1px solid rgba(0, 0, 0, 0.194);
+      }
+    }
+
     &:first-of-type {
       border-left: none;
+
+      @include ptt {
+        border-left: 1px solid rgba(0, 0, 0, 0.194);
+      }
     }
 
     &:first-of-type a {
       border-radius: 20px 0 0 0;
+
+      @include ptt {
+        border-radius: 0;
+      }
     }
 
     &:last-of-type a {
       border-radius: 0 20px 0 0;
+
+      @include ptt {
+        border-radius: 0;
+      }
     }
   }
 
