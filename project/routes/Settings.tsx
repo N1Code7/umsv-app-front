@@ -1,9 +1,9 @@
-import Header from "../components/Header"
+import Navigation from "../components/Navigation"
 
 const Settings = () => {
   return (
   <>
-    <Header />
+    <Navigation />
     <h2>Mes réglages</h2>
   </>
   )

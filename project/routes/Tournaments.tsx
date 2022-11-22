@@ -1,9 +1,10 @@
 import Header from "../components/Header"
+import Navigation from "../components/Navigation"
 
 const Tournaments = () => {
   return (
   <>
-    <Header />
+    <Navigation />
     <h2>Tournois</h2>
   </>
   )

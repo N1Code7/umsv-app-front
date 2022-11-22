@@ -1,9 +1,5 @@
-import About from "../routes/About"
-import Test from "../routes/Test"
 import { NavLink } from "react-router-dom"
 import { useState } from "react"
-
-
 
 const Navigation = () => {
   const [active, setActive] = useState("")
@@ -13,7 +9,7 @@ const Navigation = () => {
   <nav className="nav-mobile">
     <ul>
       <li>
-        <NavLink to="/home" className={(nav) => (nav.isActive ? "link-active" : "")}>
+        <NavLink to="/" className={(nav) => (nav.isActive ? "link-active" : "")}>
           <span>🛎️</span><span>Accueil</span>
         </NavLink>
       </li>
@@ -37,18 +33,6 @@ const Navigation = () => {
           <span>🧑</span><span>Mon Profil</span>
         </NavLink>
       </li>
-      {/* <li>
-        <NavLink to="/test">TEST</NavLink>
-      </li>
-      <li>
-        <NavLink to="/test">TEST</NavLink>
-      </li>
-      <li>
-        <NavLink to="/test">TEST</NavLink>
-      </li>
-      <li>
-        <NavLink to="/about">ABOUT</NavLink>
-      </li> */}
     </ul>
   </nav>
   )

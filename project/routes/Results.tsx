@@ -1,9 +1,9 @@
-import Header from "../components/Header"
+import Navigation from "../components/Navigation"
 
 const Results = () => {
   return (
   <>
-    <Header />
+    <Navigation />
     <h2>Résultats</h2>
   </>
   )
