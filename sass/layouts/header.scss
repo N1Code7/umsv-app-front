@@ -1,17 +1,25 @@
 header.header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   position: fixed;
   left: 0;
   top: 0;
   width: 100vw;
   height: 100px;
+  padding: 0 0.6rem;
   background: $bg-1;
   border-radius: 0 0 20px 20px;
 
-  .img-container {
-    width: 90px;
-    height: 30px;
-    margin-left: 0.6rem;
+  .img {
+    &-logo {
+      width: 90px;
+      height: 30px;
+      // margin-left: 0.6rem;
+    }
+
+    &-logout {
+      background-color: $bg-3;
+    }
   }
 }
