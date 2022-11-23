@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import Footer from '../project/components/Footer';
 import Header from '../project/components/Header';
 
 const LazyComponent = dynamic(() => import("../project/myApp"), {ssr: false})
@@ -16,6 +17,7 @@ const Home = () => {
       </Head>
       <Header />
       <LazyComponent />
+      <Footer />
     </>
   )
 }
