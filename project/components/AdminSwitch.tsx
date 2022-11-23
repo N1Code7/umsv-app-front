@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const SwitchOnOff = () => {
+const AdminSwitch = () => {
 const [isActive, setIsActive] = useState(false)
 
   const handleSwitch = () => {
@@ -14,4 +14,4 @@ const [isActive, setIsActive] = useState(false)
   )
 }
 
-export default SwitchOnOff
+export default AdminSwitch

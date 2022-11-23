@@ -38,6 +38,8 @@ nav.nav-mobile {
     font-weight: 500;
 
     @include ptt {
+      font-size: clamp(0.8rem, 1.5vw, 1rem);
+
       &:last-of-type {
         border-right: 1px solid rgba(0, 0, 0, 0.194);
       }
