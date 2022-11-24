@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom"
 import Input from "../components/Input"
 
 const Signin = () => {
@@ -26,6 +27,9 @@ const Signin = () => {
         <Input type="password" id="passwordConfirm" />
       </div>
       <Input type="submit" value="S'enregistrer" css="btn btn-primary" />
+      <NavLink to="/">
+        J&apos;ai déjà un compte, je souhaite me connecter 👉
+      </NavLink>
     </form>
   </main>
   )

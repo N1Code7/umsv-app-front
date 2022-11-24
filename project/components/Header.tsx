@@ -15,7 +15,6 @@ const Header = () => {
       {/* <Image src={"/assets/img/logo-club.png"} width={120} height={30} alt="logo du club" className="img-logo"/> */}
       <button className="btn btn-primary btn-menu" id="menuBtn" onClick={toggleDisplay}>Menu</button>
       <button className="btn-logout">
-
         <i className="fa-solid fa-right-from-bracket img-logout"></i>
       </button>
     </header>

@@ -86,28 +86,20 @@ p {
 a {
   text-decoration: none;
   color: $link;
+  user-select: none;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+  max-width: 37rem;
+  margin: 0 auto;
 
   &-raw {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
-  }
-
-  .remember-me {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    input {
-      height: 1rem;
-      width: 1rem;
-    }
   }
 }
 

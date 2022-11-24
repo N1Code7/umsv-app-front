@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom"
 import Input from "../components/Input"
 
 const Login = () => {
@@ -18,7 +19,9 @@ const Login = () => {
         <Input  type="checkbox" id="rememberMe" />
         <label htmlFor="rememberMe">Se souvenir de moi</label>
       </div>
-      <a href="#">Pas encore de compte ? Je veux en créer un.</a>
+      <NavLink to="/nouveau-compte">
+        Pas encore de compte ? Je veux en créer un 👉
+      </NavLink>
     </form>
   </main>
   )
