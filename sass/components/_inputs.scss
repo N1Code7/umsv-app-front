@@ -1,0 +1,28 @@
+input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  &[type="email"],
+  &[type="password"] {
+    border-radius: 3px;
+    transition: border-radius 0.3s ease-out;
+    height: 3rem;
+    font-size: 1.2rem;
+    border: 1.5px solid grey;
+
+    &:focus {
+      border: 2px solid $primary-1;
+      border-radius: 10px;
+    }
+  }
+
+  &[type="submit"] {
+    width: 100%;
+    height: 3rem;
+    border-radius: 3px;
+    -webkit-appearance: none;
+    font-weight: 500;
+  }
+}
