@@ -88,6 +88,29 @@ a {
   color: $link;
 }
 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  &-raw {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    input {
+      height: 1rem;
+      width: 1rem;
+    }
+  }
+}
+
 .flash {
   display: block;
   padding: 1.2rem;

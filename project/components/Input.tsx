@@ -3,29 +3,19 @@ type inputType = {
   placeholder?: string,
   id?: string,
   value?: string,
+  css?: string
 }
 
-const Input = ({type, placeholder, id, value}: inputType) => {
-  if (type == "submit") {
-    return (
-      <input 
-        type={type}
-        placeholder={placeholder}
-        id={id}
-        value={value}
-        className="btn btn-primary"
-      />
-    )  
-  } else {
-    return (
-      <input 
-      type={type}
-      placeholder={placeholder}
-      id={id}
-      value={value}
-      />
-      )
-  }
+const Input = ({type, placeholder, id, value, css}: inputType) => {
+  return (
+    <input 
+    type={type}
+    placeholder={placeholder}
+    id={id}
+    value={value}
+    className={css}
+    />
+  )
 }
 
 export default Input

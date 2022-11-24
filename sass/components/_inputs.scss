@@ -4,6 +4,7 @@ input {
   align-items: center;
   text-align: center;
 
+  &[type="text"],
   &[type="email"],
   &[type="password"] {
     border-radius: 3px;

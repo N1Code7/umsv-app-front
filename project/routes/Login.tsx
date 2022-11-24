@@ -8,18 +8,17 @@ const Login = () => {
       <div className="form-raw">
         <label htmlFor="email">Email</label>
         <Input type="email" id="email" />
-        {/* <input type="email" id="email"/> */}
       </div>
       <div className="form-raw">
         <label htmlFor="password">Mot de passe</label>
-        <Input type="password" id="password"  />
+        <Input type="password" id="password" />
       </div>
-      <Input type="submit" value="Se connecter" />
+      <Input type="submit" value="Se connecter" css="btn btn-primary"/>
       <div className="remember-me">
         <Input  type="checkbox" id="rememberMe" />
         <label htmlFor="rememberMe">Se souvenir de moi</label>
       </div>
-      <a href="#">Pas encore de compte ? En créer un 😉</a>
+      <a href="#">Pas encore de compte ? Je veux en créer un.</a>
     </form>
   </main>
   )
