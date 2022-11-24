@@ -16,6 +16,7 @@ button.switch {
     top: 50%;
     left: 1px;
     transform: translateY(-50%);
+    transition: transform 0.3s ease-out;
 
     &-right {
       transform: translate(calc(45px - 25px), -50%);

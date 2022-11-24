@@ -4,7 +4,7 @@ import Navigation from "../components/Navigation"
 const Registration = () => {
   return (
   <>
-    {/* <Navigation /> */}
+    <Navigation />
     <h2>Demande d&apos;inscription</h2>
   </>
   )

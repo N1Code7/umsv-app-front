@@ -3,7 +3,7 @@ import Navigation from "../components/Navigation"
 const Settings = () => {
   return (
   <>
-    {/* <Navigation /> */}
+    <Navigation />
     <h2>Mes réglages</h2>
   </>
   )
