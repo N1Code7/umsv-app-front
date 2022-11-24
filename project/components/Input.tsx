@@ -3,10 +3,12 @@ type inputType = {
   placeholder?: string,
   id?: string,
   value?: string,
-  css?: string
+  css?: string,
+  action?: (param?:any) => void,
+  disabled?: boolean
 }
 
-const Input = ({type, placeholder, id, value, css}: inputType) => {
+const Input = ({type, placeholder, id, value, css, action, disabled}: inputType) => {
   return (
     <input 
     type={type}
@@ -14,6 +16,8 @@ const Input = ({type, placeholder, id, value, css}: inputType) => {
     id={id}
     value={value}
     className={css}
+    onChange={action}
+    disabled={disabled}
     />
   )
 }

@@ -27,4 +27,8 @@ input {
     font-weight: 500;
     cursor: pointer;
   }
+
+  &[disabled] {
+    filter: brightness(40%);
+  }
 }
