@@ -1,13 +1,22 @@
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { useState } from 'react';
+import { NavigationContext } from '../contexts/NavigationContext';
 import Footer from '../project/components/Footer';
 import Header from '../project/components/Header';
 
 const LazyComponent = dynamic(() => import("../project/myApp"), {ssr: false})
 
 const Home = () => {
+  const [display, setDisplay] = useState(false)
+  
+  const toggleDisplay = () => {
+    setDisplay(!display)
+  }
+  
+  
   return (
-    <>
+    <NavigationContext.Provider value={{ display, toggleDisplay }}>
       <Head>
         <meta charSet="UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -18,7 +27,7 @@ const Home = () => {
       <Header />
       <LazyComponent />
       <Footer />
-    </>
+    </NavigationContext.Provider>
   )
 }
 

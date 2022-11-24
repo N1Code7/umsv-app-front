@@ -4,7 +4,7 @@ import Navigation from "../components/Navigation"
 const Tournaments = () => {
   return (
   <>
-    <Navigation />
+    {/* <Navigation /> */}
     <h2>Tournois</h2>
   </>
   )

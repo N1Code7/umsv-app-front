@@ -1,12 +1,12 @@
+import { useContext } from "react"
 import { NavLink } from "react-router-dom"
-import { useState } from "react"
+import { NavigationContext } from "../../contexts/NavigationContext"
 
 const Navigation = () => {
-  const [active, setActive] = useState("")
-
-
+  const { display } = useContext(NavigationContext)
+  
   return (
-  <nav className="nav-mobile">
+  <nav className={display === true ? "nav-mobile active" : "nav-mobile"}>
     <ul>
       <li>
         <NavLink to="/" className={(nav) => (nav.isActive ? "link-active" : "")}>

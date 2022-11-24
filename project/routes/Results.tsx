@@ -3,7 +3,7 @@ import Navigation from "../components/Navigation"
 const Results = () => {
   return (
   <>
-    <Navigation />
+    {/* <Navigation /> */}
     <h2>Résultats</h2>
   </>
   )
