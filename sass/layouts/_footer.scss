@@ -1,0 +1,32 @@
+footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  // position: fixed;
+  // left: 0;
+  // bottom: 0;
+  width: 100vw;
+  padding: 2rem 0;
+  background: $bg-1;
+  border-radius: 20px 20px 0 0;
+
+  .social-networks {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: min(30vw, 8rem);
+
+    i {
+      font-size: 2rem;
+      color: $content-light;
+    }
+  }
+
+  .copyright {
+    font-size: 0.9rem;
+    font-weight: 280;
+    color: $content-light;
+  }
+}

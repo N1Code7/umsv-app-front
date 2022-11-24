@@ -36,6 +36,12 @@ header.header {
     }
   }
 
+  .btn-menu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   .btn-logout {
     background: transparent;
     border: none;

@@ -9,7 +9,8 @@ export default function MyApp() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        {/* <Route path="/" element={< />} /> */}
+        <Route path="/home" element={<Homepage />} />
         <Route path="/tournois" element={<Tournaments />} />
         <Route path='/inscription' element={<Registration />} />
         <Route path='/resultats' element={<Results />} />

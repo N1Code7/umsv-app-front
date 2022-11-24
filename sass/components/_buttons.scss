@@ -1,0 +1,21 @@
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  font-size: 1rem;
+  border: none;
+
+  &-primary {
+    background: $primary-1;
+    color: $content-light;
+  }
+
+  &-small {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
