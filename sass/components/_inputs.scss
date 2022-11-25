@@ -32,3 +32,30 @@ input {
     filter: brightness(40%);
   }
 }
+
+.password-input {
+  position: relative;
+  display: flex;
+
+  input[type="password"],
+  input[type="text"] {
+    flex-basis: 100%;
+  }
+  button {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    padding: 0.6rem;
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+
+    &.display {
+      color: $success-2;
+    }
+    &.hide {
+      color: $danger-2;
+    }
+  }
+}
