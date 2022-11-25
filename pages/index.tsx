@@ -1,20 +1,19 @@
-import dynamic from 'next/dynamic';
-import Head from 'next/head';
-import { useState } from 'react';
-import { NavigationContext } from '../contexts/NavigationContext';
-import Footer from '../project/components/Footer';
-import Header from '../project/components/Header';
+import dynamic from "next/dynamic";
+import Head from "next/head";
+import { useState } from "react";
+import { NavigationContext } from "../contexts/NavigationContext";
+import Footer from "../project/components/Footer";
+import Header from "../project/components/Header";
 
-const LazyComponent = dynamic(() => import("../project/myApp"), {ssr: false})
+const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 
 const Home = () => {
-  const [display, setDisplay] = useState(false)
-  
+  const [display, setDisplay] = useState(false);
+
   const toggleDisplay = () => {
-    setDisplay(!display)
-  }
-  
-  
+    setDisplay(!display);
+  };
+
   return (
     <NavigationContext.Provider value={{ display, toggleDisplay }}>
       <Head>
@@ -28,7 +27,7 @@ const Home = () => {
       <LazyComponent />
       <Footer />
     </NavigationContext.Provider>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

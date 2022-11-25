@@ -1,22 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Input from "../components/Input";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [emailValidated, setEmailValidated] = useState(false);
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-
+  const [passwordError, setPasswordError] = useState("");
   const [passwordValidated, setPasswordValidated] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
+  const isMounted = useRef(false);
+
   const handleEmail = (e: any) => {
-    setEmail(e.target.value);
+    if (e.target.value) {
+      setEmail(e.target.value);
+    }
   };
 
   const handlePassword = (e: any) => {
-    setPassword(e.target.value);
+    console.log(e.target);
+
+    if (!e.target.value) {
+      return;
+    } else {
+      setPassword(e.target.value);
+    }
   };
 
   const togglePasswordVisibility = (e: any) => {
@@ -25,9 +36,25 @@ const Login = () => {
   };
 
   useEffect(() => {
-    email.includes("@") ? setEmailValidated(true) : setEmailValidated(false);
-    password.length >= 6 ? setPasswordValidated(true) : setPasswordValidated(false);
-    passwordValidated && emailValidated ? setSubmitDisabled(false) : setSubmitDisabled(true);
+    if (isMounted.current) {
+      if (email.includes("@")) {
+        setEmailValidated(true);
+        setEmailError("");
+      } else {
+        setEmailValidated(false);
+        setEmailError("L'adresse email renseignée n'est pas conforme 🚨");
+      }
+      if (password.length >= 6) {
+        setPasswordValidated(true);
+        setPasswordError("");
+      } else {
+        setPasswordValidated(false);
+        setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
+      }
+      passwordValidated && emailValidated ? setSubmitDisabled(false) : setSubmitDisabled(true);
+    } else {
+      isMounted.current = true;
+    }
   }, [email, password, emailValidated, passwordValidated]);
 
   return (
@@ -37,6 +64,7 @@ const Login = () => {
         <div className="form-raw">
           <label htmlFor="email">Email</label>
           <Input type="email" id="email" value={email} action={handleEmail} />
+          {/* {emailError && <div className="errorMessage-input">{emailError}</div>} */}
         </div>
         <div className="form-raw">
           <label htmlFor="password">Mot de passe</label>
@@ -57,6 +85,7 @@ const Login = () => {
               )}
             </button>
           </div>
+          {/* {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>} */}
         </div>
         <Input type="submit" value="Se connecter" css="btn btn-primary" disabled={submitDisabled} />
         <div className="remember-me">

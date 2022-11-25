@@ -1,8 +1,8 @@
 import { createContext } from "react";
 
 interface contextType {
-  display?: boolean
-  toggleDisplay?: () => void
+  display?: boolean;
+  toggleDisplay?: () => void;
 }
 
-export const NavigationContext = createContext<contextType>({})
+export const NavigationContext = createContext<contextType>({});

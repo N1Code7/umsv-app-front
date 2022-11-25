@@ -36,6 +36,7 @@ input {
 .password-input {
   position: relative;
   display: flex;
+  // flex-direction: column;
 
   input[type="password"],
   input[type="text"] {
@@ -58,4 +59,12 @@ input {
       color: $danger-2;
     }
   }
+}
+
+.errorMessage-input {
+  display: flex;
+  justify-content: center;
+  padding: 0.6rem;
+  background: $danger-2;
+  border-radius: 5px;
 }
