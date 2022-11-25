@@ -9,17 +9,31 @@ type inputType = {
 };
 
 const Input = ({ type, placeholder, id, value, css, disabled, action }: inputType) => {
-  return (
-    <input
-      type={type}
-      placeholder={placeholder}
-      id={id}
-      value={value}
-      className={css}
-      onChange={action}
-      disabled={disabled}
-    />
-  );
+  if (type === "submit") {
+    return (
+      <input
+        type={type}
+        placeholder={placeholder}
+        id={id}
+        value={value}
+        className={css}
+        onClick={action}
+        disabled={disabled}
+      />
+    );
+  } else {
+    return (
+      <input
+        type={type}
+        placeholder={placeholder}
+        id={id}
+        value={value}
+        className={css}
+        onChange={action}
+        disabled={disabled}
+      />
+    );
+  }
 };
 
 export default Input;

@@ -11,6 +11,7 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState("");
   const [passwordValidated, setPasswordValidated] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [submitEnabled, setSubmitEnabled] = useState(false);
 
   const isMounted = useRef(false);
 
@@ -30,30 +31,33 @@ const Login = () => {
     }
   };
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    if (email.includes("@")) {
+      setEmailValidated(true);
+      setEmailError("");
+    } else {
+      setEmailValidated(false);
+      setEmailError("L'adresse email renseignée n'est pas conforme 🚨");
+    }
+    if (password.length >= 6) {
+      setPasswordValidated(true);
+      setPasswordError("");
+    } else {
+      setPasswordValidated(false);
+      setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
+    }
+    passwordValidated && emailValidated ? setSubmitEnabled(true) : setSubmitEnabled(false);
+  };
+
   const togglePasswordVisibility = (e: any) => {
     e.preventDefault();
     setPasswordVisible(!passwordVisible);
   };
 
   useEffect(() => {
-    if (isMounted.current) {
-      if (email.includes("@")) {
-        setEmailValidated(true);
-        setEmailError("");
-      } else {
-        setEmailValidated(false);
-        setEmailError("L'adresse email renseignée n'est pas conforme 🚨");
-      }
-      if (password.length >= 6) {
-        setPasswordValidated(true);
-        setPasswordError("");
-      } else {
-        setPasswordValidated(false);
-        setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
-      }
-      passwordValidated && emailValidated ? setSubmitDisabled(false) : setSubmitDisabled(true);
-    } else {
-      isMounted.current = true;
+    if (email.includes("@") && password.length >= 6) {
+      setSubmitEnabled(true);
     }
   }, [email, password, emailValidated, passwordValidated]);
 
@@ -64,7 +68,7 @@ const Login = () => {
         <div className="form-raw">
           <label htmlFor="email">Email</label>
           <Input type="email" id="email" value={email} action={handleEmail} />
-          {/* {emailError && <div className="errorMessage-input">{emailError}</div>} */}
+          {emailError && <div className="errorMessage-input">{emailError}</div>}
         </div>
         <div className="form-raw">
           <label htmlFor="password">Mot de passe</label>
@@ -85,9 +89,14 @@ const Login = () => {
               )}
             </button>
           </div>
-          {/* {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>} */}
+          {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
         </div>
-        <Input type="submit" value="Se connecter" css="btn btn-primary" disabled={submitDisabled} />
+        <Input
+          type="submit"
+          value="Se connecter"
+          css={submitEnabled ? "btn btn-primary" : "btn btn-warning"}
+          action={handleSubmit}
+        />
         <div className="remember-me">
           <Input type="checkbox" id="rememberMe" />
           <label htmlFor="rememberMe">Se souvenir de moi</label>
