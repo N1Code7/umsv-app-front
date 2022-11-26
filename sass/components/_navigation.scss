@@ -21,6 +21,10 @@ nav.nav-mobile {
     left: 50%;
     transform: translateX(-50%);
     border-radius: 0;
+
+    &.active {
+      transform: translate(-50%, 0);
+    }
   }
 
   ul {

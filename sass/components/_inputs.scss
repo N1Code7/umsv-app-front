@@ -32,7 +32,6 @@ input {
 .password-input {
   position: relative;
   display: flex;
-  // flex-direction: column;
 
   input[type="password"],
   input[type="text"] {
@@ -52,7 +51,7 @@ input {
       color: $success-2;
     }
     &.hide {
-      color: $danger-2;
+      color: $danger-1;
     }
   }
 }

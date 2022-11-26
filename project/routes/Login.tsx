@@ -10,7 +10,6 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordValidated, setPasswordValidated] = useState(false);
-  const [submitDisabled, setSubmitDisabled] = useState(true);
   const [submitEnabled, setSubmitEnabled] = useState(false);
 
   const isMounted = useRef(false);

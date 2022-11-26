@@ -18,7 +18,6 @@ const Input = ({ type, placeholder, id, value, css, disabled, action }: inputTyp
         value={value}
         className={css}
         onClick={action}
-        disabled={disabled}
       />
     );
   } else {
@@ -30,7 +29,6 @@ const Input = ({ type, placeholder, id, value, css, disabled, action }: inputTyp
         value={value}
         className={css}
         onChange={action}
-        disabled={disabled}
       />
     );
   }
