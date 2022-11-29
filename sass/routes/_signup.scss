@@ -1,0 +1,21 @@
+.signin {
+  .password-evaluation {
+    height: 5px;
+    width: 0;
+    border-radius: 50px;
+    transition: width 0.3s ease-out;
+
+    &-33 {
+      width: 33%;
+      background: $danger-1;
+    }
+    &-66 {
+      width: 66%;
+      background: $warning;
+    }
+    &-100 {
+      width: 100%;
+      background: $success-2;
+    }
+  }
+}

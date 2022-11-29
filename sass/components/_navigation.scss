@@ -21,6 +21,10 @@ nav.nav-mobile {
     left: 50%;
     transform: translateX(-50%);
     border-radius: 0;
+
+    &.active {
+      transform: translate(-50%, 0);
+    }
   }
 
   ul {
@@ -96,6 +100,6 @@ nav.nav-mobile {
   }
 
   span:first-of-type {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 }
