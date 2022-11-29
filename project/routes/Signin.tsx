@@ -17,6 +17,10 @@ const Signin = () => {
   const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
   const [percent, setPercent] = useState("");
 
+  const [data, setData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [err, setErr] = useState("");
+
   const handleLastName = (e: any) => {
     setLastName(e.target.value);
   };
@@ -43,7 +47,7 @@ const Signin = () => {
     setPasswordConfirmVisible(!passwordConfirmVisible);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     !lastName.match(/^[A-Za-z][A-Za-z -]+/)
       ? setLastNameError(
@@ -58,12 +62,50 @@ const Signin = () => {
     !email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/)
       ? setEmailError("L'email renseigné n'est pas conforme")
       : setEmailError("");
-    !password.match(/  ^[\w\-\*\/!?#&\$\^€%]{6,}/)
-      ? setPasswordError("Votre mot de passe comporte des caractères interdit")
+    !password.match(/^[\w\-\*\/!?#&\$\^€%]{6,}/)
+      ? setPasswordError("Votre mot de passe comporte des caractères interdits")
       : setPasswordError("");
     password !== passwordConfirm
       ? setPasswordConfirmError("Les deux mots de passe ne correspondent pas !")
       : setPasswordConfirmError("");
+
+    // if (
+    //   lastName.match(/^[A-Za-z][A-Za-z -]+/) &&
+    //   firstName.match(/^[A-Za-z][A-Za-z -]+/) &&
+    //   email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) &&
+    //   password.match(/^[\w\-\*\/!?#&\$\^€%]{6,}/) &&
+    //   password === passwordConfirm
+    // ) {
+    //   setIsLoading(true);
+    //   try {
+    //     const req = await fetch("http://127.0.0.1:8000/api/user/account", {
+    //       method: "POST",
+    //       body: JSON.stringify({
+    //         lastName: lastName.toUpperCase(),
+    //         firstName: `${firstName[0].toUpperCase()}${firstName.slice(1, firstName.length - 1)}`,
+    //         email,
+    //         password,
+    //       }),
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     });
+
+    //     if (!req.ok) {
+    //       throw new Error(`Error! status : ${req.status} `);
+    //     }
+
+    //     const res = await req.json();
+
+    //     console.log("result is: ", JSON.stringify(res, null, 4));
+
+    //     setData(res);
+    //   } catch (error: any) {
+    //     setErr(error.message);
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // }
   };
 
   useEffect(() => {
