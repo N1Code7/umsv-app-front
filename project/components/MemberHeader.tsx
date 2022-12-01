@@ -20,7 +20,6 @@ const MemberHeader = () => {
   }, []);
 
   useEffect(() => {
-    console.log(data.map((elt: any) => elt.PLUME_NOM));
     switch (String(data.map((elt: any) => elt.PLUME_NOM))) {
       case "Plume blanche":
         setColorFeather("white");
@@ -65,7 +64,7 @@ const MemberHeader = () => {
       <div className="classifications">
         <div className="classification classification-single">
           <div className="classification-name">{data.map((elt: any) => elt.SIMPLE_NOM)}</div>
-          <div className="classification-cpph">19923,65</div>
+          <div className="classification-cpph">29923,65</div>
           {/* <div className="classification-cpph">{data.map((elt: any) => elt.SIMPLE_COTE_FFBAD)}</div> */}
           <div className="classification-rank">{data.map((elt: any) => elt.SIMPLE_RANG)}</div>
           <div className="classification-table">Simple</div>
