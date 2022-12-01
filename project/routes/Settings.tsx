@@ -1,12 +1,16 @@
-import Navigation from "../components/Navigation"
+import MemberHeader from "../components/MemberHeader";
+import Navigation from "../components/Navigation";
 
 const Settings = () => {
   return (
-  <>
-    <Navigation />
-    <h2>Mes réglages</h2>
-  </>
-  )
-}
+    <>
+      <MemberHeader />
+      <Navigation />
+      <main>
+        <h2>Mes réglages</h2>
+      </main>
+    </>
+  );
+};
 
-export default Settings
+export default Settings;
