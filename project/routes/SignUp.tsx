@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Input from "../components/Input";
 
-const Signin = () => {
+const SignUp = () => {
   const [lastName, setLastName] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -191,4 +191,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default SignUp;

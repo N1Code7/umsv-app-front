@@ -1,3 +1,75 @@
 .member-header {
-  background: grey;
+  // background: grey;
+  margin: 7rem 0 0;
+
+  h1 {
+    margin: 0;
+    margin-bottom: 0.6rem;
+  }
+
+  .member-infos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-left: 0.9rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .classifications {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 0.6rem;
+    background: $bg-3;
+    width: 100vw;
+    padding: 0.9rem 0.6rem;
+  }
+
+  .classification {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // gap: 0.6rem;
+    position: relative;
+    font-family: $font-title;
+    padding: 0.6rem 0.6rem 3rem;
+    border-radius: 16px;
+    background: $bg-4;
+
+    &-name {
+      padding: 0.5rem 1.2rem;
+      border-radius: 10px;
+      background: #23aa39;
+    }
+
+    &-cpph {
+      font-size: clamp(1rem, 5vmin, 1.2rem);
+      margin: 0.6rem 0 0.4rem;
+    }
+
+    &-rank {
+      font-size: 0.9rem;
+    }
+
+    &-table {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2.5rem;
+      // text-align: center;
+      background: $bg-2;
+      border-radius: 0 0 16px 16px;
+    }
+
+    &-date {
+      grid-column: 1/4;
+      display: flex;
+      justify-content: center;
+      padding-top: 0.6rem;
+      font-size: clamp(0.8rem, 3.5vmin, 0.9rem);
+    }
+  }
 }
