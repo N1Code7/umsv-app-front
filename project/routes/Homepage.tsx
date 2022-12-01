@@ -1,15 +1,14 @@
-import Navigation from "../components/Navigation"
+import MemberHeader from "../components/MemberHeader";
+import Navigation from "../components/Navigation";
 
 const Homepage = () => {
   return (
-  <>
-    <Navigation />
-    <main className="homepage">
-      <h1>HELLO WORLD</h1>
-
+    <main>
+      <MemberHeader />
+      <Navigation />
+      <div className="homepage">{/* <h1>HELLO WORLD</h1> */}</div>
     </main>
-  </>
-  )
-}
+  );
+};
 
-export default Homepage
+export default Homepage;
