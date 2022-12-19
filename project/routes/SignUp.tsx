@@ -109,7 +109,9 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    if (password.length >= 10 && password.match(/[A-Z]+[0-9]+/)) {
+    if (password.length === 0) {
+      setPercent("");
+    } else if (password.length >= 10 && password.match(/[A-Z]+[0-9]+/)) {
       setPercent("100");
     } else if (password.length >= 6) {
       setPercent("66");
@@ -157,7 +159,13 @@ const SignUp = () => {
             </button>
           </div>
 
-          <div className={`password-evaluation password-evaluation-${percent}`}></div>
+          <div
+            className={
+              percent !== ""
+                ? `password-evaluation password-evaluation-${percent}`
+                : "password-evaluation"
+            }
+          ></div>
           {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
         </div>
         <div className="form-raw">
