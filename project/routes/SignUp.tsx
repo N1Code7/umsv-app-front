@@ -121,7 +121,7 @@ const SignUp = () => {
   }, [password]);
 
   return (
-    <main className="signin">
+    <main className="sigUp">
       <h1>Création de compte</h1>
       <form className="form">
         <div className="form-raw">

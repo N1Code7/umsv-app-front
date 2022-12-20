@@ -4,18 +4,20 @@ import { useState } from "react";
 import { NavigationContext } from "../contexts/NavigationContext";
 import Footer from "../project/components/Footer";
 import Header from "../project/components/Header";
+import { AuthTokenContext } from "../contexts/AuthTokenContext";
 
 const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 
 const Home = () => {
   const [display, setDisplay] = useState(false);
+  const [authToken, setAuthToken] = useState("");
 
   const toggleDisplay = () => {
     setDisplay(!display);
   };
 
   return (
-    <NavigationContext.Provider value={{ display, toggleDisplay }}>
+    <>
       <Head>
         <meta charSet="UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -24,9 +26,13 @@ const Home = () => {
         <title>USMV APP</title>
       </Head>
       <Header />
-      <LazyComponent />
+      <AuthTokenContext.Provider value={{ authToken, setAuthToken }}>
+        <NavigationContext.Provider value={{ display, toggleDisplay }}>
+          <LazyComponent />
+        </NavigationContext.Provider>
+      </AuthTokenContext.Provider>
       <Footer />
-    </NavigationContext.Provider>
+    </>
   );
 };
 

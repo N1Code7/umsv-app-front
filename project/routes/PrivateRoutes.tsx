@@ -33,7 +33,7 @@ const PrivateRoutes = () => {
     <>
       {hasJWT() ? (
         <Routes>
-          <Route path="/home" element={<Homepage />} />
+          <Route path="/" element={<Homepage />} />
           <Route path="/tournois" element={<Tournaments />} />
           <Route path="/inscription" element={<Registration />} />
           <Route path="/resultats" element={<Results />} />

@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
+import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
+import { AuthTokenContext } from "../../contexts/AuthTokenContext";
+import Homepage from "./Homepage";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +14,9 @@ const Login = () => {
   const [passwordValidated, setPasswordValidated] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
 
-  const isMounted = useRef(false);
+  const { authToken, setAuthToken } = useContext(AuthTokenContext);
+
+  const navigate = useNavigate();
 
   const handleEmail = (e: any) => {
     if (e.target.value) {
@@ -30,7 +34,7 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (email.includes("@")) {
       setEmailValidated(true);
@@ -47,6 +51,27 @@ const Login = () => {
       setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
     }
     passwordValidated && emailValidated ? setSubmitEnabled(true) : setSubmitEnabled(false);
+
+    let bodyRequest: any = {
+      email: email,
+      password: password,
+    };
+
+    await fetch("http://127.0.0.1:8000/api/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      mode: "cors",
+      cache: "default",
+      body: JSON.stringify(bodyRequest),
+    })
+      .then((res) => res.json())
+      .then(({ token }: any) => {
+        setAuthToken?.(token);
+        console.log(authToken);
+      });
+    navigate("/dashboard");
   };
 
   const togglePasswordVisibility = (e: any) => {
@@ -100,7 +125,7 @@ const Login = () => {
           <Input type="checkbox" id="rememberMe" />
           <label htmlFor="rememberMe">Se souvenir de moi</label>
         </div>
-        <NavLink to="/nouveau-compte">Pas encore de compte ? Je veux en créer un 👉</NavLink>
+        <NavLink to="/nouveau_compte">Pas encore de compte ? Je veux en créer un 👉</NavLink>
       </form>
     </main>
   );
