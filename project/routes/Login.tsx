@@ -1,10 +1,11 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthTokenContext } from "../../contexts/AuthTokenContext";
-import Homepage from "./Homepage";
 
 const Login = () => {
+  const API = "http://localhost:8000/api/";
+
   const [email, setEmail] = useState("");
   const [emailValidated, setEmailValidated] = useState(false);
   const [emailError, setEmailError] = useState("");
@@ -25,13 +26,16 @@ const Login = () => {
   };
 
   const handlePassword = (e: any) => {
-    console.log(e.target);
-
     if (!e.target.value) {
       return;
     } else {
       setPassword(e.target.value);
     }
+  };
+
+  const togglePasswordVisibility = (e: any) => {
+    e.preventDefault();
+    setPasswordVisible(!passwordVisible);
   };
 
   const handleSubmit = async (e: any) => {
@@ -50,33 +54,34 @@ const Login = () => {
       setPasswordValidated(false);
       setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
     }
-    passwordValidated && emailValidated ? setSubmitEnabled(true) : setSubmitEnabled(false);
 
-    let bodyRequest: any = {
-      email: email,
-      password: password,
-    };
-
-    await fetch("http://127.0.0.1:8000/api/login", {
+    await fetch(API + "login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
       mode: "cors",
       cache: "default",
-      body: JSON.stringify(bodyRequest),
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
     })
       .then((res) => res.json())
-      .then(({ token }: any) => {
-        setAuthToken?.(token);
-        console.log(authToken);
-      });
-    navigate("/dashboard");
-  };
+      .then(({ token }: any) => setAuthToken?.(token));
 
-  const togglePasswordVisibility = (e: any) => {
-    e.preventDefault();
-    setPasswordVisible(!passwordVisible);
+    await fetch("http://localhost:8000/api/user", {
+      method: "GET",
+      headers: {
+        Authorization: `bearer ${authToken}`,
+      },
+      mode: "cors",
+      cache: "default",
+    })
+      .then((res) => res.json())
+      .then((res) => res);
+
+    navigate("/tableau_de_bord");
   };
 
   useEffect(() => {

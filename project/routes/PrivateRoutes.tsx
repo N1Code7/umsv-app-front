@@ -5,8 +5,12 @@ import Registration from "./Registration";
 import Results from "./Results";
 import Settings from "./Settings";
 import { unescape } from "querystring";
+import { useContext } from "react";
+import { AuthTokenContext } from "../../contexts/AuthTokenContext";
 
 const PrivateRoutes = () => {
+  const { authToken, setAuthToken } = useContext(AuthTokenContext);
+
   const getCookies = () => {
     let cookiesArray = document.cookie.split(";");
     let cookies: any = {};
@@ -18,14 +22,8 @@ const PrivateRoutes = () => {
   };
 
   const hasJWT = () => {
-    let isAuthenticated = true;
-    // if (localStorage.getItem("token")) {
-    //   isAuthenticated = true;
-    // } else if (!localStorage.getItem("token") && getCookies().resetToken) {
-    //   // Generate a new token through the refreshToken API
-    // } else {
-    //   isAuthenticated = false;
-    // }
+    let isAuthenticated = false;
+    authToken ? (isAuthenticated = true) : (isAuthenticated = false);
     return isAuthenticated;
   };
 
