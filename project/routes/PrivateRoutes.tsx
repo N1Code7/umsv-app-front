@@ -5,11 +5,13 @@ import Registration from "./Registration";
 import Results from "./Results";
 import Settings from "./Settings";
 import { unescape } from "querystring";
-import { useContext } from "react";
-import { AuthTokenContext } from "../../contexts/AuthTokenContext";
+import { useContext, useEffect } from "react";
+import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import { ApiUrl } from "../../config";
 
 const PrivateRoutes = () => {
-  const { authToken, setAuthToken } = useContext(AuthTokenContext);
+  const { authToken, setAuthToken } = useContext(AuthenticationContext);
+  const { user, setUser } = useContext(AuthenticationContext);
 
   const getCookies = () => {
     let cookiesArray = document.cookie.split(";");
@@ -26,6 +28,30 @@ const PrivateRoutes = () => {
     authToken ? (isAuthenticated = true) : (isAuthenticated = false);
     return isAuthenticated;
   };
+
+  useEffect(() => {
+    try {
+      fetch(ApiUrl + "user", {
+        method: "GET",
+        headers: {
+          Authorization: `bearer ${authToken}`,
+        },
+        mode: "cors",
+        cache: "default",
+      })
+        .then((res) => res.json())
+        .then(({ id, lastName, firstName, email }) => {
+          setUser?.({
+            id,
+            lastName,
+            firstName,
+            email,
+          });
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }, [authToken, setUser]);
 
   return (
     <>

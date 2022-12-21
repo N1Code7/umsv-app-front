@@ -4,13 +4,14 @@ import { useState } from "react";
 import { NavigationContext } from "../contexts/NavigationContext";
 import Footer from "../project/components/Footer";
 import Header from "../project/components/Header";
-import { AuthTokenContext } from "../contexts/AuthTokenContext";
+import { AuthenticationContext } from "../contexts/AuthenticationContext";
 
 const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 
 const Home = () => {
   const [display, setDisplay] = useState(false);
   const [authToken, setAuthToken] = useState("");
+  const [user, setUser] = useState({});
 
   const toggleDisplay = () => {
     setDisplay(!display);
@@ -26,11 +27,11 @@ const Home = () => {
         <title>USMV APP</title>
       </Head>
       <Header />
-      <AuthTokenContext.Provider value={{ authToken, setAuthToken }}>
+      <AuthenticationContext.Provider value={{ authToken, user, setAuthToken, setUser }}>
         <NavigationContext.Provider value={{ display, toggleDisplay }}>
           <LazyComponent />
         </NavigationContext.Provider>
-      </AuthTokenContext.Provider>
+      </AuthenticationContext.Provider>
       <Footer />
     </>
   );

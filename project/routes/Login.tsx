@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
-import { AuthTokenContext } from "../../contexts/AuthTokenContext";
+import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import { ApiUrl } from "../../config";
 
 const Login = () => {
   const API = "http://localhost:8000/api/";
@@ -15,7 +16,8 @@ const Login = () => {
   const [passwordValidated, setPasswordValidated] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
 
-  const { authToken, setAuthToken } = useContext(AuthTokenContext);
+  const { authToken, setAuthToken } = useContext(AuthenticationContext);
+  const { user, setUser } = useContext(AuthenticationContext);
 
   const navigate = useNavigate();
 
@@ -55,7 +57,7 @@ const Login = () => {
       setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
     }
 
-    await fetch(API + "login", {
+    await fetch(ApiUrl + "login", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -70,16 +72,25 @@ const Login = () => {
       .then((res) => res.json())
       .then(({ token }: any) => setAuthToken?.(token));
 
-    await fetch("http://localhost:8000/api/user", {
-      method: "GET",
-      headers: {
-        Authorization: `bearer ${authToken}`,
-      },
-      mode: "cors",
-      cache: "default",
-    })
-      .then((res) => res.json())
-      .then((res) => res);
+    // fetch(ApiUrl + "user", {
+    //   method: "GET",
+    //   headers: {
+    //     Authorization: `bearer ${authToken}`,
+    //   },
+    //   mode: "cors",
+    //   cache: "default",
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => console.log(res));
+
+    // .then(({ id, lastName, firstName, email }) => {
+    //   setUser?.({
+    //     id,
+    //     lastName,
+    //     firstName,
+    //     email,
+    //   });
+    // });
 
     navigate("/tableau_de_bord");
   };
