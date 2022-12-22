@@ -8,18 +8,34 @@ const Login = () => {
   const API = "http://localhost:8000/api/";
 
   const [email, setEmail] = useState("");
-  const [emailValidated, setEmailValidated] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordError, setPasswordError] = useState("");
-  const [passwordValidated, setPasswordValidated] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
 
   const { authToken, setAuthToken } = useContext(AuthenticationContext);
   const { user, setUser } = useContext(AuthenticationContext);
 
   const navigate = useNavigate();
+
+  const getToken = async () => {
+    const response = await fetch(ApiUrl + "login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      mode: "cors",
+      cache: "default",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((res) => res.json())
+      .then(({ token }: any) => setAuthToken?.(token));
+    return response;
+  };
 
   const handleEmail = (e: any) => {
     if (e.target.value) {
@@ -42,64 +58,24 @@ const Login = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (email.includes("@")) {
-      setEmailValidated(true);
-      setEmailError("");
-    } else {
-      setEmailValidated(false);
-      setEmailError("L'adresse email renseignée n'est pas conforme 🚨");
+    email.includes("@")
+      ? setEmailError("")
+      : setEmailError("L'adresse email renseignée n'est pas conforme 🚨");
+    password.length >= 6
+      ? setPasswordError("")
+      : setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
+    try {
+      await getToken();
+    } catch (err) {
+      console.error(err);
+      console.log("Credentials missing or incorrect");
     }
-    if (password.length >= 6) {
-      setPasswordValidated(true);
-      setPasswordError("");
-    } else {
-      setPasswordValidated(false);
-      setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
-    }
-
-    await fetch(ApiUrl + "login", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      mode: "cors",
-      cache: "default",
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then(({ token }: any) => setAuthToken?.(token));
-
-    // fetch(ApiUrl + "user", {
-    //   method: "GET",
-    //   headers: {
-    //     Authorization: `bearer ${authToken}`,
-    //   },
-    //   mode: "cors",
-    //   cache: "default",
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => console.log(res));
-
-    // .then(({ id, lastName, firstName, email }) => {
-    //   setUser?.({
-    //     id,
-    //     lastName,
-    //     firstName,
-    //     email,
-    //   });
-    // });
-
     navigate("/tableau_de_bord");
   };
 
   useEffect(() => {
-    if (email.includes("@") && password.length >= 6) {
-      setSubmitEnabled(true);
-    }
-  }, [email, password, emailValidated, passwordValidated]);
+    email.includes("@") && password.length >= 6 ? setSubmitEnabled(true) : setSubmitEnabled(false);
+  }, [email, password]);
 
   return (
     <main className="login">

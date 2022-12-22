@@ -30,6 +30,21 @@ const PrivateRoutes = () => {
   };
 
   useEffect(() => {
+    if (authToken === "") {
+      try {
+        fetch(ApiUrl + "token/refresh", {
+          method: "POST",
+          mode: "cors",
+          cache: "default",
+        })
+          .then((res) => res.json())
+          .then(({ token }: any) => console.log(token));
+
+        //setAuthToken?.(token));
+      } catch (err) {
+        console.error(err);
+      }
+    }
     try {
       fetch(ApiUrl + "user", {
         method: "GET",
@@ -51,7 +66,9 @@ const PrivateRoutes = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [authToken, setUser]);
+  }, [authToken, setAuthToken, setUser]);
+
+  useEffect(() => {}, []);
 
   return (
     <>
