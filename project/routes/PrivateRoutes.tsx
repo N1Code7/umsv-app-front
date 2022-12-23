@@ -1,88 +1,79 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Homepage from "./Homepage";
 import Tournaments from "./Tournaments";
 import Registration from "./Registration";
 import Results from "./Results";
 import Settings from "./Settings";
-import { unescape } from "querystring";
-import { useContext, useEffect } from "react";
+import { cache, useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { ApiUrl } from "../../config";
+import { fetchRefreshToken, fetchUser, getRefreshTokenFromCookie } from "../../config/functions";
 
 const PrivateRoutes = () => {
-  const { authToken, setAuthToken } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
+
+  const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
   const { user, setUser } = useContext(AuthenticationContext);
-
-  const getCookies = () => {
-    let cookiesArray = document.cookie.split(";");
-    let cookies: any = {};
-    for (let i = 0; i < cookiesArray.length; i++) {
-      let pair = cookiesArray[i].split("=");
-      cookies[(pair[0] + "").trim()] = unescape(pair.slice(1).join("="));
-    }
-    return cookies;
-  };
-
-  const hasJWT = () => {
-    let isAuthenticated = false;
-    authToken ? (isAuthenticated = true) : (isAuthenticated = false);
-    return isAuthenticated;
-  };
+  const { authToken, setAuthToken } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    if (authToken === "") {
-      try {
-        fetch(ApiUrl + "token/refresh", {
-          method: "POST",
-          mode: "cors",
-          cache: "default",
-        })
-          .then((res) => res.json())
-          .then(({ token }: any) => console.log(token));
-
-        //setAuthToken?.(token));
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    try {
-      fetch(ApiUrl + "user", {
-        method: "GET",
-        headers: {
-          Authorization: `bearer ${authToken}`,
-        },
-        mode: "cors",
-        cache: "default",
-      })
+    if (authToken) {
+      setIsAuthenticated?.(true);
+      fetchUser(authToken)
+        .then((res) => res.json)
+        .then(({ id, lastName, firstName, email }: any) =>
+          setUser?.({ id, lastName, firstName, email })
+        );
+    } else if (!authToken && getRefreshTokenFromCookie()) {
+      fetchRefreshToken()
         .then((res) => res.json())
-        .then(({ id, lastName, firstName, email }) => {
-          setUser?.({
-            id,
-            lastName,
-            firstName,
-            email,
-          });
+        .then(({ token }: any) => {
+          setIsAuthenticated?.(true);
+          setAuthToken?.(token);
+          fetchUser(token)
+            .then((res) => res.json)
+            .then(({ id, lastName, firstName, email }: any) =>
+              setUser?.({ id, lastName, firstName, email })
+            );
         });
-    } catch (err) {
-      console.error(err);
+    } else {
+      setIsAuthenticated?.(false);
+      navigate("/");
     }
-  }, [authToken, setAuthToken, setUser]);
+  }, [authToken, setAuthToken, setUser, setIsAuthenticated, navigate]);
 
-  useEffect(() => {}, []);
+  // useEffect(() => {
+  //   if (getRefreshTokenFromCookie()) {
+  //   }
+  //
+  //   if (!isAuthenticated) {
+  //     try {
+  //       refreshToken()
+  //         .then((res) => res.json())
+  //         .then(({ token }: any) => {
+  //           setIsAuthenticated?.(true);
+  //           setToken(token);
+  //         });
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   }
+  // }, [isAuthenticated, setIsAuthenticated, setToken]);
 
   return (
     <>
-      {hasJWT() ? (
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/tournois" element={<Tournaments />} />
-          <Route path="/inscription" element={<Registration />} />
-          <Route path="/resultats" element={<Results />} />
-          <Route path="/reglages" element={<Settings />} />
-        </Routes>
-      ) : (
-        <Navigate to="/" replace={true} />
-      )}
+      {
+        isAuthenticated && (
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/tournois" element={<Tournaments />} />
+            <Route path="/inscription" element={<Registration />} />
+            <Route path="/resultats" element={<Results />} />
+            <Route path="/reglages" element={<Settings />} />
+          </Routes>
+        )
+        // <Navigate to="/" replace={true} />
+      }
     </>
   );
 };

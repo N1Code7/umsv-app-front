@@ -11,6 +11,7 @@ const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 const Home = () => {
   const [display, setDisplay] = useState(false);
   const [authToken, setAuthToken] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState({});
 
   const toggleDisplay = () => {
@@ -27,7 +28,9 @@ const Home = () => {
         <title>USMV APP</title>
       </Head>
       <Header />
-      <AuthenticationContext.Provider value={{ authToken, user, setAuthToken, setUser }}>
+      <AuthenticationContext.Provider
+        value={{ authToken, setAuthToken, isAuthenticated, setIsAuthenticated, user, setUser }}
+      >
         <NavigationContext.Provider value={{ display, toggleDisplay }}>
           <LazyComponent />
         </NavigationContext.Provider>
