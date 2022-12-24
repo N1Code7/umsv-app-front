@@ -4,10 +4,21 @@ import Tournaments from "./Tournaments";
 import Registration from "./Registration";
 import Results from "./Results";
 import Settings from "./Settings";
-import { cache, useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { ApiUrl } from "../../config";
 import { fetchRefreshToken, fetchUser, getRefreshTokenFromCookie } from "../../config/functions";
+
+interface RefreshTokenResponse {
+  token: string;
+  refreshToken: string;
+}
+
+interface UserResponse {
+  id: number;
+  lastName: string;
+  firstName: string;
+  email: string;
+}
 
 const PrivateRoutes = () => {
   const navigate = useNavigate();
@@ -17,63 +28,53 @@ const PrivateRoutes = () => {
   const { authToken, setAuthToken } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    if (authToken) {
-      setIsAuthenticated?.(true);
+    if (!isAuthenticated) {
+      navigate("/");
+    } else if (authToken !== "") {
       fetchUser(authToken)
-        .then((res) => res.json)
-        .then(({ id, lastName, firstName, email }: any) =>
-          setUser?.({ id, lastName, firstName, email })
-        );
-    } else if (!authToken && getRefreshTokenFromCookie()) {
-      fetchRefreshToken()
-        .then((res) => res.json())
-        .then(({ token }: any) => {
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          throw new Error("Authentication does not work!");
+        })
+        .then(({ id, lastName, firstName, email }: UserResponse) => {
+          setUser?.({ id, lastName, firstName, email });
+        });
+    } else if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
+      fetchRefreshToken(getRefreshTokenFromCookie())
+        .then((res) => {
+          if (res.ok) {
+            res.json();
+          }
+          throw new Error("Can't refresh the token!");
+        })
+        .then(({ token, refreshToken }: RefreshTokenResponse) => {
           setIsAuthenticated?.(true);
           setAuthToken?.(token);
-          fetchUser(token)
-            .then((res) => res.json)
-            .then(({ id, lastName, firstName, email }: any) =>
-              setUser?.({ id, lastName, firstName, email })
-            );
+          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict`;
         });
     } else {
       setIsAuthenticated?.(false);
+      setAuthToken?.("");
+      setUser?.({});
       navigate("/");
     }
-  }, [authToken, setAuthToken, setUser, setIsAuthenticated, navigate]);
-
-  // useEffect(() => {
-  //   if (getRefreshTokenFromCookie()) {
-  //   }
-  //
-  //   if (!isAuthenticated) {
-  //     try {
-  //       refreshToken()
-  //         .then((res) => res.json())
-  //         .then(({ token }: any) => {
-  //           setIsAuthenticated?.(true);
-  //           setToken(token);
-  //         });
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   }
-  // }, [isAuthenticated, setIsAuthenticated, setToken]);
+  }, []);
 
   return (
     <>
-      {
-        isAuthenticated && (
-          <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/tournois" element={<Tournaments />} />
-            <Route path="/inscription" element={<Registration />} />
-            <Route path="/resultats" element={<Results />} />
-            <Route path="/reglages" element={<Settings />} />
-          </Routes>
-        )
-        // <Navigate to="/" replace={true} />
-      }
+      {isAuthenticated && (
+        <Routes>
+          {/* <Route path="/" element={<Navigate to="/accueil" />} /> */}
+          <Route path="/" element={<Homepage />} />
+          {/* <Route path="/accueil" element={<Homepage />} /> */}
+          <Route path="/tournois" element={<Tournaments />} />
+          <Route path="/inscription" element={<Registration />} />
+          <Route path="/resultats" element={<Results />} />
+          <Route path="/reglages" element={<Settings />} />
+        </Routes>
+      )}
     </>
   );
 };

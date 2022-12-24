@@ -2,16 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { ApiUrl, cookieDomain } from "../../config";
-import { fetchRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
+import { fetchLogin, fetchRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
 
 const Login = () => {
-  const API = "http://localhost:8000/api/";
-
   const navigate = useNavigate();
 
   const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
-  const { user, setUser } = useContext(AuthenticationContext);
   const { authToken, setAuthToken } = useContext(AuthenticationContext);
 
   const [email, setEmail] = useState("");
@@ -20,32 +16,6 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [submitEnabled, setSubmitEnabled] = useState(false);
-  const [token, setToken] = useState("");
-
-  const getAuthentication = async () => {
-    const response = await fetch(ApiUrl + "login", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      mode: "cors",
-      cache: "default",
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then(({ token, refreshToken }: any) => {
-        console.log(token, refreshToken);
-
-        setIsAuthenticated?.(true);
-        setAuthToken?.(token);
-        document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;`;
-        // document.cookie = `refreshedToken=${refreshToken}; path=/; domain=${cookieDomain}; max-age=2592000; SameSite=strict`;
-      });
-    return response;
-  };
 
   const handleEmail = (e: any) => {
     if (e.target.value) {
@@ -74,29 +44,38 @@ const Login = () => {
     password.length >= 6
       ? setPasswordError("")
       : setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
-    try {
-      await getAuthentication();
-      console.log("Authentication succeed!");
-      console.log(authToken);
-    } catch (err) {
-      console.error(err);
-      console.log("Credentials missing or incorrect");
-    }
+
+    await fetchLogin(email, password)
+      .then((res) => res.json())
+      .then(({ token, refreshToken }: any) => {
+        setIsAuthenticated?.(true);
+        setAuthToken?.(token);
+        document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure`;
+      });
     navigate("/tableau_de_bord");
   };
 
   useEffect(() => {
-    console.log(getRefreshTokenFromCookie());
-    if (getRefreshTokenFromCookie()) {
-      fetchRefreshToken()
-        .then((res) => res.json())
-        .then(({ token }: any) => {
-          setIsAuthenticated?.(true);
-          setAuthToken?.(token);
-          navigate(-1);
-        });
+    if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
+      try {
+        fetchRefreshToken(getRefreshTokenFromCookie())
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.code === 401) {
+              console.log("Refresh token does't correspond!");
+              return;
+            } else {
+              setIsAuthenticated?.(true);
+              setAuthToken?.(res.token);
+              document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;`;
+              navigate(-1);
+            }
+          });
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }, [setIsAuthenticated, setAuthToken, navigate]);
+  }, []);
 
   useEffect(() => {
     email.includes("@") && password.length >= 6 ? setSubmitEnabled(true) : setSubmitEnabled(false);
