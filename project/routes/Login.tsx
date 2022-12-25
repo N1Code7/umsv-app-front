@@ -52,8 +52,8 @@ const Login = () => {
         setIsAuthenticated?.(true);
         setAuthToken?.(token);
         document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure`;
+        navigate("/utilisateur/accueil");
       });
-    navigate("/tableau_de_bord");
   };
 
   useEffect(() => {
@@ -68,8 +68,9 @@ const Login = () => {
             } else {
               setIsAuthenticated?.(true);
               setAuthToken?.(res.token);
-              document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;`;
-              navigate(-1);
+              document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure`;
+              navigate("/utilisateur/accueil");
+              // navigate(-1);
             }
           });
       } catch (err) {

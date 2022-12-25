@@ -13,7 +13,7 @@ export default function MyApp() {
         <Route path="/se_connecter" element={<Navigate to="/" replace />} />
         <Route path="/creer_un_compte" element={<SignUp />} />
         <Route path="/reinitialiser_mot_de_passe" element={<ResetPassword />} />
-        <Route path="/tableau_de_bord/*" element={<PrivateRoutes />} />
+        <Route path="/utilisateur/*" element={<PrivateRoutes />} />
         <Route path="/page_introuvable" element={<PageNotFound />} />
         <Route path="*" element={<Navigate to="/page_introuvable" replace />} />
       </Routes>

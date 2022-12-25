@@ -10,7 +10,7 @@ const Navigation = () => {
       <ul>
         <li>
           <NavLink
-            to="/tableau_de_bord/accueil"
+            to="/utilisateur/accueil"
             className={(nav) => (nav.isActive ? "link-active" : "")}
           >
             <span>🛎️</span>
@@ -19,7 +19,7 @@ const Navigation = () => {
         </li>
         <li>
           <NavLink
-            to="/tableau_de_bord/tournois"
+            to="/utilisateur/tournois"
             className={(nav) => (nav.isActive ? "link-active" : "")}
           >
             <span>🏟️</span>
@@ -28,7 +28,7 @@ const Navigation = () => {
         </li>
         <li>
           <NavLink
-            to="/tableau_de_bord/inscription"
+            to="/utilisateur/inscription"
             className={(nav) => (nav.isActive ? "link-active" : "")}
           >
             <span>📝</span>
@@ -37,7 +37,7 @@ const Navigation = () => {
         </li>
         <li>
           <NavLink
-            to="/tableau_de_bord/resultats"
+            to="/utilisateur/resultats"
             className={(nav) => (nav.isActive ? "link-active" : "")}
           >
             <span>🏅</span>
@@ -46,7 +46,7 @@ const Navigation = () => {
         </li>
         <li>
           <NavLink
-            to="/tableau_de_bord/reglages"
+            to="/utilisateur/reglages"
             className={(nav) => (nav.isActive ? "link-active" : "")}
           >
             <span>🧑</span>

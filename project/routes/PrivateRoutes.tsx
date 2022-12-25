@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Homepage from "./Homepage";
 import Tournaments from "./Tournaments";
-import Registration from "./Registration";
+import TournamentRegistration from "./TournamentRegistration";
 import Results from "./Results";
 import Settings from "./Settings";
 import { useContext, useEffect } from "react";
@@ -52,7 +52,7 @@ const PrivateRoutes = () => {
         .then(({ token, refreshToken }: RefreshTokenResponse) => {
           setIsAuthenticated?.(true);
           setAuthToken?.(token);
-          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict`;
+          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure`;
         });
     } else {
       setIsAuthenticated?.(false);
@@ -66,11 +66,11 @@ const PrivateRoutes = () => {
     <>
       {isAuthenticated && (
         <Routes>
-          {/* <Route path="/" element={<Navigate to="/accueil" />} /> */}
-          <Route path="/" element={<Homepage />} />
-          {/* <Route path="/accueil" element={<Homepage />} /> */}
+          <Route path="/" element={<Navigate to="/utilisateur/accueil" replace />} />
+          {/* <Route path="/" element={<Homepage />} /> */}
+          <Route path="/accueil" element={<Homepage />} />
           <Route path="/tournois" element={<Tournaments />} />
-          <Route path="/inscription" element={<Registration />} />
+          <Route path="/inscription" element={<TournamentRegistration />} />
           <Route path="/resultats" element={<Results />} />
           <Route path="/reglages" element={<Settings />} />
         </Routes>
