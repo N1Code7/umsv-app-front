@@ -3,6 +3,7 @@ import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { fetchLogin, fetchRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
+import Header from "../components/Header";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -82,48 +83,51 @@ const Login = () => {
   }, [email, password]);
 
   return (
-    <main className="login">
-      <h1>Welcome to USMV App</h1>
-      <form className="form">
-        <div className="form-raw">
-          <label htmlFor="email">Email</label>
-          <Input type="email" id="email" value={email} action={handleEmail} />
-          {emailError && <div className="errorMessage-input">{emailError}</div>}
-        </div>
-        <div className="form-raw">
-          <label htmlFor="password">Mot de passe</label>
-          <div className="password-input">
-            <Input
-              type={passwordVisible ? "text" : "password"}
-              id="password"
-              action={handlePassword}
-            />
-            <button
-              className={passwordVisible ? "hide" : "display"}
-              onClick={togglePasswordVisibility}
-            >
-              {passwordVisible ? (
-                <i className="fa-solid fa-eye-slash"></i>
-              ) : (
-                <i className="fa-solid fa-eye"></i>
-              )}
-            </button>
+    <>
+      <Header />
+      <main className="login">
+        <h1>Welcome to USMV App</h1>
+        <form className="form">
+          <div className="form-raw">
+            <label htmlFor="email">Email</label>
+            <Input type="email" id="email" value={email} action={handleEmail} />
+            {emailError && <div className="errorMessage-input">{emailError}</div>}
           </div>
-          {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
-        </div>
-        <Input
-          type="submit"
-          value="Se connecter"
-          css={submitEnabled ? "btn btn-primary" : "btn btn-warning"}
-          action={handleSubmit}
-        />
-        <div className="remember-me">
-          <Input type="checkbox" id="rememberMe" />
-          <label htmlFor="rememberMe">Se souvenir de moi</label>
-        </div>
-        <NavLink to="/nouveau_compte">Pas encore de compte ? Je veux en créer un 👉</NavLink>
-      </form>
-    </main>
+          <div className="form-raw">
+            <label htmlFor="password">Mot de passe</label>
+            <div className="password-input">
+              <Input
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                action={handlePassword}
+              />
+              <button
+                className={passwordVisible ? "hide" : "display"}
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? (
+                  <i className="fa-solid fa-eye-slash"></i>
+                ) : (
+                  <i className="fa-solid fa-eye"></i>
+                )}
+              </button>
+            </div>
+            {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
+          </div>
+          <Input
+            type="submit"
+            value="Se connecter"
+            css={submitEnabled ? "btn btn-primary" : "btn btn-warning"}
+            action={handleSubmit}
+          />
+          <div className="remember-me">
+            <Input type="checkbox" id="rememberMe" />
+            <label htmlFor="rememberMe">Se souvenir de moi</label>
+          </div>
+          <NavLink to="/nouveau_compte">Pas encore de compte ? Je veux en créer un 👉</NavLink>
+        </form>
+      </main>
+    </>
   );
 };
 
