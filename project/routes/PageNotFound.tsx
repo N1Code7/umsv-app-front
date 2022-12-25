@@ -1,24 +1,17 @@
+import { NavLink } from "react-router-dom";
+import Header from "../components/Header";
+
 const PageNotFound = () => {
   return (
     <>
-      <h1>PAGE NOT FOUND</h1>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
-      <p>ERROR</p>
+      <Header />
+      <main>
+        <h1>PAGE NON TROUVÉE</h1>
+        <p>Désolé, la page que vous avez demandé n&apos;existe pas 😅</p>
+        <p>
+          Retourner à l&apos;<NavLink to="/">accueil</NavLink>
+        </p>
+      </main>
     </>
   );
 };
