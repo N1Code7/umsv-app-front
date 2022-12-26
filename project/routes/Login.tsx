@@ -46,14 +46,16 @@ const Login = () => {
       ? setPasswordError("")
       : setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
 
-    await fetchLogin(email, password)
-      .then((res) => res.json())
-      .then(({ token, refreshToken }: any) => {
-        setIsAuthenticated?.(true);
-        setAuthToken?.(token);
-        document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure`;
-        navigate("/utilisateur/accueil");
-      });
+    if (submitEnabled) {
+      await fetchLogin(email, password)
+        .then((res) => res.json())
+        .then(({ token, refreshToken }: any) => {
+          setIsAuthenticated?.(true);
+          setAuthToken?.(token);
+          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure`;
+          navigate("/utilisateur/accueil");
+        });
+    }
   };
 
   useEffect(() => {
