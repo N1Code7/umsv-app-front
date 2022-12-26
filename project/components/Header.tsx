@@ -11,19 +11,26 @@ const Header = () => {
 
   return (
     <header className="header">
-      <div className="switch-container">
-        {isAuthenticated && (
-          <>
+      {isAuthenticated ? (
+        <>
+          <div className="switch-container">
             <span>Admin</span>
             <AdminSwitch />
-          </>
-        )}
-      </div>
-      {/* <Image src={"/assets/img/logo-club.png"} width={120} height={30} alt="logo du club" className="img-logo"/> */}
-      <button className="btn btn-primary btn-menu" id="menuBtn" onClick={toggleDisplay}>
-        Menu
-      </button>
-      {isAuthenticated && <Logout />}
+          </div>
+          <button className="btn btn-primary btn-menu" id="menuBtn" onClick={toggleDisplay}>
+            Menu
+          </button>
+          <Logout />
+        </>
+      ) : (
+        <Image
+          src={"/assets/img/logo-club.png"}
+          width={window.innerWidth < 600 ? 120 : 100}
+          height={window.innerWidth < 600 ? 45 : 35}
+          alt="logo du club"
+          className="img-logo"
+        />
+      )}
     </header>
   );
 };

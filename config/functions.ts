@@ -42,18 +42,6 @@ export const fetchRefreshToken = async (refreshToken: string) => {
   return response;
 };
 
-export const fetchUser = async (token: any) => {
-  const response = await fetch(ApiUrl + "user", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    mode: "cors",
-    cache: "default",
-  });
-  return response;
-};
-
 export const fetchInvalidateRefreshToken = async (refreshToken: string) => {
   const response = await fetch(ApiUrl + "token/refresh/invalidate", {
     method: "POST",
@@ -65,6 +53,33 @@ export const fetchInvalidateRefreshToken = async (refreshToken: string) => {
     body: JSON.stringify({
       refreshToken,
     }),
+  });
+  return response;
+};
+
+export const fetchInitResetPassword = async (email: any) => {
+  const response = await fetch(ApiUrl + "reset_password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    mode: "cors",
+    cache: "default",
+    body: JSON.stringify({
+      email,
+    }),
+  });
+  return response;
+};
+
+export const fetchUser = async (token: any) => {
+  const response = await fetch(ApiUrl + "user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    mode: "cors",
+    cache: "default",
   });
   return response;
 };

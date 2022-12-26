@@ -1,28 +1,67 @@
+import { use, useRef, useState } from "react";
+import Header from "../components/Header";
+import Input from "../components/Input";
+import { fetchInitResetPassword } from "../../config/functions";
+
 const ResetPassword = () => {
+  const email = useRef<HTMLInputElement>(null);
+
+  const [displayConfirmMessage, setDisplayConfirmMessage] = useState(false);
+  const [hasErrorOccurred, setHasErrorOccurred] = useState(false);
+
+  const handleSubmit = async () => {
+    await fetchInitResetPassword(email).then((res) => {
+      setDisplayConfirmMessage(true);
+      if (res.ok) {
+        return setHasErrorOccurred(false);
+      } else {
+        return setHasErrorOccurred(true);
+      }
+    });
+  };
+
   return (
     <>
-      <h1>RESET PASSWORD</h1>
+      <Header />
+      <div className="reset-password-confirm-message">
+        {displayConfirmMessage &&
+          (hasErrorOccurred ? (
+            <div className="error">
+              <p>Une erreur est survenue lors de la réinitialisation de votre mot de passe.</p>
+              <p>Merci de réitérer l&apos;opération ultérieurement</p>
+            </div>
+          ) : (
+            <div className="success">
+              <p>Votre demande de réinitialisation a bien été traitée.</p>
+              <p>Merci de vérifier vos mails et de suivre les directives</p>
+            </div>
+          ))}
+      </div>
 
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aspernatur deserunt, sapiente,
-        suscipit sequi mollitia voluptatibus eligendi asperiores tempore nemo expedita dolore id
-        alias repellat animi eum? Quidem repudiandae iure odit? Ipsa sunt consequuntur optio quos
-        vitae. Provident minima tenetur alias officia dolorem laudantium quibusdam necessitatibus
-        consequuntur. Voluptatum corrupti natus, doloribus expedita, cum cupiditate repellendus
-        commodi atque non ipsum distinctio quae minima. Blanditiis tenetur tempora labore nobis
-        libero laboriosam fugiat fugit accusamus, id perspiciatis, aspernatur reiciendis quidem quo
-        neque ab pariatur animi nam! Minus vitae veritatis ipsum, sapiente nulla numquam non facere
-        voluptatem ea laborum sunt tempora perferendis sequi repellendus omnis magni dolor adipisci
-        similique eius, ratione quos quidem repudiandae ex eum. Itaque quo nihil, ea saepe rem
-        veritatis pariatur similique cumque debitis commodi nemo excepturi nulla, non impedit
-        molestias, dicta illum! Recusandae tempore dolorum tenetur ducimus, veritatis voluptatibus
-        possimus fugit impedit optio, nesciunt rem labore consectetur id. Consequuntur, esse
-        inventore voluptas nobis pariatur accusamus soluta voluptatem! Sapiente asperiores
-        distinctio autem illo atque enim? Quisquam ullam maxime perferendis quibusdam cupiditate
-        molestias optio minima magnam explicabo? Explicabo voluptates odit fugiat tenetur,
-        consequuntur asperiores dicta? Cupiditate hic quae quas nisi cum laudantium? Corrupti quasi
-        explicabo nesciunt minima possimus. Facilis earum hic accusamus perferendis.
-      </p>
+      <main className="reset-password">
+        <h1>Réinitialiser mon mot de passe</h1>
+
+        <p>Veuillez renseigner votre email afin de réinitialiser votre mot de passe.</p>
+
+        <form className="form">
+          <div className="form-raw">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              ref={email}
+              onChange={(e) => {
+                email.current!.value = e.target.value;
+              }}
+            />
+          </div>
+          <input
+            type="submit"
+            value="Démarer la réinitialisation"
+            className="btn btn-primary"
+            onClick={handleSubmit}
+          />
+        </form>
+      </main>
     </>
   );
 };
