@@ -1,20 +1,12 @@
-.reset-password {
-  form {
-    margin: clamp(1.6rem, 4.3vw, 2.2rem) auto;
-  }
-
-  @include ptt {
-    p {
-      text-align: center;
-    }
-  }
-
+.sign-up {
   .confirm-message {
     width: 100%;
+    margin: 1rem 0 1.5rem;
 
     p {
       padding: 0.3rem 0;
     }
+
     .error,
     .success {
       padding: 0.8rem 0.6rem;

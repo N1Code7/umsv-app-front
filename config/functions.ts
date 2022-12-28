@@ -93,6 +93,31 @@ export const fetchValidNewPassword = async (
   return response;
 };
 
+export const fetchCreateAccount = async (
+  email: string,
+  password: string,
+  confirmPassword: string,
+  lastName: string,
+  firstName: string
+) => {
+  const response = await fetch(ApiUrl + "user/account", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    mode: "cors",
+    cache: "default",
+    body: JSON.stringify({
+      email,
+      password,
+      confirmPassword,
+      lastName,
+      firstName,
+    }),
+  });
+  return response;
+};
+
 export const fetchUser = async (token: any) => {
   const response = await fetch(ApiUrl + "user", {
     method: "GET",

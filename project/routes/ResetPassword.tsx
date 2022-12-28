@@ -32,7 +32,7 @@ const ResetPassword = () => {
     return (
       <>
         <Header />
-        <main className="reset-password forgotten-password">
+        <main className="reset-password">
           <h1>Réinitialiser mon mot de passe</h1>
 
           <p>Veuillez renseigner votre email afin de réinitialiser votre mot de passe.</p>
@@ -54,7 +54,7 @@ const ResetPassword = () => {
             <NavLink to="/">Retourner à la page de connexion 👉</NavLink>
           </form>
 
-          <div className="reset-password-confirm-message">
+          <div className="confirm-message">
             {displayConfirmMessage &&
               (hasErrorOccurred ? (
                 <div className="error">
@@ -141,7 +141,7 @@ const ResetPassword = () => {
     return (
       <>
         <Header />
-        <main className="reset-password reset">
+        <main className="reset-password">
           <h1>Mettre à jour mon mot de passe</h1>
           <form className="form" onSubmit={handleResetSubmit} method="POST">
             <div className="form-row">
@@ -211,7 +211,7 @@ const ResetPassword = () => {
             <NavLink to="/">Retourner à la page de connexion 👉</NavLink>
           </form>
 
-          <div className="reset-password-confirm-message">
+          <div className="confirm-message">
             {displayConfirmMessage &&
               (hasErrorOccurred ? (
                 <div className="error">

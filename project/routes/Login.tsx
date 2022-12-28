@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { NavLink, Navigate, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { fetchLogin, fetchRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
@@ -8,8 +8,9 @@ import Header from "../components/Header";
 const Login = () => {
   const navigate = useNavigate();
 
-  const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
-  const { authToken, setAuthToken } = useContext(AuthenticationContext);
+  const { setIsAuthenticated } = useContext(AuthenticationContext);
+  const { setAuthToken } = useContext(AuthenticationContext);
+  const { user } = useContext(AuthenticationContext);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -95,7 +96,12 @@ const Login = () => {
         <form className="form">
           <div className="form-row">
             <label htmlFor="email">Email</label>
-            <Input type="email" id="email" value={email} action={handleEmail} />
+            <Input
+              type="email"
+              id="email"
+              value={user?.email ? user?.email : email}
+              action={handleEmail}
+            />
             {emailError && <div className="errorMessage-input">{emailError}</div>}
           </div>
           <div className="form-row">
@@ -104,6 +110,7 @@ const Login = () => {
               <Input
                 type={passwordVisible ? "text" : "password"}
                 id="password"
+                value={password}
                 action={handlePassword}
               />
               <button
