@@ -124,22 +124,22 @@ const SignUp = () => {
     <main className="sigUp">
       <h1>Création de compte</h1>
       <form className="form">
-        <div className="form-raw">
+        <div className="form-row">
           <label htmlFor="lastName">NOM</label>
           <Input type="text" id="lastName" value={lastName} action={handleLastName} />
           {lastNameError !== "" && <div className="errorMessage-input">{lastNameError}</div>}
         </div>
-        <div className="form-raw">
+        <div className="form-row">
           <label htmlFor="firstName">Prénom</label>
           <Input type="text" id="firstName" value={firstName} action={handleFirstName} />
           {firstNameError !== "" && <div className="errorMessage-input">{firstNameError}</div>}
         </div>
-        <div className="form-raw">
+        <div className="form-row">
           <label htmlFor="email">Email</label>
           <Input type="email" id="email" value={email} action={handleEmail} />
           {emailError !== "" && <div className="errorMessage-input">{emailError}</div>}
         </div>
-        <div className="form-raw">
+        <div className="form-row">
           <label htmlFor="password">Mot de passe</label>
           <div className="password-input">
             <Input
@@ -168,7 +168,7 @@ const SignUp = () => {
           ></div>
           {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
         </div>
-        <div className="form-raw">
+        <div className="form-row">
           <label htmlFor="passwordConfirm">Confirmation mot de passe</label>
           <div className="password-input">
             <Input

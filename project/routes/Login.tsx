@@ -46,7 +46,7 @@ const Login = () => {
       ? setPasswordError("")
       : setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
 
-    if (submitEnabled) {
+    if (email.includes("@") && password.length >= 6) {
       await fetchLogin(email, password)
         .then((res) => res.json())
         .then(({ token, refreshToken }: any) => {
@@ -55,6 +55,8 @@ const Login = () => {
           document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure`;
           navigate("/utilisateur/accueil");
         });
+    } else {
+      throw new Error("An error occurs around email and/or password checking!");
     }
   };
 
@@ -127,7 +129,7 @@ const Login = () => {
             <Input type="checkbox" id="rememberMe" />
             <label htmlFor="rememberMe">Se souvenir de moi</label>
           </div>
-          <NavLink to="/nouveau_compte">Pas encore de compte ? Je veux en créer un 👉</NavLink>
+          <NavLink to="/creer_un_compte">Pas encore de compte ? Je veux en créer un 👉</NavLink>
         </form>
       </main>
     </>
