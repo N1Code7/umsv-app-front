@@ -2,7 +2,7 @@ import { use, useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import Input from "../components/Input";
 import { fetchInitResetPassword, fetchValidNewPassword } from "../../config/functions";
-import { NavLink, Route, Routes, useParams, useSearchParams } from "react-router-dom";
+import { NavLink, Route, Routes, useParams } from "react-router-dom";
 
 const ResetPassword = () => {
   const Request = () => {
@@ -18,6 +18,7 @@ const ResetPassword = () => {
         setEmailError("");
         await fetchInitResetPassword(email.current?.value).then((res) => {
           setDisplayConfirmMessage(true);
+          email.current!.value = "";
           if (res.ok) {
             return setHasErrorOccurred(false);
           } else {
@@ -46,6 +47,7 @@ const ResetPassword = () => {
                 onChange={(e) => {
                   email.current!.value = e.target.value;
                 }}
+                required
               />
             </div>
             <input type="submit" value="Démarer la réinitialisation" className="btn btn-primary" />
@@ -112,6 +114,8 @@ const ResetPassword = () => {
         fetchValidNewPassword(resetToken, newPassword, confirmPassword.current!.value).then(
           (res) => {
             setDisplayConfirmMessage(true);
+            setNewPassword("");
+            confirmPassword.current!.value = "";
             if (res.ok) {
               return setHasErrorOccurred(false);
             } else {
@@ -147,8 +151,9 @@ const ResetPassword = () => {
                   type={newPasswordVisible ? "text" : "password"}
                   id="newPassword"
                   name="newPassword"
-                  // value={newPassword}
+                  value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  required
                 />
                 <button
                   className={newPasswordVisible ? "hide" : "display"}
@@ -180,9 +185,7 @@ const ResetPassword = () => {
                   id="confirmPassword"
                   name="confirmPassword"
                   ref={confirmPassword}
-                  onChange={(e) => {
-                    confirmPassword.current!.value = e.target.value;
-                  }}
+                  required
                 />
                 <button
                   className={confirmPasswordVisible ? "hide" : "display"}
