@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Input from "../components/Input";
+import Header from "../components/Header";
 
 const SignUp = () => {
   const [lastName, setLastName] = useState("");
@@ -121,81 +122,84 @@ const SignUp = () => {
   }, [password]);
 
   return (
-    <main className="sigUp">
-      <h1>Création de compte</h1>
-      <form className="form">
-        <div className="form-row">
-          <label htmlFor="lastName">NOM</label>
-          <Input type="text" id="lastName" value={lastName} action={handleLastName} />
-          {lastNameError !== "" && <div className="errorMessage-input">{lastNameError}</div>}
-        </div>
-        <div className="form-row">
-          <label htmlFor="firstName">Prénom</label>
-          <Input type="text" id="firstName" value={firstName} action={handleFirstName} />
-          {firstNameError !== "" && <div className="errorMessage-input">{firstNameError}</div>}
-        </div>
-        <div className="form-row">
-          <label htmlFor="email">Email</label>
-          <Input type="email" id="email" value={email} action={handleEmail} />
-          {emailError !== "" && <div className="errorMessage-input">{emailError}</div>}
-        </div>
-        <div className="form-row">
-          <label htmlFor="password">Mot de passe</label>
-          <div className="password-input">
-            <Input
-              type={passwordVisible ? "text" : "password"}
-              id="password"
-              action={handlePassword}
-            />
-            <button
-              className={passwordVisible ? "hide" : "display"}
-              onClick={togglePasswordVisibility}
-            >
-              {passwordVisible ? (
-                <i className="fa-solid fa-eye-slash"></i>
-              ) : (
-                <i className="fa-solid fa-eye"></i>
-              )}
-            </button>
+    <>
+      <Header />
+      <main className="sigUp">
+        <h1>Création de compte</h1>
+        <form className="form">
+          <div className="form-row">
+            <label htmlFor="lastName">NOM</label>
+            <Input type="text" id="lastName" value={lastName} action={handleLastName} />
+            {lastNameError !== "" && <div className="errorMessage-input">{lastNameError}</div>}
           </div>
+          <div className="form-row">
+            <label htmlFor="firstName">Prénom</label>
+            <Input type="text" id="firstName" value={firstName} action={handleFirstName} />
+            {firstNameError !== "" && <div className="errorMessage-input">{firstNameError}</div>}
+          </div>
+          <div className="form-row">
+            <label htmlFor="email">Email</label>
+            <Input type="email" id="email" value={email} action={handleEmail} />
+            {emailError !== "" && <div className="errorMessage-input">{emailError}</div>}
+          </div>
+          <div className="form-row">
+            <label htmlFor="password">Mot de passe</label>
+            <div className="password-input">
+              <Input
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                action={handlePassword}
+              />
+              <button
+                className={passwordVisible ? "hide" : "display"}
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? (
+                  <i className="fa-solid fa-eye-slash"></i>
+                ) : (
+                  <i className="fa-solid fa-eye"></i>
+                )}
+              </button>
+            </div>
 
-          <div
-            className={
-              percent !== ""
-                ? `password-evaluation password-evaluation-${percent}`
-                : "password-evaluation"
-            }
-          ></div>
-          {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
-        </div>
-        <div className="form-row">
-          <label htmlFor="passwordConfirm">Confirmation mot de passe</label>
-          <div className="password-input">
-            <Input
-              type={passwordConfirmVisible ? "text" : "password"}
-              id="passwordConfirm"
-              value={passwordConfirm}
-              action={handlePasswordConfirm}
-            />
-            <button
-              className={passwordConfirmVisible ? "hide" : "display"}
-              onClick={togglePasswordConfirmVisibility}
-            >
-              {passwordConfirmVisible ? (
-                <i className="fa-solid fa-eye-slash"></i>
-              ) : (
-                <i className="fa-solid fa-eye"></i>
-              )}
-            </button>
+            <div
+              className={
+                percent !== ""
+                  ? `password-evaluation password-evaluation-${percent}`
+                  : "password-evaluation"
+              }
+            ></div>
+            {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
           </div>
-          {passwordConfirmError !== "" && (
-            <div className="errorMessage-input">{passwordConfirmError}</div>
-          )}
-        </div>
-        <Input type="submit" value="S'enregistrer" css="btn btn-primary" action={handleSubmit} />
-        <NavLink to="/">J&apos;ai déjà un compte, je souhaite me connecter 👉</NavLink>
-      </form>
-    </main>
+          <div className="form-row">
+            <label htmlFor="passwordConfirm">Confirmation mot de passe</label>
+            <div className="password-input">
+              <Input
+                type={passwordConfirmVisible ? "text" : "password"}
+                id="passwordConfirm"
+                value={passwordConfirm}
+                action={handlePasswordConfirm}
+              />
+              <button
+                className={passwordConfirmVisible ? "hide" : "display"}
+                onClick={togglePasswordConfirmVisibility}
+              >
+                {passwordConfirmVisible ? (
+                  <i className="fa-solid fa-eye-slash"></i>
+                ) : (
+                  <i className="fa-solid fa-eye"></i>
+                )}
+              </button>
+            </div>
+            {passwordConfirmError !== "" && (
+              <div className="errorMessage-input">{passwordConfirmError}</div>
+            )}
+          </div>
+          <Input type="submit" value="S'enregistrer" css="btn btn-primary" action={handleSubmit} />
+          <NavLink to="/">J&apos;ai déjà un compte, je souhaite me connecter 👉</NavLink>
+        </form>
+      </main>
+    </>
   );
 };
 

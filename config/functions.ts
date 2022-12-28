@@ -72,6 +72,27 @@ export const fetchInitResetPassword = async (email: any) => {
   return response;
 };
 
+export const fetchValidNewPassword = async (
+  resetToken: string | undefined,
+  password: string,
+  confirmPassword: string
+) => {
+  const response = await fetch(ApiUrl + "reset_password/reset", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    mode: "cors",
+    cache: "default",
+    body: JSON.stringify({
+      resetToken,
+      password,
+      confirmPassword,
+    }),
+  });
+  return response;
+};
+
 export const fetchUser = async (token: any) => {
   const response = await fetch(ApiUrl + "user", {
     method: "GET",

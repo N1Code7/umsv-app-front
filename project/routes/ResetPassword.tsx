@@ -1,8 +1,8 @@
 import { use, useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import Input from "../components/Input";
-import { fetchInitResetPassword } from "../../config/functions";
-import { NavLink, Route, Routes } from "react-router-dom";
+import { fetchInitResetPassword, fetchValidNewPassword } from "../../config/functions";
+import { NavLink, Route, Routes, useParams, useSearchParams } from "react-router-dom";
 
 const ResetPassword = () => {
   const Request = () => {
@@ -81,6 +81,10 @@ const ResetPassword = () => {
     const [percent, setPercent] = useState("");
     const [newPasswordVisible, setNewPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+    const [hasErrorOccurred, setHasErrorOccurred] = useState(false);
+    const [displayConfirmMessage, setDisplayConfirmMessage] = useState(false);
+
+    const { resetToken } = useParams();
 
     const toggleNewPasswordVisibility = (e: any) => {
       e.preventDefault();
@@ -93,6 +97,7 @@ const ResetPassword = () => {
     };
 
     const handleResetSubmit = (e: any) => {
+      e.preventDefault();
       !newPassword.match(/^[\w\-\*\/!?#&\$\^€%]{6,}/)
         ? setNewPasswordError("Votre mot de passe comporte des caractères interdits")
         : setNewPasswordError("");
@@ -101,10 +106,19 @@ const ResetPassword = () => {
         : setConfirmPasswordError("");
 
       if (
-        !newPassword.match(/^[\w\-\*\/!?#&\$\^€%]{6,}/) &&
-        newPassword !== confirmPassword.current?.value
+        newPassword.match(/^[\w\-\*\/!?#&\$\^€%]{6,}/) &&
+        newPassword === confirmPassword.current?.value
       ) {
-        // fetch reset password
+        fetchValidNewPassword(resetToken, newPassword, confirmPassword.current!.value).then(
+          (res) => {
+            setDisplayConfirmMessage(true);
+            if (res.ok) {
+              return setHasErrorOccurred(false);
+            } else {
+              return setHasErrorOccurred(true);
+            }
+          }
+        );
       }
     };
 
@@ -124,7 +138,8 @@ const ResetPassword = () => {
       <>
         <Header />
         <main className="reset-password reset">
-          <form className="form" onSubmit={handleResetSubmit}>
+          <h1>Mettre à jour mon mot de passe</h1>
+          <form className="form" onSubmit={handleResetSubmit} method="POST">
             <div className="form-row">
               <label htmlFor="newPassword">Nouveau mot de passe</label>
               <div className="password-input">
@@ -192,6 +207,28 @@ const ResetPassword = () => {
             />
             <NavLink to="/">Retourner à la page de connexion 👉</NavLink>
           </form>
+
+          <div className="reset-password-confirm-message">
+            {displayConfirmMessage &&
+              (hasErrorOccurred ? (
+                <div className="error">
+                  <p>
+                    Une erreur est survenue lors de l&apos;enregistrement de votre nouveau mot de
+                    passe.
+                  </p>
+                  <p>Merci de réitérer l&apos;opération ultérieurement.</p>
+                </div>
+              ) : (
+                <div className="success">
+                  <p>Votre mot de passe a bien été réinitialisé !</p>
+                  <p>
+                    Vous pouvez vous connecter dès à présent en retournant sur la page de{" "}
+                    <NavLink to="/">connexion</NavLink>
+                  </p>
+                  <p> (Pensez à vérifier vos spams si vous ne l&apos;avez pas encore reçu).</p>
+                </div>
+              ))}
+          </div>
         </main>
       </>
     );

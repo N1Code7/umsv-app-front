@@ -93,12 +93,12 @@ const Login = () => {
       <main className="login">
         <h1>Welcome to USMV App</h1>
         <form className="form">
-          <div className="form-raw">
+          <div className="form-row">
             <label htmlFor="email">Email</label>
             <Input type="email" id="email" value={email} action={handleEmail} />
             {emailError && <div className="errorMessage-input">{emailError}</div>}
           </div>
-          <div className="form-raw">
+          <div className="form-row">
             <label htmlFor="password">Mot de passe</label>
             <div className="password-input">
               <Input
@@ -117,6 +117,9 @@ const Login = () => {
                 )}
               </button>
             </div>
+            <NavLink to="/reinitialiser_mot_de_passe" className="forgotten-password">
+              Mot de passe oublié ?
+            </NavLink>
             {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
           </div>
           <Input

@@ -121,6 +121,11 @@ a {
         background: $success-3;
       }
     }
+
+    .forgotten-password {
+      // justify-self: flex-end;
+      text-align: right;
+    }
   }
 }
 
