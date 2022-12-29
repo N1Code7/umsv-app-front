@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 
 const MemberHeader = () => {
+  const { user, setUser } = useContext(AuthenticationContext);
+
   const [data, setData] = useState([]);
   const [colorFeather, setColorFeather] = useState("");
   const [formatedDate, setFormatedDate] = useState("");
@@ -47,7 +50,8 @@ const MemberHeader = () => {
 
   return (
     <div className="member-header">
-      <h1>Bonjour {data.map((elt: any) => elt.PER_PRENOM)}</h1>
+      <h1>Bonjour {user?.firstName}</h1>
+      {/* <h1>Bonjour {data.map((elt: any) => elt.PER_PRENOM)}</h1> */}
       <div className="member-infos">
         <div className="licence">Licence : {data.map((elt: any) => elt.PER_LICENCE)}</div>
         {String(data.map((elt: any) => elt.PLUME_NOM)) !== "" && (

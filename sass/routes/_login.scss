@@ -1,4 +1,4 @@
-main.login {
+.login {
   .remember-me {
     display: flex;
     align-items: center;
@@ -16,6 +16,18 @@ main.login {
     input {
       height: 1rem;
       width: 1rem;
+    }
+  }
+
+  .error-message {
+    width: 100%;
+    margin: 1rem 0 1.5rem;
+    padding: 0.8rem 0.6rem;
+    border-radius: 3px;
+    background: $danger-2;
+
+    p {
+      padding: 0.3rem 0;
     }
   }
 }

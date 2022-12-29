@@ -1,8 +1,9 @@
-import { createContext } from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
 
-interface contextType {
+interface navigationContextType {
   display?: boolean;
+  setDisplay?: Dispatch<SetStateAction<boolean>>;
   toggleDisplay?: () => void;
 }
 
-export const NavigationContext = createContext<contextType>({});
+export const NavigationContext = createContext<navigationContextType>({});
