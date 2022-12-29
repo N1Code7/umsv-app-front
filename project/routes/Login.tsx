@@ -1,108 +1,158 @@
-import { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
+import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import { fetchLogin, fetchRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
+import Header from "../components/Header";
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  // const email = useRef<HTMLInputElement>(null);
+  // const password = useRef<HTMLInputElement>(null);
+
+  const { setIsAuthenticated } = useContext(AuthenticationContext);
+  const { setAuthToken } = useContext(AuthenticationContext);
+  const { user } = useContext(AuthenticationContext);
+
   const [email, setEmail] = useState("");
-  const [emailValidated, setEmailValidated] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordError, setPasswordError] = useState("");
-  const [passwordValidated, setPasswordValidated] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
-
-  const isMounted = useRef(false);
-
-  const handleEmail = (e: any) => {
-    if (e.target.value) {
-      setEmail(e.target.value);
-    }
-  };
-
-  const handlePassword = (e: any) => {
-    console.log(e.target);
-
-    if (!e.target.value) {
-      return;
-    } else {
-      setPassword(e.target.value);
-    }
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    if (email.includes("@")) {
-      setEmailValidated(true);
-      setEmailError("");
-    } else {
-      setEmailValidated(false);
-      setEmailError("L'adresse email renseignée n'est pas conforme 🚨");
-    }
-    if (password.length >= 6) {
-      setPasswordValidated(true);
-      setPasswordError("");
-    } else {
-      setPasswordValidated(false);
-      setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
-    }
-    passwordValidated && emailValidated ? setSubmitEnabled(true) : setSubmitEnabled(false);
-  };
+  const [hasErrorOccurred, setHasErrorOccurred] = useState(false);
 
   const togglePasswordVisibility = (e: any) => {
     e.preventDefault();
     setPasswordVisible(!passwordVisible);
   };
 
-  useEffect(() => {
-    if (email.includes("@") && password.length >= 6) {
-      setSubmitEnabled(true);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    !email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/)
+      ? setEmailError("L'adresse email renseignée n'est pas conforme 🚨")
+      : setEmailError("");
+    password.length < 6
+      ? setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨")
+      : setPasswordError("");
+
+    if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
+      await fetchLogin(email, password)
+        .then((res) => {
+          setEmail("");
+          setPassword("");
+          if (res.ok) {
+            setHasErrorOccurred(false);
+            return res.json();
+          } else {
+            setHasErrorOccurred(true);
+          }
+        })
+        .then((res) => {
+          if (res) {
+            setIsAuthenticated?.(true);
+            setAuthToken?.(res.token);
+            document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+            navigate("/utilisateur/accueil");
+          }
+        });
     }
-  }, [email, password, emailValidated, passwordValidated]);
+  };
+
+  interface IRefreshToken {
+    token: string;
+    refreshToken: string;
+  }
+
+  useEffect(() => {
+    if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
+      fetchRefreshToken(getRefreshTokenFromCookie())
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          throw new Error("An error occurs when try to refresh authToken after reload!");
+        })
+        .then(({ token, refreshToken }: IRefreshToken) => {
+          setIsAuthenticated?.(true);
+          setAuthToken?.(token);
+          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+          navigate("/utilisateur/accueil");
+          // navigate(-1);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6
+      ? setSubmitEnabled(true)
+      : setSubmitEnabled(false);
+  }, [email, password]);
 
   return (
-    <main className="login">
-      <h1>Welcome to USMV App</h1>
-      <form className="form">
-        <div className="form-raw">
-          <label htmlFor="email">Email</label>
-          <Input type="email" id="email" value={email} action={handleEmail} />
-          {emailError && <div className="errorMessage-input">{emailError}</div>}
-        </div>
-        <div className="form-raw">
-          <label htmlFor="password">Mot de passe</label>
-          <div className="password-input">
-            <Input
-              type={passwordVisible ? "text" : "password"}
-              id="password"
-              action={handlePassword}
-            />
-            <button
-              className={passwordVisible ? "hide" : "display"}
-              onClick={togglePasswordVisibility}
-            >
-              {passwordVisible ? (
-                <i className="fa-solid fa-eye-slash"></i>
-              ) : (
-                <i className="fa-solid fa-eye"></i>
-              )}
-            </button>
+    <>
+      <Header />
+      <main className="login">
+        {hasErrorOccurred && (
+          <div className="error-message">
+            <p>Oups ! Quelque chose ne va pas avec votre email et/ou votre mot de passe.</p>
           </div>
-          {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
-        </div>
-        <Input
-          type="submit"
-          value="Se connecter"
-          css={submitEnabled ? "btn btn-primary" : "btn btn-warning"}
-          action={handleSubmit}
-        />
-        <div className="remember-me">
-          <Input type="checkbox" id="rememberMe" />
-          <label htmlFor="rememberMe">Se souvenir de moi</label>
-        </div>
-        <NavLink to="/nouveau-compte">Pas encore de compte ? Je veux en créer un 👉</NavLink>
-      </form>
-    </main>
+        )}
+        <h1>Welcome to USMV App</h1>
+        <form className="form" onSubmit={handleSubmit}>
+          <div className="form-row">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={user?.email ? user?.email : email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            {/* <Input type="email " id="email" value={user?.email && user?.email} ref={email} /> */}
+            {emailError && <div className="errorMessage-input">{emailError}</div>}
+          </div>
+          <div className="form-row">
+            <label htmlFor="password">Mot de passe</label>
+            <div className="password-input">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              {/* <Input type={passwordVisible ? "text" : "password"} id="password" ref={password} /> */}
+              <button
+                className={passwordVisible ? "hide" : "display"}
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? (
+                  <i className="fa-solid fa-eye-slash"></i>
+                ) : (
+                  <i className="fa-solid fa-eye"></i>
+                )}
+              </button>
+            </div>
+            <NavLink to="/reinitialiser_mot_de_passe" className="forgotten-password">
+              Mot de passe oublié ?
+            </NavLink>
+            {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
+          </div>
+          <input
+            type="submit"
+            value="Se connecter"
+            className={submitEnabled ? "btn btn-primary" : "btn btn-warning"}
+          />
+          <div className="remember-me">
+            <Input type="checkbox" id="rememberMe" />
+            <label htmlFor="rememberMe">Se souvenir de moi</label>
+          </div>
+          <NavLink to="/creer_un_compte">Pas encore de compte ? Je veux en créer un 👉</NavLink>
+        </form>
+      </main>
+    </>
   );
 };
 

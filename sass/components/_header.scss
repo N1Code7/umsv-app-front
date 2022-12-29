@@ -17,12 +17,10 @@ header.header {
   }
 
   .img-logo {
-    width: 90px;
-    height: 30px;
-
-    @include ptt {
-      display: none;
-    }
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .switch-container {
@@ -34,6 +32,27 @@ header.header {
 
     span {
       color: $content-light;
+    }
+  }
+
+  .member-role {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    // align-items: center;
+    align-self: center;
+    text-align: center;
+    // border: 2px solid #f5b041;
+    height: fit-content;
+    // padding: 0.3rem 0;
+    padding-bottom: 0.3rem;
+    border-radius: 5px;
+    color: $content-light;
+    // font-size: 0.6rem;
+    font-size: 3rem;
+
+    span {
+      text-shadow: 2px -1px 7px #f5b041;
     }
   }
 

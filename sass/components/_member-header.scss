@@ -1,0 +1,125 @@
+.member-header {
+  margin: 7rem auto 0;
+  width: 100%;
+  max-width: 100rem;
+
+  @include ptt {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: repeat(2, auto);
+    column-gap: 2rem;
+    padding: 1.2rem;
+  }
+
+  h1 {
+    margin: 0;
+    margin-bottom: 0.6rem;
+
+    @include ptt {
+      align-self: center;
+    }
+  }
+
+  .member-infos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-left: 0.9rem;
+    margin-bottom: 1.2rem;
+
+    @include ptt {
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 0;
+      padding-left: 0;
+      font-size: clamp(1rem, 1.6vw, 1.3rem);
+    }
+
+    @include from(1250) {
+      gap: clamp(2rem, 5vw, 5rem);
+    }
+  }
+
+  .transfered {
+    color: $warning;
+    font-weight: 580;
+  }
+
+  .classifications {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: clamp(0.6rem, 3.5vmin, 0.9rem);
+    background: $bg-3;
+    width: 100vw;
+    max-width: 38rem;
+    padding: clamp(0.9rem, 2.9vmin, 1.2rem) clamp(0.6rem, 5vmin, 1.2rem);
+
+    @include ptt {
+      grid-column: 2/3;
+      grid-row: 1/3;
+      column-gap: 1.2rem;
+      width: fit-content;
+      padding: 1.2rem;
+      border-radius: 6px;
+    }
+  }
+
+  .classification {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-self: center;
+    width: 100%;
+    max-width: 9rem;
+    position: relative;
+    font-family: $font-title;
+    padding: 0.6rem 0.6rem 3rem;
+    border-radius: 16px;
+    background: $bg-4;
+
+    @include ptt {
+      width: clamp(6rem, 16vw, 9rem);
+    }
+
+    &-name {
+      padding: 0.5rem 1.2rem;
+      border-radius: 10px;
+      background: #23aa39;
+    }
+
+    &-cpph {
+      font-size: clamp(1rem, 5vmin, 1.3rem);
+      margin: 0.6rem 0 0.3rem;
+    }
+
+    &-rank {
+      font-size: clamp(0.9rem, 4.5vmin, 1.1rem);
+      color: rgba($content-dark, 0.8);
+    }
+
+    &-table {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2.5rem;
+      // text-align: center;
+      background: $bg-2;
+      border-radius: 0 0 16px 16px;
+    }
+
+    &-date {
+      grid-column: 1/4;
+      display: flex;
+      justify-content: center;
+      padding-top: 0.6rem;
+      font-size: clamp(0.8rem, 3.5vmin, 0.9rem);
+    }
+  }
+}

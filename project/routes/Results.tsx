@@ -1,12 +1,18 @@
-import Navigation from "../components/Navigation"
+import Header from "../components/Header";
+import MemberHeader from "../components/MemberHeader";
+import Navigation from "../components/Navigation";
 
 const Results = () => {
   return (
-  <>
-    <Navigation />
-    <h2>Résultats</h2>
-  </>
-  )
-}
+    <>
+      <Header />
+      <MemberHeader />
+      <Navigation />
+      <main>
+        <h2>Résultats</h2>
+      </main>
+    </>
+  );
+};
 
-export default Results
+export default Results;

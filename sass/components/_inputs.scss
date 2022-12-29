@@ -12,6 +12,7 @@ input {
     height: 3rem;
     font-size: 1.2rem;
     border: 1.5px solid grey;
+    font-family: inherit;
 
     &:focus {
       border: 2px solid $primary-1;
@@ -26,6 +27,7 @@ input {
     -webkit-appearance: none;
     font-weight: 500;
     cursor: pointer;
+    margin-top: 0.6rem;
   }
 }
 
@@ -48,7 +50,7 @@ input {
     font-size: 1.1rem;
 
     &.display {
-      color: $success-2;
+      color: $success-3;
     }
     &.hide {
       color: $danger-1;

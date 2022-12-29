@@ -1,6 +1,6 @@
 button.switch {
-  width: 47px;
-  height: 27px;
+  width: 46px;
+  height: 28px;
   border-radius: 50px;
   background: $content-light;
   position: relative;
@@ -8,8 +8,8 @@ button.switch {
   outline: none;
 
   .circle {
-    width: 25px;
-    height: 25px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: $bg-2;
     position: absolute;
@@ -19,7 +19,7 @@ button.switch {
     transition: transform 0.3s ease-out;
 
     &-right {
-      transform: translate(calc(45px - 25px), -50%);
+      transform: translate(calc(46px - 28px), -50%);
       // background: $gradient-1;
       background: $success-1;
     }
