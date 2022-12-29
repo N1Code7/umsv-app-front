@@ -52,7 +52,7 @@ const PrivateRoutes = () => {
         .then(({ token, refreshToken }: RefreshTokenResponse) => {
           setIsAuthenticated?.(true);
           setAuthToken?.(token);
-          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure`;
+          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
         });
     } else {
       setIsAuthenticated?.(false);

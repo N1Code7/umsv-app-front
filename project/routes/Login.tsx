@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
@@ -7,6 +7,9 @@ import Header from "../components/Header";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  // const email = useRef<HTMLInputElement>(null);
+  // const password = useRef<HTMLInputElement>(null);
 
   const { setIsAuthenticated } = useContext(AuthenticationContext);
   const { setAuthToken } = useContext(AuthenticationContext);
@@ -18,20 +21,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [submitEnabled, setSubmitEnabled] = useState(false);
-
-  const handleEmail = (e: any) => {
-    if (e.target.value) {
-      setEmail(e.target.value);
-    }
-  };
-
-  const handlePassword = (e: any) => {
-    if (!e.target.value) {
-      return;
-    } else {
-      setPassword(e.target.value);
-    }
-  };
+  const [hasErrorOccurred, setHasErrorOccurred] = useState(false);
 
   const togglePasswordVisibility = (e: any) => {
     e.preventDefault();
@@ -40,79 +30,100 @@ const Login = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    email.includes("@")
-      ? setEmailError("")
-      : setEmailError("L'adresse email renseignée n'est pas conforme 🚨");
-    password.length >= 6
-      ? setPasswordError("")
-      : setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨");
+    !email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/)
+      ? setEmailError("L'adresse email renseignée n'est pas conforme 🚨")
+      : setEmailError("");
+    password.length < 6
+      ? setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨")
+      : setPasswordError("");
 
-    if (email.includes("@") && password.length >= 6) {
+    if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
       await fetchLogin(email, password)
-        .then((res) => res.json())
-        .then(({ token, refreshToken }: any) => {
-          setIsAuthenticated?.(true);
-          setAuthToken?.(token);
-          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure`;
-          navigate("/utilisateur/accueil");
+        .then((res) => {
+          setEmail("");
+          setPassword("");
+          if (res.ok) {
+            setHasErrorOccurred(false);
+            return res.json();
+          } else {
+            setHasErrorOccurred(true);
+          }
+        })
+        .then((res) => {
+          if (res) {
+            setIsAuthenticated?.(true);
+            setAuthToken?.(res.token);
+            document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+            navigate("/utilisateur/accueil");
+          }
         });
-    } else {
-      throw new Error("An error occurs around email and/or password checking!");
     }
   };
 
+  interface IRefreshToken {
+    token: string;
+    refreshToken: string;
+  }
+
   useEffect(() => {
     if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-      try {
-        fetchRefreshToken(getRefreshTokenFromCookie())
-          .then((res) => res.json())
-          .then((res) => {
-            if (res.code === 401) {
-              console.log("Refresh token does't correspond!");
-              return;
-            } else {
-              setIsAuthenticated?.(true);
-              setAuthToken?.(res.token);
-              document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure`;
-              navigate("/utilisateur/accueil");
-              // navigate(-1);
-            }
-          });
-      } catch (err) {
-        console.log(err);
-      }
+      fetchRefreshToken(getRefreshTokenFromCookie())
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          throw new Error("An error occurs when try to refresh authToken after reload!");
+        })
+        .then(({ token, refreshToken }: IRefreshToken) => {
+          setIsAuthenticated?.(true);
+          setAuthToken?.(token);
+          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+          navigate("/utilisateur/accueil");
+          // navigate(-1);
+        });
     }
   }, []);
 
   useEffect(() => {
-    email.includes("@") && password.length >= 6 ? setSubmitEnabled(true) : setSubmitEnabled(false);
+    email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6
+      ? setSubmitEnabled(true)
+      : setSubmitEnabled(false);
   }, [email, password]);
 
   return (
     <>
       <Header />
       <main className="login">
+        {hasErrorOccurred && (
+          <div className="error-message">
+            <p>Oups ! Quelque chose ne va pas avec votre email et/ou votre mot de passe.</p>
+          </div>
+        )}
         <h1>Welcome to USMV App</h1>
-        <form className="form">
+        <form className="form" onSubmit={handleSubmit}>
           <div className="form-row">
             <label htmlFor="email">Email</label>
-            <Input
+            <input
               type="email"
               id="email"
               value={user?.email ? user?.email : email}
-              action={handleEmail}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
+            {/* <Input type="email " id="email" value={user?.email && user?.email} ref={email} /> */}
             {emailError && <div className="errorMessage-input">{emailError}</div>}
           </div>
           <div className="form-row">
             <label htmlFor="password">Mot de passe</label>
             <div className="password-input">
-              <Input
+              <input
                 type={passwordVisible ? "text" : "password"}
                 id="password"
                 value={password}
-                action={handlePassword}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
+              {/* <Input type={passwordVisible ? "text" : "password"} id="password" ref={password} /> */}
               <button
                 className={passwordVisible ? "hide" : "display"}
                 onClick={togglePasswordVisibility}
@@ -129,11 +140,10 @@ const Login = () => {
             </NavLink>
             {passwordError !== "" && <div className="errorMessage-input">{passwordError}</div>}
           </div>
-          <Input
+          <input
             type="submit"
             value="Se connecter"
-            css={submitEnabled ? "btn btn-primary" : "btn btn-warning"}
-            action={handleSubmit}
+            className={submitEnabled ? "btn btn-primary" : "btn btn-warning"}
           />
           <div className="remember-me">
             <Input type="checkbox" id="rememberMe" />

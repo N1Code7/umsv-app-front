@@ -59,11 +59,6 @@ const SignUp = () => {
       ? setConfirmPasswordError("Les deux mots de passe ne correspondent pas !")
       : setConfirmPasswordError("");
 
-    console.log(email.current?.value);
-    console.log("hello");
-
-    console.log(confirmPassword.current?.value);
-
     if (
       lastName.current!.value.match(/^[A-ZÀ-ÿa-z][A-ZÀ-ÿa-z -]+/) &&
       firstName.current!.value.match(/^[A-ZÀ-ÿa-z][A-ZÀ-ÿa-z -]+/) &&
