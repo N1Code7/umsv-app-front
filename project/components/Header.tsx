@@ -13,7 +13,7 @@ const Header = () => {
     <header className="header">
       {isAuthenticated ? (
         <>
-          {user?.roles.includes("ROLE_ADMIN") || user?.roles.includes("ROLE_SUPERADMIN") ? (
+          {user?.roles?.includes("ROLE_ADMIN") || user?.roles?.includes("ROLE_SUPERADMIN") ? (
             <div className="switch-container">
               <span>Admin</span>
               <AdminSwitch />
