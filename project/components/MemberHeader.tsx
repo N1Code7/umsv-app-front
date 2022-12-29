@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import { fetchFFBAD } from "../../config/functions";
 
 const MemberHeader = () => {
   const { user, setUser } = useContext(AuthenticationContext);
@@ -8,19 +9,25 @@ const MemberHeader = () => {
   const [colorFeather, setColorFeather] = useState("");
   const [formatedDate, setFormatedDate] = useState("");
 
+  // useEffect(() => {
+  //   fetch("data.json", {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Accept: "application/json",
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => Object.values(res.Retour))
+  //     .then((res: any) =>
+  //       setData(res.filter((elt: any) => elt.PER_NOM == "GANCI" && elt.PER_PRENOM == "Charlotte"))
+  //     );
+  // }, []);
+
   useEffect(() => {
-    fetch("data.json", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => Object.values(res.Retour))
-      .then((res: any) =>
-        setData(res.filter((elt: any) => elt.PER_NOM == "GANCI" && elt.PER_PRENOM == "Charlotte"))
-      );
-  }, []);
+    fetchFFBAD()
+      .then((res) => console.log(res.json()))
+      .catch((err) => console.log(err));
+  });
 
   useEffect(() => {
     switch (String(data.map((elt: any) => elt.PLUME_NOM))) {
