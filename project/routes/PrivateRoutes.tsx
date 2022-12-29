@@ -18,6 +18,7 @@ interface UserResponse {
   lastName: string;
   firstName: string;
   email: string;
+  roles: Array<string>;
 }
 
 const PrivateRoutes = () => {
@@ -38,8 +39,8 @@ const PrivateRoutes = () => {
           }
           throw new Error("Authentication does not work!");
         })
-        .then(({ id, lastName, firstName, email }: UserResponse) => {
-          setUser?.({ id, lastName, firstName, email });
+        .then(({ id, lastName, firstName, email, roles }: UserResponse) => {
+          setUser?.({ id, lastName, firstName, email, roles });
         });
     } else if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
       fetchRefreshToken(getRefreshTokenFromCookie())

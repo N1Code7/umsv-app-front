@@ -7,16 +7,24 @@ import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 
 const Header = () => {
   const { toggleDisplay } = useContext(NavigationContext);
-  const { isAuthenticated } = useContext(AuthenticationContext);
+  const { isAuthenticated, user } = useContext(AuthenticationContext);
 
   return (
     <header className="header">
       {isAuthenticated ? (
         <>
-          <div className="switch-container">
-            <span>Admin</span>
-            <AdminSwitch />
-          </div>
+          {user?.roles.includes("ROLE_ADMIN") ? (
+            <div className="switch-container">
+              <span>Admin</span>
+              <AdminSwitch />
+            </div>
+          ) : (
+            <div className="member-role">
+              <span>🐅</span>
+              {/* <span>Espace</span>
+              <span>utilisateur</span> */}
+            </div>
+          )}
           <button className="btn btn-primary btn-menu" id="menuBtn" onClick={toggleDisplay}>
             Menu
           </button>
