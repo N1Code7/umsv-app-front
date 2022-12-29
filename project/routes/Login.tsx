@@ -8,12 +8,7 @@ import Header from "../components/Header";
 const Login = () => {
   const navigate = useNavigate();
 
-  // const email = useRef<HTMLInputElement>(null);
-  // const password = useRef<HTMLInputElement>(null);
-
-  const { setIsAuthenticated } = useContext(AuthenticationContext);
-  const { setAuthToken } = useContext(AuthenticationContext);
-  const { user } = useContext(AuthenticationContext);
+  const { user, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -79,7 +74,6 @@ const Login = () => {
           setAuthToken?.(token);
           document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
           navigate("/utilisateur/accueil");
-          // navigate(-1);
         });
     }
   }, []);
