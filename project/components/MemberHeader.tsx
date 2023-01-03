@@ -5,6 +5,7 @@ const MemberHeader = () => {
   const { user } = useContext(AuthenticationContext);
 
   const [colorFeather, setColorFeather] = useState("");
+  const [rankingColor, setRankingColor] = useState("");
 
   useEffect(() => {
     switch (user?.feather) {
@@ -27,6 +28,16 @@ const MemberHeader = () => {
       default:
         break;
     }
+
+    if (["N1", "N2", "N3"].includes(user?.rankings?.single?.rankName || "")) {
+      setRankingColor("#fb6161");
+    } else if (["R4", "R5", "R6"].includes(user?.rankings?.single?.rankName || "")) {
+      setRankingColor("#65aef4");
+    } else if (["R4", "R5", "R6"].includes(user?.rankings?.single?.rankName || "")) {
+      setRankingColor("#1bbe1b");
+    } else {
+      setRankingColor("#d7da1e");
+    }
   }, [user]);
 
   return (
@@ -46,19 +57,25 @@ const MemberHeader = () => {
       {/* Insert logic for gender when data will be set on Cookies */}
       <div className="classifications">
         <div className="classification classification-single">
-          <div className="classification-name">{user?.rankings?.single?.rankName}</div>
+          <div className="classification-name" style={{ background: rankingColor }}>
+            {user?.rankings?.single?.rankName}
+          </div>
           <div className="classification-cpph">{user?.rankings?.single?.cpph}</div>
           <div className="classification-rank">{user?.rankings?.single?.rankNumber}</div>
           <div className="classification-table">Simple</div>
         </div>
         <div className="classification classification-double">
-          <div className="classification-name">{user?.rankings?.double?.rankName}</div>
+          <div className="classification-name" style={{ background: rankingColor }}>
+            {user?.rankings?.double?.rankName}
+          </div>
           <div className="classification-cpph">{user?.rankings?.double?.cpph}</div>
           <div className="classification-rank">{user?.rankings?.double?.rankNumber}</div>
           <div className="classification-table">Double</div>
         </div>
         <div className="classification classification-mixed">
-          <div className="classification-name">{user?.rankings?.mixed?.rankName}</div>
+          <div className="classification-name" style={{ background: rankingColor }}>
+            {user?.rankings?.mixed?.rankName}
+          </div>
           <div className="classification-cpph">{user?.rankings?.mixed?.cpph}</div>
           <div className="classification-rank">{user?.rankings?.mixed?.rankNumber}</div>
           <div className="classification-table">Mixte</div>

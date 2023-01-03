@@ -87,7 +87,7 @@
     &-name {
       padding: 0.5rem 1.2rem;
       border-radius: 10px;
-      background: #23aa39;
+      font-weight: 500;
     }
 
     &-cpph {
@@ -118,7 +118,7 @@
       grid-column: 1/4;
       display: flex;
       justify-content: center;
-      padding-top: 0.6rem;
+      padding-top: 1rem;
       font-size: clamp(0.8rem, 3.5vmin, 0.9rem);
     }
   }

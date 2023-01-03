@@ -60,6 +60,7 @@ h1 {
   text-align: center;
   margin: 2rem auto;
   font-weight: 400;
+  font-size: clamp(1.8rem, 9vmin, 2.1rem);
 
   @media (min-width: 600px) {
     margin: 0 auto 1.6rem;
