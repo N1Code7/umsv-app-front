@@ -19,17 +19,37 @@ interface UserResponse {
   firstName: string;
   email: string;
   roles: Array<string>;
+  FFBadStats: Array<{
+    rankingsDate: string;
+    license: string;
+    birthDate: string;
+    categoryGlobal: string;
+    categoryShort: string;
+    categoryLong: string;
+    isPlayerTransferred: boolean;
+    feather: string;
+    singleCPPH: string;
+    singleRankName: string;
+    singleRankNumber: string;
+    doubleCPPH: string;
+    doubleRankName: string;
+    doubleRankNumber: string;
+    mixedCPPH: string;
+    mixedRankName: string;
+    mixedRankNumber: string;
+  }>;
 }
 
 const PrivateRoutes = () => {
   const navigate = useNavigate();
 
-  const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
-  const { user, setUser } = useContext(AuthenticationContext);
-  const { authToken, setAuthToken } = useContext(AuthenticationContext);
+  const { authToken, setAuthToken, setUser, isAuthenticated, setIsAuthenticated } =
+    useContext(AuthenticationContext);
 
   useEffect(() => {
     if (!isAuthenticated) {
+      setAuthToken?.("");
+      setUser?.({});
       navigate("/");
     } else if (authToken !== "") {
       fetchUser(authToken)
@@ -39,14 +59,49 @@ const PrivateRoutes = () => {
           }
           throw new Error("Authentication does not work!");
         })
-        .then(({ id, lastName, firstName, email, roles }: UserResponse) => {
-          setUser?.({ id, lastName, firstName, email, roles });
+        .then(({ id, lastName, firstName, email, roles, FFBadStats: array }: UserResponse) => {
+          console.log(array[array.length - 1]);
+
+          setUser?.({
+            id,
+            lastName,
+            firstName,
+            email,
+            roles,
+            birthDate: array[array.length - 1].birthDate,
+            license: array[array.length - 1].license,
+            isPlayerTransferred: array[array.length - 1].isPlayerTransferred,
+            feather: array[array.length - 1].feather,
+            rankings: {
+              effectiveDate: array[array.length - 1].rankingsDate,
+              single: {
+                cpph: array[array.length - 1].singleCPPH,
+                rankNumber: array[array.length - 1].singleRankNumber,
+                rankName: array[array.length - 1].singleRankName,
+              },
+              double: {
+                cpph: array[array.length - 1].doubleCPPH,
+                rankNumber: array[array.length - 1].doubleRankNumber,
+                rankName: array[array.length - 1].doubleRankName,
+              },
+              mixed: {
+                cpph: array[array.length - 1].mixedCPPH,
+                rankNumber: array[array.length - 1].mixedRankNumber,
+                rankName: array[array.length - 1].mixedRankName,
+              },
+            },
+            category: {
+              short: array[array.length - 1].categoryShort,
+              long: array[array.length - 1].categoryLong,
+              global: array[array.length - 1].categoryGlobal,
+            },
+          });
         });
     } else if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
       fetchRefreshToken(getRefreshTokenFromCookie())
         .then((res) => {
           if (res.ok) {
-            res.json();
+            return res.json();
           }
           throw new Error("Can't refresh the token!");
         })

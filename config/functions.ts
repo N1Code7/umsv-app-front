@@ -186,12 +186,11 @@ export const fetchFFBAD = async () => {
   const response = await fetch("https://api.ffbad.org/club/?TokenClub=30908181&Mode=smart", {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "Access-Control-Allow-Origin": "http://localhost:3000",
+      Accept: "text/plain",
+      // Accept: "application/json",
     },
-    mode: "cors",
-    cache: "default",
+    // mode: "cors",
+    // cache: "default",
   });
   return response;
 };

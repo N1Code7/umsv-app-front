@@ -67,6 +67,8 @@ const Login = () => {
           if (res.ok) {
             return res.json();
           }
+          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+          navigate("/");
           throw new Error("An error occurs when try to refresh authToken after reload!");
         })
         .then(({ token, refreshToken }: IRefreshToken) => {

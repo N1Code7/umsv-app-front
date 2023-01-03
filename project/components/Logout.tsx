@@ -6,9 +6,7 @@ import { fetchInvalidateRefreshToken, getRefreshTokenFromCookie } from "../../co
 const Logout = () => {
   const navigate = useNavigate();
 
-  const { user, setUser } = useContext(AuthenticationContext);
-  const { authToken, setAuthToken } = useContext(AuthenticationContext);
-  const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
+  const { setUser, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
 
   const logout = async () => {
     await fetchInvalidateRefreshToken(getRefreshTokenFromCookie())
@@ -18,9 +16,7 @@ const Logout = () => {
         }
         throw new Error("An error occurs when the refresh token should be invalidated!");
       })
-      .then((res) => {
-        console.log(res);
-
+      .then(() => {
         setUser?.({});
         setIsAuthenticated?.(false);
         setAuthToken?.("");

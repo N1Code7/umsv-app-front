@@ -8,7 +8,26 @@ interface authenticationContextType {
     lastName?: string;
     firstName?: string;
     email?: string;
-    roles: Array<string>;
+    birthDate?: string;
+    roles?: Array<string>;
+    license?: string;
+    feather?: string;
+    isPlayerTransferred: boolean;
+    rankings?: {
+      effectiveDate?: string;
+      single?: {
+        cpph?: string;
+        rankName?: string;
+        rankNumber?: string;
+      };
+      double?: { cpph?: string; rankName?: string; rankNumber?: string };
+      mixed: { cpph?: string; rankName?: string; rankNumber?: string };
+    };
+    category?: {
+      short?: string;
+      long?: string;
+      global?: string;
+    };
   };
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   setAuthToken: Dispatch<SetStateAction<string>>;
