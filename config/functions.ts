@@ -1,5 +1,3 @@
-import { ApiUrl } from ".";
-
 /**
  * Extract the value of cookie which includes the name refreshToken
  * @returns refreshToken
@@ -22,7 +20,9 @@ export const getRefreshTokenFromCookie = () => {
  * @returns
  */
 export const fetchLogin = async (email: string, password: string) => {
-  const response = await fetch(ApiUrl + "login", {
+  console.log(process.env.NEXT_PUBLIC_HOST_BACK);
+
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "login", {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -43,7 +43,7 @@ export const fetchLogin = async (email: string, password: string) => {
  * @returns
  */
 export const fetchRefreshToken = async (refreshToken: string) => {
-  const response = await fetch(ApiUrl + "token/refresh", {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh", {
     method: "POST",
     headers: {
       "Content-type": "application/json",
@@ -63,7 +63,7 @@ export const fetchRefreshToken = async (refreshToken: string) => {
  * @returns
  */
 export const fetchInvalidateRefreshToken = async (refreshToken: string) => {
-  const response = await fetch(ApiUrl + "token/refresh/invalidate", {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh/invalidate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -83,7 +83,7 @@ export const fetchInvalidateRefreshToken = async (refreshToken: string) => {
  * @returns
  */
 export const fetchInitResetPassword = async (email: any) => {
-  const response = await fetch(ApiUrl + "reset_password", {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "reset_password", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -106,11 +106,11 @@ export const fetchInitResetPassword = async (email: any) => {
  * @returns
  */
 export const fetchValidNewPassword = async (
-  resetToken: string | undefined,
+  resetToken: string,
   password: string,
   confirmPassword: string
 ) => {
-  const response = await fetch(ApiUrl + "reset_password/reset", {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "reset_password/reset", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -143,7 +143,7 @@ export const fetchCreateAccount = async (
   lastName: string,
   firstName: string
 ) => {
-  const response = await fetch(ApiUrl + "user/account", {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "user/account", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -166,8 +166,8 @@ export const fetchCreateAccount = async (
  * @param token the user's authentication token
  * @returns
  */
-export const fetchUser = async (token: any) => {
-  const response = await fetch(ApiUrl + "user", {
+export const fetchUser = async (token: string) => {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "user", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -178,19 +178,49 @@ export const fetchUser = async (token: any) => {
   return response;
 };
 
-/**
- * Get data about club's members
- * @returns
- */
-export const fetchFFBAD = async () => {
-  const response = await fetch("https://api.ffbad.org/club/?TokenClub=30908181&Mode=smart", {
+export const fetchEvents = async (token: string) => {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "admin/events", {
     method: "GET",
     headers: {
-      Accept: "text/plain",
-      // Accept: "application/json",
+      Authorization: `Bearer ${token}`,
     },
-    // mode: "cors",
-    // cache: "default",
   });
   return response;
+};
+
+/**
+ * Format the input date into the selected schema
+ * @param entryDate the date to format
+ * @param outputFormat the selected output schema
+ */
+export const formatDate = (entryDate: string, outputFormat: string) => {
+  let formattedDate = entryDate.split("T")[0].split("-");
+
+  if (outputFormat === "XX/XX/XX") {
+    return `${formattedDate[2]}/${formattedDate[1]}/${formattedDate[0][2]}${formattedDate[0][3]}`;
+  }
+};
+
+/**
+ * Get the day of week, either in short (default) or long format
+ * @param entryDate the date taken to determine the day of week
+ */
+export const getDayOfWeek = (entryDate: string, format = "short") => {
+  let week = [
+    { short: "Lun", long: "Lundi" },
+    { short: "Mar", long: "Mardi" },
+    { short: "Mer", long: "Mercredi" },
+    { short: "Jeu", long: "Jeudi" },
+    { short: "Ven", long: "Vendredi" },
+    { short: "Sam", long: "Samedi" },
+    { short: "Dim", long: "Dimanche" },
+  ];
+
+  let workingDate = new Date(entryDate);
+  let dayNumber = workingDate.getDay();
+
+  if (format === "long") {
+    return week[dayNumber].long;
+  }
+  return week[dayNumber].short;
 };

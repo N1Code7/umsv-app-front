@@ -1,0 +1,33 @@
+.homepage {
+  margin-top: 2rem;
+
+  .events-block {
+    margin-bottom: 1.6rem;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .events {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 100%;
+
+    @include from(1000) {
+      flex-direction: row;
+      gap: 1.6rem;
+      animation: smooth-scrolling 15s linear infinite;
+      padding-left: 100%;
+      width: fit-content;
+    }
+  }
+}
+
+@keyframes smooth-scrolling {
+  from {
+    transform: translate3D(0, 0, 0);
+  }
+  to {
+    transform: translate3D(-100%, 0, 0);
+  }
+}

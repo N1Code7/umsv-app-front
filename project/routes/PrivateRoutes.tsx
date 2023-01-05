@@ -52,7 +52,7 @@ const PrivateRoutes = () => {
       setUser?.({});
       navigate("/");
     } else if (authToken !== "") {
-      fetchUser(authToken)
+      fetchUser(authToken!)
         .then((res) => {
           if (res.ok) {
             return res.json();
@@ -60,8 +60,6 @@ const PrivateRoutes = () => {
           throw new Error("Authentication does not work!");
         })
         .then(({ id, lastName, firstName, email, roles, FFBadStats: array }: UserResponse) => {
-          console.log(array[array.length - 1]);
-
           setUser?.({
             id,
             lastName,

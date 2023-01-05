@@ -1,0 +1,50 @@
+.event {
+  display: flex;
+  flex-direction: column;
+  background: $bg-3;
+  border-radius: 15px;
+  border: 2px solid $bg-3;
+  position: relative;
+
+  @include from(1000) {
+    width: 19rem;
+  }
+
+  span {
+    font-weight: 600;
+  }
+
+  &-date {
+    color: $bg-1;
+    padding: 0.5rem 0.5rem 0.3rem;
+    border-radius: 12px 12px 0 0;
+
+    @include from(1000) {
+      font-size: 1.1rem;
+    }
+  }
+
+  &-content {
+    display: flex;
+    align-items: center;
+    background: $bg-3;
+    padding: 0 0.5rem 0.5rem;
+    border-radius: 0 0 12px 12px;
+    height: 2.2rem;
+
+    @include from(1000) {
+      height: auto;
+    }
+
+    p {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      @include from(1000) {
+        white-space: normal;
+        text-overflow: clip;
+      }
+    }
+  }
+}

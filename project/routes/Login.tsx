@@ -35,9 +35,9 @@ const Login = () => {
     if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
       await fetchLogin(email, password)
         .then((res) => {
-          setEmail("");
           setPassword("");
           if (res.ok) {
+            setEmail("");
             setHasErrorOccurred(false);
             return res.json();
           } else {

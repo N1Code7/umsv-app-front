@@ -43,16 +43,15 @@ const MemberHeader = () => {
   return (
     <div className="member-header">
       <h1>Bonjour {user?.firstName}</h1>
-      {/* <h1>Bonjour {data.map((elt: any) => elt.PER_PRENOM)}</h1> */}
       <div className="member-infos">
-        <div className="licence">Licence : {user?.license}</div>
+        <div className="license">Licence : {user?.license}</div>
         {user?.license !== "" && (
           <div className="feather">
             Plume : <i className="fa-solid fa-feather-pointed" style={{ color: colorFeather }}></i>
           </div>
         )}
         <div className="category">Catégorie : {user?.category?.long}</div>
-        {user?.isPlayerTransferred && <div className="transfered">Muté(e)</div>}
+        {user?.isPlayerTransferred && <div className="transferred">Muté(e)</div>}
       </div>
       {/* Insert logic for gender when data will be set on Cookies */}
       <div className="classifications">
