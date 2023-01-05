@@ -6,8 +6,10 @@ interface IEventProps {
 }
 
 const Event = ({ event }: IEventProps) => {
+  const handleClick = () => {};
+
   return (
-    <div className="event">
+    <button className="event" onClick={handleClick}>
       <div className="event-date">
         {event.endDate ? (
           <>
@@ -32,7 +34,7 @@ const Event = ({ event }: IEventProps) => {
       <div className="event-content">
         <p>{event.content}</p>
       </div>
-    </div>
+    </button>
   );
 };
 

@@ -10,14 +10,17 @@
   .events {
     display: flex;
     flex-direction: column;
+    // margin: 0 auto;
     gap: 0.6rem;
-    width: 100%;
+    // width: 95%;
+    padding: 0.3rem;
 
     @include from(1000) {
       flex-direction: row;
       gap: 1.6rem;
-      animation: smooth-scrolling 15s linear infinite;
-      padding-left: 100%;
+      width: 100%;
+      animation: smooth-scrolling 20s linear infinite;
+      padding: 1rem 0 1rem 100%;
       width: fit-content;
     }
   }

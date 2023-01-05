@@ -50,6 +50,7 @@ const Homepage = () => {
         </div>
         <div className="tournaments-list">
           <h2>Tournois à venir</h2>
+          <div className="tournaments-block"></div>
         </div>
       </main>
     </>
