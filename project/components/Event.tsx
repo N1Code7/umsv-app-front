@@ -1,35 +1,42 @@
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useContext, useEffect, useState } from "react";
 import { formatDate, getDayOfWeek } from "../../config/functions";
 import { IClubEvent } from "../../config/interfaces";
 import Image from "next/image";
+import { ModalEventContext } from "../../contexts/ModalEventContext";
 
 interface IEventProps {
   event: IClubEvent;
 }
 
 const Event = ({ event }: IEventProps) => {
-  const [modalIsActive, setModalIsActive] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const { focusedEvent, setFocusedEvent, isModalActive, setIsModalActive } =
+    useContext(ModalEventContext);
 
-  const toggleDisplayModal = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleDisplayModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setModalIsActive(!modalIsActive);
+    // setShowModal(!showModal);
+    setFocusedEvent?.(event);
+    setIsModalActive?.(true);
   };
 
   useEffect(() => {
-    if (modalIsActive) {
+    if (isModalActive) {
       document.body.querySelector(".event-modal-backdrop")?.addEventListener("click", (e) => {
-        setModalIsActive(false);
+        // setShowModal(false);
+        setFocusedEvent?.({});
+        setIsModalActive?.(false);
       });
     }
     document.body
       .querySelector(".events")
-      ?.setAttribute("style", `animation-play-state: ${modalIsActive ? "paused" : "running"};`);
-  }, [modalIsActive]);
+      ?.setAttribute("style", `animation-play-state: ${isModalActive ? "paused" : "running"};`);
+  }, [isModalActive, setFocusedEvent, setIsModalActive]);
 
   return (
     <>
       {event ? (
-        <button className="event" onClick={toggleDisplayModal}>
+        <button className="event" onClick={handleDisplayModal}>
           <div className="event-date">
             {event.endDate ? (
               <>
@@ -59,7 +66,7 @@ const Event = ({ event }: IEventProps) => {
         "Aucun événement à venir"
       )}
 
-      {modalIsActive && (
+      {/* {modalIsActive && (
         <>
           <div className="event-modal-backdrop"></div>
           <div
@@ -106,7 +113,7 @@ const Event = ({ event }: IEventProps) => {
             <div className="content">{event.content}</div>
           </div>
         </>
-      )}
+      )} */}
     </>
   );
 };

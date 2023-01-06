@@ -4,6 +4,7 @@ import { useState } from "react";
 import { NavigationContext } from "../contexts/NavigationContext";
 import Footer from "../project/components/Footer";
 import { AuthenticationContext } from "../contexts/AuthenticationContext";
+import { ModalEventContext } from "../contexts/ModalEventContext";
 
 const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 
@@ -12,6 +13,8 @@ const Home = () => {
   const [authToken, setAuthToken] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState({});
+  const [isModalActive, setIsModalActive] = useState(false);
+  const [focusedEvent, setFocusedEvent] = useState({});
 
   const toggleDisplay = () => {
     setDisplay(!display);
@@ -31,7 +34,11 @@ const Home = () => {
         value={{ authToken, setAuthToken, isAuthenticated, setIsAuthenticated, user, setUser }}
       >
         <NavigationContext.Provider value={{ display, toggleDisplay }}>
-          <LazyComponent />
+          <ModalEventContext.Provider
+            value={{ isModalActive, setIsModalActive, focusedEvent, setFocusedEvent }}
+          >
+            <LazyComponent />
+          </ModalEventContext.Provider>
         </NavigationContext.Provider>
       </AuthenticationContext.Provider>
       <Footer />

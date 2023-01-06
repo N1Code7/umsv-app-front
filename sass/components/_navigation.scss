@@ -8,7 +8,7 @@ nav.nav-mobile {
   backdrop-filter: blur(10px);
   background: $bg-1;
   border-radius: 20px 20px 0 0;
-  z-index: 2;
+  z-index: 11;
 
   &.active {
     transform: translateY(0);

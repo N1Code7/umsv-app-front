@@ -4,9 +4,10 @@ import Tournaments from "./Tournaments";
 import TournamentRegistration from "./TournamentRegistration";
 import Results from "./Results";
 import Settings from "./Settings";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { fetchRefreshToken, fetchUser, getRefreshTokenFromCookie } from "../../config/functions";
+import { ModalEventContext } from "../../contexts/ModalEventContext";
 
 interface RefreshTokenResponse {
   token: string;
@@ -42,9 +43,10 @@ interface UserResponse {
 
 const PrivateRoutes = () => {
   const navigate = useNavigate();
-
   const { authToken, setAuthToken, setUser, isAuthenticated, setIsAuthenticated } =
     useContext(AuthenticationContext);
+  const [modalIsActive, setModalIsActive] = useState(false);
+  const [event, setEvent] = useState({});
 
   useEffect(() => {
     if (!isAuthenticated) {

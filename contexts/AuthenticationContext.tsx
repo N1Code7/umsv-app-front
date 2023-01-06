@@ -12,7 +12,7 @@ interface authenticationContextType {
     roles?: Array<string>;
     license?: string;
     feather?: string;
-    isPlayerTransferred: boolean;
+    isPlayerTransferred?: boolean;
     rankings?: {
       effectiveDate?: string;
       single?: {
