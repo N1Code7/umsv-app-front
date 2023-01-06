@@ -106,7 +106,7 @@ export const fetchInitResetPassword = async (email: any) => {
  * @returns
  */
 export const fetchValidNewPassword = async (
-  resetToken: string,
+  resetToken: string | undefined,
   password: string,
   confirmPassword: string
 ) => {

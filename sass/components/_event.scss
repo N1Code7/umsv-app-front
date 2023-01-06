@@ -78,4 +78,78 @@
       }
     }
   }
+
+  &-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(27rem, 90vw);
+    height: min(150vw, 45rem);
+    background: $bg-3;
+    z-index: 102;
+    border-radius: 3px;
+
+    @include ptt {
+      width: 50vw;
+    }
+
+    // @include from(1000) {
+    //   position: sticky;
+    // }
+
+    .close-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 0.6rem;
+      right: 1rem;
+      border: none;
+      background: transparent;
+      font-size: 2.2rem;
+      color: $primary-1;
+    }
+
+    .title {
+      padding: 0.6rem;
+      margin-top: 3rem;
+      text-align: center;
+
+      h2 {
+        margin-bottom: 0;
+      }
+    }
+
+    .image {
+      width: 90%;
+      aspect-ratio: 1 / 1;
+      // height: auto;
+      // height: 70vw;
+      // width: fit-content;
+      margin: 1.2rem auto;
+      position: relative;
+
+      img {
+        object-fit: cover;
+      }
+    }
+
+    .content {
+      padding: 0.6rem 0.9rem;
+    }
+
+    &-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 101;
+      backdrop-filter: brightness(20%);
+    }
+  }
 }

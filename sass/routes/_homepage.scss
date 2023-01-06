@@ -18,7 +18,7 @@
     @include from(1000) {
       flex-direction: row;
       gap: 1.6rem;
-      width: 100%;
+      // width: 100%;
       animation: smooth-scrolling 20s linear infinite;
       padding: 1rem 0 1rem 100%;
       width: fit-content;
@@ -28,9 +28,9 @@
 
 @keyframes smooth-scrolling {
   from {
-    transform: translate3D(0, 0, 0);
+    transform: translateX(0);
   }
   to {
-    transform: translate3D(-100%, 0, 0);
+    transform: translateX(-100%);
   }
 }

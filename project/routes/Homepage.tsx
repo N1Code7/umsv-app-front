@@ -10,6 +10,7 @@ import { IClubEvent } from "../../config/interfaces";
 const Homepage = () => {
   const { authToken } = useContext(AuthenticationContext);
   const [events, setEvents] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetchEvents(authToken!)
@@ -49,9 +50,10 @@ const Homepage = () => {
           </div>
         </div>
         <div className="tournaments-list">
-          <h2>Tournois à venir</h2>
+          <h2>Tournois référencés par le club</h2>
           <div className="tournaments-block"></div>
         </div>
+        {/* <Modal /> */}
       </main>
     </>
   );
