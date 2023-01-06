@@ -2,12 +2,13 @@ import { MouseEvent, useContext, useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import MemberHeader from "../components/MemberHeader";
 import Navigation from "../components/Navigation";
-import { fetchEvents, formatDate, getDayOfWeek } from "../../config/functions";
+import { fetchEvents, fetchTournaments, formatDate, getDayOfWeek } from "../../config/functions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
-import { IClubEvent } from "../../config/interfaces";
+import { IClubEvent, ITournament } from "../../config/interfaces";
 import { ModalEventContext } from "../../contexts/ModalEventContext";
 import Image from "next/image";
+import Tournament from "../components/Tournament";
 
 const Homepage = () => {
   const { authToken } = useContext(AuthenticationContext);
@@ -15,11 +16,12 @@ const Homepage = () => {
     useContext(ModalEventContext);
   const [events, setEvents] = useState([]);
   const [display, setDisplay] = useState("");
+  const [tournaments, setTournaments] = useState([]);
 
   useEffect(() => {
     const modal = document.body.querySelector(".event-modal");
     const observer = new ResizeObserver((entries) => {
-      entries.forEach((entry) => {
+      entries.forEach(() => {
         if (window.innerWidth < 1000) {
           setDisplay("mobile");
         } else {
@@ -45,6 +47,15 @@ const Homepage = () => {
         throw new Error("An error occurs when try to fetch events!");
       })
       .then((res) => setEvents(res));
+
+    fetchTournaments(authToken!)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error("An error occurs when try to fetch tournaments list!");
+      })
+      .then((res) => setTournaments(res));
   }, [authToken]);
 
   return (
@@ -73,13 +84,39 @@ const Homepage = () => {
               ))}
           </div>
         </div>
+
         <div className="tournaments-list">
           <h2>Tournois référencés par le club</h2>
-          <div className="tournaments-block"></div>
+          <div className="tournaments-block">
+            <table>
+              <thead>
+                <th>
+                  <td>Nom du tournoi</td>
+                  <td>Ville</td>
+                  <td>Date</td>
+                  <td>Limite d&apos;inscription</td>
+                  <td>Tirage au sort</td>
+                  <td>Joueur(s) du club déjà inscrit(s)</td>
+                  <td>Actions</td>
+                </th>
+              </thead>
+              <tbody>
+                {tournaments
+                  .sort((a: ITournament, b: ITournament) => {
+                    const firstDate = new Date(a.startDate);
+                    const secondDate = new Date(b.startDate);
+                    return Number(firstDate) - Number(secondDate);
+                  })
+                  .map((tournament: ITournament) => (
+                    <Tournament key={tournament.id} tournament={tournament} />
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-        {/* <Modal /> */}
       </main>
-      {isModalActive && (
+
+      {isModalActive && focusedEvent && (
         <>
           <div className="event-modal-backdrop"></div>
           <div
@@ -140,53 +177,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-
-// const Modal = ({ isDisplaying }: { isDisplaying: boolean }) => {
-//   return (
-//     <>
-//       <div className="event-modal-backdrop"></div>
-//       <div
-//         className="event-modal"
-//         style={isDisplaying ? { display: "block" } : { display: "none" }}
-//       >
-//         <button className="close-btn" onClick={toggleDisplayModal}>
-//           <i className="fa-solid fa-xmark"></i>
-//         </button>
-//         <div className="title">
-//           {event.endDate ? (
-//             <h2>
-//               Du{" "}
-//               <span>
-//                 {getDayOfWeek(event.startDate)} {formatDate(event.startDate, "XX/XX/XX")}
-//               </span>{" "}
-//               au{" "}
-//               <span>
-//                 {getDayOfWeek(event.endDate)} {formatDate(event.endDate, "XX/XX/XX")}
-//               </span>
-//             </h2>
-//           ) : (
-//             <h2>
-//               Le{" "}
-//               <span>
-//                 {getDayOfWeek(event.startDate, "long")} {formatDate(event.startDate, "XX/XX/XX")}
-//               </span>
-//             </h2>
-//           )}
-//         </div>
-//         <div className="image">
-//           {
-//             <Image
-//               src={event.imageUrl}
-//               alt={`image de l'événement du ${getDayOfWeek(event.startDate, "long")} ${formatDate(
-//                 event.startDate,
-//                 "XX/XX/XX"
-//               )}`}
-//               fill
-//             />
-//           }
-//         </div>
-//         <div className="content">{event.content}</div>
-//       </div>
-//     </>
-//   );
-// };

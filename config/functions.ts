@@ -188,16 +188,31 @@ export const fetchEvents = async (token: string) => {
   return response;
 };
 
+export const fetchTournaments = async (token: string) => {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "tournaments", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};
+
 /**
  * Format the input date into the selected schema
  * @param entryDate the date to format
  * @param outputFormat the selected output schema
  */
-export const formatDate = (entryDate: string, outputFormat: string) => {
-  let formattedDate = entryDate.split("T")[0].split("-");
+export const formatDate = (entryDate1: string, outputFormat: string, entryDate2?: string) => {
+  let formattedDate = entryDate1.split("T")[0].split("-"); // return ["YYYY", "MM", "DD"]
 
   if (outputFormat === "XX/XX/XX") {
     return `${formattedDate[2]}/${formattedDate[1]}/${formattedDate[0][2]}${formattedDate[0][3]}`;
+  } else if (outputFormat === "XX & XX xxx XXXX" && entryDate2 !== undefined) {
+    let formattedDate2 = entryDate2.split("T")[0].split("-");
+    let Date1Month = new Date(entryDate1).getMonth;
+    return `${formattedDate[2]} & ${formattedDate2[2]}`;
+    // TO FINISH !!!!!
   }
 };
 
@@ -223,4 +238,23 @@ export const getDayOfWeek = (entryDate: string, format = "short") => {
     return week[dayNumber].long;
   }
   return week[dayNumber].short;
+};
+
+export const getMonthOfYear = (entryDate: string, format = "short") => {
+  let year = [
+    { short: "Jan", long: "Janvier" },
+    { short: "Fev", long: "Février" },
+    { short: "Mar", long: "Mars" },
+    { short: "Avr", long: "Avril" },
+    { short: "Mai", long: "Mai" },
+    { short: "Jun", long: "Juin" },
+    { short: "Jui", long: "Juillet" },
+    { short: "Aou", long: "Août" },
+    { short: "Sep", long: "Septembre" },
+    { short: "Oct", long: "Octobre" },
+    { short: "Nov", long: "Novembre" },
+    { short: "Dec", long: "Décembre" },
+  ];
+
+  // TO FINISH
 };
