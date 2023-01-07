@@ -20,6 +20,7 @@ const Homepage = () => {
 
   useEffect(() => {
     const modal = document.body.querySelector(".event-modal");
+    const tournaments = document.body.querySelector(".tournaments");
     const observer = new ResizeObserver((entries) => {
       entries.forEach(() => {
         if (window.innerWidth < 1000) {
@@ -31,6 +32,7 @@ const Homepage = () => {
     });
 
     if (modal) observer.observe(modal);
+    if (tournaments) observer.observe(tournaments);
   }, [display]);
 
   const handleCloseModal = (e: MouseEvent<HTMLButtonElement>) => {
@@ -85,33 +87,43 @@ const Homepage = () => {
           </div>
         </div>
 
-        <div className="tournaments-list">
+        <div className="tournaments-block">
           <h2>Tournois référencés par le club</h2>
-          <div className="tournaments-block">
-            <table>
-              <thead>
-                <th>
-                  <td>Nom du tournoi</td>
-                  <td>Ville</td>
-                  <td>Date</td>
-                  <td>Limite d&apos;inscription</td>
-                  <td>Tirage au sort</td>
-                  <td>Joueur(s) du club déjà inscrit(s)</td>
-                  <td>Actions</td>
-                </th>
-              </thead>
-              <tbody>
-                {tournaments
-                  .sort((a: ITournament, b: ITournament) => {
-                    const firstDate = new Date(a.startDate);
-                    const secondDate = new Date(b.startDate);
-                    return Number(firstDate) - Number(secondDate);
-                  })
-                  .map((tournament: ITournament) => (
-                    <Tournament key={tournament.id} tournament={tournament} />
-                  ))}
-              </tbody>
-            </table>
+          <div className="tournaments">
+            {display === "mobile" ? (
+              // MOBILE
+              <div></div>
+            ) : (
+              // DESKTOP
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nom du tournoi</th>
+                    <th>Ville</th>
+                    <th>Date</th>
+                    <th>Limite d&apos;inscription</th>
+                    <th>Tirage au sort</th>
+                    <th>Joueur(s) du club déjà inscrit(s)</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tournaments
+                    .filter(
+                      (tournament: ITournament) =>
+                        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10
+                    )
+                    .sort((a: ITournament, b: ITournament) => {
+                      const firstDate = new Date(a.startDate);
+                      const secondDate = new Date(b.startDate);
+                      return Number(firstDate) - Number(secondDate);
+                    })
+                    .map((tournament: ITournament) => (
+                      <Tournament key={tournament.id} tournament={tournament} />
+                    ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </main>

@@ -1,6 +1,5 @@
 /**
  * Extract the value of cookie which includes the name refreshToken
- * @returns refreshToken
  */
 export const getRefreshTokenFromCookie = () => {
   const cookies = document.cookie.split(";");
@@ -17,7 +16,6 @@ export const getRefreshTokenFromCookie = () => {
  * Connect the user to the service
  * @param email the user's email
  * @param password the user's plain password
- * @returns
  */
 export const fetchLogin = async (email: string, password: string) => {
   console.log(process.env.NEXT_PUBLIC_HOST_BACK);
@@ -40,7 +38,6 @@ export const fetchLogin = async (email: string, password: string) => {
 /**
  * Keep the user's authentication and generate a new authToken
  * @param refreshToken the refreshToken stored in cookie
- * @returns
  */
 export const fetchRefreshToken = async (refreshToken: string) => {
   const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh", {
@@ -60,7 +57,6 @@ export const fetchRefreshToken = async (refreshToken: string) => {
 /**
  * Remove the refreshToken from the database and so disconnect the user from the service
  * @param refreshToken the refreshToken stored in cookie
- * @returns
  */
 export const fetchInvalidateRefreshToken = async (refreshToken: string) => {
   const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh/invalidate", {
@@ -80,7 +76,6 @@ export const fetchInvalidateRefreshToken = async (refreshToken: string) => {
 /**
  * Init the reset password procedure
  * @param email the user's email
- * @returns
  */
 export const fetchInitResetPassword = async (email: any) => {
   const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "reset_password", {
@@ -103,7 +98,6 @@ export const fetchInitResetPassword = async (email: any) => {
  * @param resetToken the refreshToken stored in cookie
  * @param password the new plain password of user
  * @param confirmPassword the confirmation of new user's plain password
- * @returns
  */
 export const fetchValidNewPassword = async (
   resetToken: string | undefined,
@@ -134,7 +128,6 @@ export const fetchValidNewPassword = async (
  * @param confirmPassword the new user's confirmation of plain password
  * @param lastName the new user's last name
  * @param firstName the new user's first name
- * @returns
  */
 export const fetchCreateAccount = async (
   email: string,
@@ -164,7 +157,6 @@ export const fetchCreateAccount = async (
 /**
  * Get the user's information
  * @param token the user's authentication token
- * @returns
  */
 export const fetchUser = async (token: string) => {
   const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "user", {
@@ -178,8 +170,12 @@ export const fetchUser = async (token: string) => {
   return response;
 };
 
+/**
+ * Get information of all events
+ * @param token the authentication token
+ */
 export const fetchEvents = async (token: string) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "admin/events", {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "events", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -188,6 +184,10 @@ export const fetchEvents = async (token: string) => {
   return response;
 };
 
+/**
+ * Get information of all tournaments
+ * @param token the authentication token
+ */
 export const fetchTournaments = async (token: string) => {
   const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "tournaments", {
     method: "GET",
@@ -200,20 +200,28 @@ export const fetchTournaments = async (token: string) => {
 
 /**
  * Format the input date into the selected schema
- * @param entryDate the date to format
+ * @param entryDate1 the date to format
+ * @param entryDate2 the second date in case of interval
  * @param outputFormat the selected output schema
  */
-export const formatDate = (entryDate1: string, outputFormat: string, entryDate2?: string) => {
+export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat?: string) => {
   let formattedDate = entryDate1.split("T")[0].split("-"); // return ["YYYY", "MM", "DD"]
 
   if (outputFormat === "XX/XX/XX") {
     return `${formattedDate[2]}/${formattedDate[1]}/${formattedDate[0][2]}${formattedDate[0][3]}`;
   } else if (outputFormat === "XX & XX xxx XXXX" && entryDate2 !== undefined) {
     let formattedDate2 = entryDate2.split("T")[0].split("-");
-    let Date1Month = new Date(entryDate1).getMonth;
-    return `${formattedDate[2]} & ${formattedDate2[2]}`;
-    // TO FINISH !!!!!
+    if (new Date(entryDate1).getMonth() === new Date(entryDate2).getMonth()) {
+      return `${formattedDate[2]} & ${formattedDate2[2]} ${getMonthOfYear(entryDate1)} ${
+        formattedDate[0]
+      }`;
+    } else {
+      return `${formattedDate[2]} ${getMonthOfYear(entryDate1)} & ${
+        formattedDate2[2]
+      } ${getMonthOfYear(entryDate2)} ${formattedDate[0]}`;
+    }
   }
+  return `${formattedDate[2]}/${formattedDate[1]}/${formattedDate[0]}`;
 };
 
 /**
@@ -231,8 +239,7 @@ export const getDayOfWeek = (entryDate: string, format = "short") => {
     { short: "Dim", long: "Dimanche" },
   ];
 
-  let workingDate = new Date(entryDate);
-  let dayNumber = workingDate.getDay();
+  let dayNumber = new Date(entryDate).getDay();
 
   if (format === "long") {
     return week[dayNumber].long;
@@ -256,5 +263,10 @@ export const getMonthOfYear = (entryDate: string, format = "short") => {
     { short: "Dec", long: "Décembre" },
   ];
 
-  // TO FINISH
+  let monthNumber = new Date(entryDate).getMonth();
+
+  if (format === "long") {
+    return year[monthNumber].long;
+  }
+  return year[monthNumber].short;
 };

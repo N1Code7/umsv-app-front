@@ -38,4 +38,26 @@ export interface ITournament {
   comment: string;
   createdAt: string;
   updatedAt: string;
+  tournamentRegistrations: Array<ITournamentRegistration>;
+}
+
+export interface ITournamentRegistration {
+  id: number;
+  userId: number;
+  tournamentId: number;
+  requestState: string;
+  hasParticipated: boolean;
+  participationSingle: boolean;
+  participationDouble: boolean;
+  participationMixed: boolean;
+  doublePartnerName: string;
+  doublePartnerClub: string;
+  mixedPartnerName: string;
+  mixedPartnerClub: string;
+  singleStageReached: string;
+  doubleStageReached: string;
+  mixedStageReached: string;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
 }

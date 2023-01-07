@@ -38,18 +38,20 @@ const Event = ({ event }: IEventProps) => {
               <>
                 Du{" "}
                 <span>
-                  {getDayOfWeek(event.startDate)} {formatDate(event.startDate, "XX/XX/XX")}
+                  {getDayOfWeek(event.startDate)}{" "}
+                  {formatDate(event.startDate, undefined, "XX/XX/XX")}
                 </span>{" "}
                 au{" "}
                 <span>
-                  {getDayOfWeek(event.endDate)} {formatDate(event.endDate, "XX/XX/XX")}
+                  {getDayOfWeek(event.endDate)} {formatDate(event.endDate, undefined, "XX/XX/XX")}
                 </span>
               </>
             ) : (
               <>
                 Le{" "}
                 <span>
-                  {getDayOfWeek(event.startDate, "long")} {formatDate(event.startDate, "XX/XX/XX")}
+                  {getDayOfWeek(event.startDate, "long")}{" "}
+                  {formatDate(event.startDate, undefined, "XX/XX/XX")}
                 </span>
               </>
             )}
