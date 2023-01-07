@@ -31,7 +31,8 @@ main {
   overflow-x: hidden;
 
   @include ptt {
-    margin: 7rem clamp(5rem, 12vmin, 13rem) 5rem;
+    margin: 7rem 4rem 5rem;
+    // margin: 7rem clamp(5rem, 12vmin, 13rem) 5rem;
   }
 
   @include big-screen {

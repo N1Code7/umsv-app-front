@@ -5,9 +5,9 @@ import Navigation from "../components/Navigation";
 const Tournaments = () => {
   return (
     <>
-      <Header />
+      {/* <Header />
       <MemberHeader />
-      <Navigation />
+      <Navigation /> */}
       <main>
         <h2>Tournois</h2>
       </main>

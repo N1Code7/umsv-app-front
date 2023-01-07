@@ -5,9 +5,9 @@ import Navigation from "../components/Navigation";
 const TournamentRegistration = () => {
   return (
     <>
-      <Header />
+      {/* <Header />
       <MemberHeader />
-      <Navigation />
+      <Navigation /> */}
       <main>
         <h2>Demande d&apos;inscription</h2>
       </main>

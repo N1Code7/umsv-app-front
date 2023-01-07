@@ -5,9 +5,9 @@ import Navigation from "../components/Navigation";
 const Results = () => {
   return (
     <>
-      <Header />
+      {/* <Header />
       <MemberHeader />
-      <Navigation />
+      <Navigation /> */}
       <main>
         <h2>Résultats</h2>
       </main>

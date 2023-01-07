@@ -36,6 +36,7 @@ const Homepage = () => {
   }, [display]);
 
   const handleCloseModal = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setFocusedEvent?.({});
     setIsModalActive?.(false);
   };
@@ -62,9 +63,6 @@ const Homepage = () => {
 
   return (
     <>
-      <Header />
-      <MemberHeader />
-      <Navigation />
       <main className="homepage">
         <div className="events-block">
           <h2>Événements à venir</h2>
@@ -103,7 +101,7 @@ const Homepage = () => {
                     <th>Date</th>
                     <th>Limite d&apos;inscription</th>
                     <th>Tirage au sort</th>
-                    <th>Joueur(s) du club déjà inscrit(s)</th>
+                    <th>Déjà inscrit(s)</th>
                     <th>Actions</th>
                   </tr>
                 </thead>

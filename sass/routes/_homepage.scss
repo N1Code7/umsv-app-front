@@ -10,18 +10,91 @@
   .events {
     display: flex;
     flex-direction: column;
-    // margin: 0 auto;
     gap: 0.6rem;
-    // width: 95%;
     padding: 0.3rem;
 
     @include from(1000) {
       flex-direction: row;
       gap: 1.6rem;
-      // width: 100%;
       animation: smooth-scrolling 20s linear infinite;
       padding: 1rem 0 1rem 100%;
       width: fit-content;
+    }
+  }
+
+  .tournaments {
+    display: block;
+    width: 100%;
+    // justify-content: center;
+    // align-items: center;
+    background: $bg-3;
+    padding: 0.6rem;
+    border-radius: 5px;
+
+    table {
+      width: 100%;
+      text-align: center;
+      background: $bg-3;
+      border-collapse: collapse;
+    }
+
+    thead {
+      height: 4rem;
+      font-size: clamp(0.9rem, 1vw, 1.1rem);
+    }
+
+    thead th {
+      border-bottom: 3px solid black;
+      padding: 1.2rem 0.3rem;
+
+      &:first-of-type {
+        // margin-left: 1.2rem;
+      }
+      &:nth-of-type(2) {
+        width: 7rem;
+      }
+      &:nth-of-type(3) {
+        width: 7rem;
+      }
+      &:nth-of-type(4) {
+        width: 7rem;
+      }
+      &:nth-of-type(5) {
+        width: 7rem;
+      }
+      &:nth-of-type(6) {
+        width: 5.5rem;
+      }
+
+      &:last-of-type {
+        width: 6rem;
+        // padding-right: 1.2rem;
+      }
+    }
+
+    tbody {
+      font-size: clamp(0.8rem, 1vw, 1rem);
+
+      td {
+        height: 4rem;
+        border-bottom: 1px solid black;
+        padding: 0.6rem 0.3rem;
+
+        &:first-of-type {
+          padding-left: 0.6rem;
+        }
+        // &:nth-of-type(2) {
+        //   width: 6rem;
+        // }
+
+        &:last-of-type {
+          padding-right: 0.6rem;
+        }
+      }
+    }
+    @include from(1000) {
+      // display: flex;
+      // flex-wrap: wrap;
     }
   }
 }

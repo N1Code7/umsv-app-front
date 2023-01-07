@@ -66,10 +66,11 @@ const Login = () => {
         .then((res) => {
           if (res.ok) {
             return res.json();
+          } else {
+            document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+            navigate("/");
+            throw new Error("An error occurs when try to refresh authToken after reload!");
           }
-          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-          navigate("/");
-          throw new Error("An error occurs when try to refresh authToken after reload!");
         })
         .then(({ token, refreshToken }: IRefreshToken) => {
           setIsAuthenticated?.(true);

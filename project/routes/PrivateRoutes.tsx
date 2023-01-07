@@ -8,6 +8,9 @@ import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { fetchRefreshToken, fetchUser, getRefreshTokenFromCookie } from "../../config/functions";
 import { ModalEventContext } from "../../contexts/ModalEventContext";
+import MemberHeader from "../components/MemberHeader";
+import Navigation from "../components/Navigation";
+import Header from "../components/Header";
 
 interface RefreshTokenResponse {
   token: string;
@@ -121,15 +124,20 @@ const PrivateRoutes = () => {
   return (
     <>
       {isAuthenticated && (
-        <Routes>
-          <Route path="/" element={<Navigate to="/utilisateur/accueil" replace />} />
-          {/* <Route path="/" element={<Homepage />} /> */}
-          <Route path="/accueil" element={<Homepage />} />
-          <Route path="/tournois" element={<Tournaments />} />
-          <Route path="/inscription" element={<TournamentRegistration />} />
-          <Route path="/resultats" element={<Results />} />
-          <Route path="/reglages" element={<Settings />} />
-        </Routes>
+        <>
+          <Header />
+          <MemberHeader />
+          <Navigation />
+          <Routes>
+            <Route path="/" element={<Navigate to="/utilisateur/accueil" replace />} />
+            {/* <Route path="/" element={<Homepage />} /> */}
+            <Route path="/accueil" element={<Homepage />} />
+            <Route path="/tournois" element={<Tournaments />} />
+            <Route path="/inscription" element={<TournamentRegistration />} />
+            <Route path="/resultats" element={<Results />} />
+            <Route path="/reglages" element={<Settings />} />
+          </Routes>
+        </>
       )}
     </>
   );
