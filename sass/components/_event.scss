@@ -8,6 +8,7 @@
   cursor: pointer;
   box-shadow: 3px 4px 2px 0px rgb(6 41 109 / 50%);
   transition: box-shadow 0.2s ease-out;
+  color: $content-dark;
 
   @include fine {
     &:hover,
@@ -37,7 +38,7 @@
   }
 
   span {
-    font-weight: 600;
+    font-weight: 580;
   }
 
   &-date {

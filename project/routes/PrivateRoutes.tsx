@@ -11,37 +11,11 @@ import { ModalEventContext } from "../../contexts/ModalEventContext";
 import MemberHeader from "../components/MemberHeader";
 import Navigation from "../components/Navigation";
 import Header from "../components/Header";
+import { User } from "../../config/interfaces";
 
 interface RefreshTokenResponse {
   token: string;
   refreshToken: string;
-}
-
-interface UserResponse {
-  id: number;
-  lastName: string;
-  firstName: string;
-  email: string;
-  roles: Array<string>;
-  FFBadStats: Array<{
-    rankingsDate: string;
-    license: string;
-    birthDate: string;
-    categoryGlobal: string;
-    categoryShort: string;
-    categoryLong: string;
-    isPlayerTransferred: boolean;
-    feather: string;
-    singleCPPH: string;
-    singleRankName: string;
-    singleRankNumber: string;
-    doubleCPPH: string;
-    doubleRankName: string;
-    doubleRankNumber: string;
-    mixedCPPH: string;
-    mixedRankName: string;
-    mixedRankNumber: string;
-  }>;
 }
 
 const PrivateRoutes = () => {
@@ -64,7 +38,7 @@ const PrivateRoutes = () => {
           }
           throw new Error("Authentication does not work!");
         })
-        .then(({ id, lastName, firstName, email, roles, FFBadStats: array }: UserResponse) => {
+        .then(({ id, lastName, firstName, email, roles, FFBadStats: array }: User) => {
           setUser?.({
             id,
             lastName,
@@ -123,22 +97,21 @@ const PrivateRoutes = () => {
 
   return (
     <>
-      {isAuthenticated && (
-        <>
-          <Header />
-          <MemberHeader />
-          <Navigation />
-          <Routes>
-            <Route path="/" element={<Navigate to="/utilisateur/accueil" replace />} />
-            {/* <Route path="/" element={<Homepage />} /> */}
-            <Route path="/accueil" element={<Homepage />} />
-            <Route path="/tournois" element={<Tournaments />} />
-            <Route path="/inscription" element={<TournamentRegistration />} />
-            <Route path="/resultats" element={<Results />} />
-            <Route path="/reglages" element={<Settings />} />
-          </Routes>
-        </>
-      )}
+      {/* {isAuthenticated && ( */}
+      <>
+        <Header />
+        <MemberHeader />
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Navigate to="/utilisateur/accueil" replace />} />
+          <Route path="/accueil" element={<Homepage />} />
+          <Route path="/tournois" element={<Tournaments />} />
+          <Route path="/inscription" element={<TournamentRegistration />} />
+          <Route path="/resultats" element={<Results />} />
+          <Route path="/reglages" element={<Settings />} />
+        </Routes>
+      </>
+      {/* )} */}
     </>
   );
 };

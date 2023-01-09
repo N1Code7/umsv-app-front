@@ -1,6 +1,11 @@
 .homepage {
   margin-top: 2rem;
 
+  @include from(1600) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .events-block {
     margin-bottom: 1.6rem;
     overflow: hidden;
@@ -23,13 +28,18 @@
   }
 
   .tournaments {
-    display: block;
-    width: 100%;
-    // justify-content: center;
-    // align-items: center;
-    background: $bg-3;
-    padding: 0.6rem;
-    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+
+    @include from(1000) {
+      display: block;
+      width: 100%;
+      background: $bg-3;
+      padding: 0.6rem;
+      border-radius: 5px;
+    }
 
     table {
       width: 100%;
@@ -45,30 +55,31 @@
 
     thead th {
       border-bottom: 3px solid black;
-      padding: 1.2rem 0.3rem;
+      padding: 1.2rem 0.6rem;
 
       &:first-of-type {
-        // margin-left: 1.2rem;
+        width: 17%;
       }
+
       &:nth-of-type(2) {
-        width: 7rem;
+        width: 30%;
       }
+
       &:nth-of-type(3) {
-        width: 7rem;
+        width: 17%;
       }
-      &:nth-of-type(4) {
-        width: 7rem;
-      }
+
+      &:nth-of-type(4),
       &:nth-of-type(5) {
-        width: 7rem;
+        width: 11%;
       }
+
       &:nth-of-type(6) {
-        width: 5.5rem;
+        width: 6%;
       }
 
       &:last-of-type {
-        width: 6rem;
-        // padding-right: 1.2rem;
+        width: 8%;
       }
     }
 
@@ -78,20 +89,10 @@
       td {
         height: 4rem;
         border-bottom: 1px solid black;
-        padding: 0.6rem 0.3rem;
-
-        &:first-of-type {
-          padding-left: 0.6rem;
-        }
-        // &:nth-of-type(2) {
-        //   width: 6rem;
-        // }
-
-        &:last-of-type {
-          padding-right: 0.6rem;
-        }
+        padding: 0.6rem;
       }
     }
+
     @include from(1000) {
       // display: flex;
       // flex-wrap: wrap;

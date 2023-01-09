@@ -41,7 +41,9 @@ const Login = () => {
             setHasErrorOccurred(false);
             return res.json();
           } else {
-            setHasErrorOccurred(true);
+            setTimeout(() => {
+              setHasErrorOccurred(true);
+            }, 5000);
           }
         })
         .then((res) => {

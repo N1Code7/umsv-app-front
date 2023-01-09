@@ -20,7 +20,7 @@ const Homepage = () => {
 
   useEffect(() => {
     const modal = document.body.querySelector(".event-modal");
-    const tournaments = document.body.querySelector(".tournaments");
+    const tournamentsDiv = document.body.querySelector(".tournaments");
     const observer = new ResizeObserver((entries) => {
       entries.forEach(() => {
         if (window.innerWidth < 1000) {
@@ -32,7 +32,7 @@ const Homepage = () => {
     });
 
     if (modal) observer.observe(modal);
-    if (tournaments) observer.observe(tournaments);
+    if (tournamentsDiv) observer.observe(tournamentsDiv);
   }, [display]);
 
   const handleCloseModal = (e: MouseEvent<HTMLButtonElement>) => {
@@ -44,19 +44,19 @@ const Homepage = () => {
   useEffect(() => {
     fetchEvents(authToken!)
       .then((res) => {
-        if (res.ok) {
-          return res.json();
+        if (!res.ok) {
+          throw new Error("An error occurs when try to fetch events!");
         }
-        throw new Error("An error occurs when try to fetch events!");
+        return res.json();
       })
       .then((res) => setEvents(res));
 
     fetchTournaments(authToken!)
       .then((res) => {
-        if (res.ok) {
-          return res.json();
+        if (!res.ok) {
+          throw new Error("An error occurs when try to fetch tournaments list!");
         }
-        throw new Error("An error occurs when try to fetch tournaments list!");
+        return res.json();
       })
       .then((res) => setTournaments(res));
   }, [authToken]);
@@ -90,15 +90,29 @@ const Homepage = () => {
           <div className="tournaments">
             {display === "mobile" ? (
               // MOBILE
-              <div></div>
+              <>
+                {tournaments
+                  .filter(
+                    (tournament: ITournament) =>
+                      new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10
+                  )
+                  .sort((a: ITournament, b: ITournament) => {
+                    const firstDate = new Date(a.startDate);
+                    const secondDate = new Date(b.startDate);
+                    return Number(firstDate) - Number(secondDate);
+                  })
+                  .map((tournament: ITournament) => (
+                    <Tournament key={tournament.id} tournament={tournament} onMobile />
+                  ))}
+              </>
             ) : (
               // DESKTOP
               <table>
                 <thead>
                   <tr>
+                    <th>Date</th>
                     <th>Nom du tournoi</th>
                     <th>Ville</th>
-                    <th>Date</th>
                     <th>Limite d&apos;inscription</th>
                     <th>Tirage au sort</th>
                     <th>Déjà inscrit(s)</th>
@@ -117,7 +131,7 @@ const Homepage = () => {
                       return Number(firstDate) - Number(secondDate);
                     })
                     .map((tournament: ITournament) => (
-                      <Tournament key={tournament.id} tournament={tournament} />
+                      <Tournament key={tournament.id} tournament={tournament} onMobile={false} />
                     ))}
                 </tbody>
               </table>

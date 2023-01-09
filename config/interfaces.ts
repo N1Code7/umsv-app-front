@@ -18,23 +18,23 @@ export interface ITournament {
   endDate: string;
   season: string;
   isTeamCompetition: boolean;
-  standardPrice1: number | null;
-  standardPrice2: number | null;
-  standardPrice3: number | null;
-  elitePrice1: number | null;
-  elitePrice2: number | null;
-  elitePrice3: number | null;
-  priceSingle: number | null;
-  priceDouble: number | null;
-  priceMixed: number | null;
+  standardPrice1: number;
+  standardPrice2: number;
+  standardPrice3: number;
+  elitePrice1: number;
+  elitePrice2: number;
+  elitePrice3: number;
+  priceSingle: number;
+  priceDouble: number;
+  priceMixed: number;
   registrationClosingDate: string;
   randomDraw: string;
   telContact: string;
   emailContact: string;
   registrationMethod: string;
   paymentMethod: string;
-  regulationFileName: string | null;
-  regulationFileUrl: string | null;
+  regulationFileName: string;
+  regulationFileUrl: string;
   comment: string;
   createdAt: string;
   updatedAt: string;
@@ -60,4 +60,31 @@ export interface ITournamentRegistration {
   comment: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface User {
+  id: number;
+  lastName: string;
+  firstName: string;
+  email: string;
+  roles: Array<string>;
+  FFBadStats: Array<{
+    rankingsDate: string;
+    license: string;
+    birthDate: string;
+    categoryGlobal: string;
+    categoryShort: string;
+    categoryLong: string;
+    isPlayerTransferred: boolean;
+    feather: string;
+    singleCPPH: string;
+    singleRankName: string;
+    singleRankNumber: string;
+    doubleCPPH: string;
+    doubleRankName: string;
+    doubleRankNumber: string;
+    mixedCPPH: string;
+    mixedRankName: string;
+    mixedRankNumber: string;
+  }>;
 }

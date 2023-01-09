@@ -3,14 +3,29 @@ import { ITournament, ITournamentRegistration } from "../../config/interfaces";
 
 interface ITournamentProps {
   tournament: ITournament;
+  onMobile: boolean;
 }
 
-const Tournament = ({ tournament }: ITournamentProps) => {
-  return (
-    <tr>
+const Tournament = ({ tournament, onMobile }: ITournamentProps) => {
+  return onMobile ? (
+    <div className="tournament card">
+      <div className="name">{tournament.name}</div>
+      <div className="city">{tournament.city}</div>
+      <div className="dates">
+        {formatDate(tournament.startDate, tournament.endDate, "XX & XX xxx XXXX")}
+      </div>
+      <div className="cta-container">
+        <a href={tournament.regulationFileUrl} className="btn see-file">
+          📄
+        </a>
+        <button className="btn register">➕</button>
+      </div>
+    </div>
+  ) : (
+    <tr className="tournament">
+      <td>{formatDate(tournament.startDate, tournament.endDate, "XX & XX xxx XXXX")}</td>
       <td>{tournament.name}</td>
       <td>{tournament.city}</td>
-      <td>{formatDate(tournament.startDate, tournament.endDate, "XX & XX xxx XXXX")}</td>
       <td>
         {new Date(tournament.registrationClosingDate).getTime() - new Date().getTime() < 0
           ? "🙅"
@@ -29,8 +44,10 @@ const Tournament = ({ tournament }: ITournamentProps) => {
         ).length + 1}
       </td>
       <td>
-        <button>📄</button>
-        <button>➕</button>
+        <div className="cta-container">
+          <button>📄</button>
+          <button>➕</button>
+        </div>
       </td>
     </tr>
   );
