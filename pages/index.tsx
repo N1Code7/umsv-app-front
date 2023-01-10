@@ -15,6 +15,8 @@ const Home = () => {
   const [user, setUser] = useState({});
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({});
+  const [displayPDF, setDisplayPDF] = useState(false);
+  const [tournamentUrl, setTournamentUrl] = useState("");
 
   const toggleDisplay = () => {
     setDisplay(!display);

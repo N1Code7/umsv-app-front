@@ -1,7 +1,4 @@
-import { MouseEvent, useContext, useEffect, useRef, useState } from "react";
-import Header from "../components/Header";
-import MemberHeader from "../components/MemberHeader";
-import Navigation from "../components/Navigation";
+import { MouseEvent, useContext, useEffect, useState } from "react";
 import { fetchEvents, fetchTournaments, formatDate, getDayOfWeek } from "../../config/functions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
@@ -14,6 +11,7 @@ const Homepage = () => {
   const { authToken } = useContext(AuthenticationContext);
   const { focusedEvent, setFocusedEvent, isModalActive, setIsModalActive } =
     useContext(ModalEventContext);
+
   const [events, setEvents] = useState([]);
   const [display, setDisplay] = useState("");
   const [tournaments, setTournaments] = useState([]);
@@ -45,22 +43,20 @@ const Homepage = () => {
     if (authToken) {
       fetchEvents(authToken)
         .then((res) => {
-          if (!res.ok) {
-            throw new Error(res.statusText);
-            // throw new Error(res.status + " An error occurs when try to fetch events!");
+          if (res.ok) {
+            return res.json();
           }
-          return res.json();
+          throw new Error("An error occurs when try to fetch events : " + res.statusText);
         })
         .then((res) => setEvents(res))
         .catch((err) => console.error(err));
 
       fetchTournaments(authToken!)
         .then((res) => {
-          if (!res.ok) {
-            throw new Error(res.statusText);
-            // throw new Error(res.status + " An error occurs when try to fetch tournaments list!");
+          if (res.ok) {
+            return res.json();
           }
-          return res.json();
+          throw new Error("An error occurs when try to fetch tournaments list : " + res.statusText);
         })
         .then((res) => setTournaments(res));
     }

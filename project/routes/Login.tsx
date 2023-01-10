@@ -57,11 +57,6 @@ const Login = () => {
     }
   };
 
-  interface IRefreshToken {
-    token: string;
-    refreshToken: string;
-  }
-
   useEffect(() => {
     email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6
       ? setSubmitEnabled(true)

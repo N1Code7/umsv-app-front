@@ -18,8 +18,6 @@ export const getRefreshTokenFromCookie = () => {
  * @param password the user's plain password
  */
 export const fetchLogin = async (email: string, password: string) => {
-  console.log(process.env.NEXT_PUBLIC_HOST_BACK);
-
   const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "login", {
     method: "POST",
     headers: {
