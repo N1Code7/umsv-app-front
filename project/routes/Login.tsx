@@ -33,7 +33,7 @@ const Login = () => {
       : setPasswordError("");
 
     if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
-      await fetchLogin(email, password)
+      fetchLogin(email, password)
         .then((res) => {
           setPassword("");
           if (res.ok) {
@@ -61,27 +61,6 @@ const Login = () => {
     token: string;
     refreshToken: string;
   }
-
-  useEffect(() => {
-    if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-      fetchRefreshToken(getRefreshTokenFromCookie())
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-            navigate("/");
-            throw new Error("An error occurs when try to refresh authToken after reload!");
-          }
-        })
-        .then(({ token, refreshToken }: IRefreshToken) => {
-          setIsAuthenticated?.(true);
-          setAuthToken?.(token);
-          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-          navigate("/utilisateur/accueil");
-        });
-    }
-  }, []);
 
   useEffect(() => {
     email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6

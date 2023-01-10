@@ -45,8 +45,6 @@ export const fetchRefreshToken = async (refreshToken: string) => {
     headers: {
       "Content-type": "application/json",
     },
-    mode: "cors",
-    cache: "default",
     body: JSON.stringify({
       refreshToken,
     }),

@@ -22,21 +22,17 @@ const PrivateRoutes = () => {
   const navigate = useNavigate();
   const { authToken, setAuthToken, setUser, isAuthenticated, setIsAuthenticated } =
     useContext(AuthenticationContext);
-  const [modalIsActive, setModalIsActive] = useState(false);
-  const [event, setEvent] = useState({});
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      setAuthToken?.("");
-      setUser?.({});
-      navigate("/");
-    } else if (authToken !== "") {
-      fetchUser(authToken!)
+    if (authToken && authToken !== "") {
+      fetchUser(authToken)
         .then((res) => {
           if (res.ok) {
             return res.json();
           }
-          throw new Error("Authentication does not work!");
+          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+          navigate("/");
+          throw new Error("An error occurs when try to get user's data : " + res.statusText);
         })
         .then(({ id, lastName, firstName, email, roles, FFBadStats: array }: User) => {
           setUser?.({
@@ -80,20 +76,28 @@ const PrivateRoutes = () => {
           if (res.ok) {
             return res.json();
           }
-          throw new Error("Can't refresh the token!");
+          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+          navigate("/");
+          throw new Error("An error occurs when try to refresh the token : " + res.statusText);
         })
         .then(({ token, refreshToken }: RefreshTokenResponse) => {
           setIsAuthenticated?.(true);
           setAuthToken?.(token);
           document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+          navigate("/utilisateur/accueil");
         });
+    } else if (!isAuthenticated) {
+      setAuthToken?.("");
+      setUser?.({});
+      navigate("/");
     } else {
       setIsAuthenticated?.(false);
       setAuthToken?.("");
       setUser?.({});
+      document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
       navigate("/");
     }
-  }, []);
+  }, [authToken]);
 
   return (
     <>

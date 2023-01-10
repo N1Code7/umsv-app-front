@@ -42,23 +42,28 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-    fetchEvents(authToken!)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("An error occurs when try to fetch events!");
-        }
-        return res.json();
-      })
-      .then((res) => setEvents(res));
+    if (authToken) {
+      fetchEvents(authToken)
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.statusText);
+            // throw new Error(res.status + " An error occurs when try to fetch events!");
+          }
+          return res.json();
+        })
+        .then((res) => setEvents(res))
+        .catch((err) => console.error(err));
 
-    fetchTournaments(authToken!)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("An error occurs when try to fetch tournaments list!");
-        }
-        return res.json();
-      })
-      .then((res) => setTournaments(res));
+      fetchTournaments(authToken!)
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(res.statusText);
+            // throw new Error(res.status + " An error occurs when try to fetch tournaments list!");
+          }
+          return res.json();
+        })
+        .then((res) => setTournaments(res));
+    }
   }, [authToken]);
 
   return (

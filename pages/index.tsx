@@ -11,8 +11,7 @@ const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 const Home = () => {
   const [display, setDisplay] = useState(false);
   const [authToken, setAuthToken] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState({});
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({});

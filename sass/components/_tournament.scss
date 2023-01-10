@@ -32,9 +32,20 @@
       gap: 0.6rem;
     }
 
+    .see-file {
+      background: rgba($infos, 0.35);
+      box-shadow: 2px 2px 8px 2px darken(rgba($infos, 0.35), 20%);
+    }
+
+    .register {
+      background: rgba($success-1, 0.35);
+      box-shadow: 2px 2px 6px 1px darken(rgba($success-1, 0.35), 20%);
+    }
+
     button,
     a {
       width: 3.5rem;
+      padding: 0;
       aspect-ratio: 1/1;
       border-radius: 50%;
       font-size: 2rem;
@@ -43,16 +54,6 @@
       @include from(1000) {
         width: 2.5rem;
         font-size: 1.5rem;
-      }
-
-      .see-file {
-        background: rgba($infos, 0.35);
-        box-shadow: 2px 2px 8px 2px darken(rgba($infos, 0.35), 20%);
-      }
-
-      .register {
-        background: rgba($success-1, 0.35);
-        box-shadow: 2px 2px 6px 1px darken(rgba($success-1, 0.35), 20%);
       }
 
       &:active {
