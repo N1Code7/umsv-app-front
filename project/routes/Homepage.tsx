@@ -1,5 +1,11 @@
-import { MouseEvent, useContext, useEffect, useState } from "react";
-import { fetchEvents, fetchTournaments, formatDate, getDayOfWeek } from "../../config/functions";
+import { ChangeEvent, EventHandler, MouseEvent, useContext, useEffect, useState } from "react";
+import {
+  fetchEvents,
+  fetchTournaments,
+  formatDate,
+  getDayOfWeek,
+  getMonthOfYear,
+} from "../../config/functions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
 import { IClubEvent, ITournament } from "../../config/interfaces";
@@ -15,7 +21,68 @@ const Homepage = () => {
   const [events, setEvents] = useState([]);
   const [display, setDisplay] = useState("");
   const [tournaments, setTournaments] = useState([]);
+  const [displaySearch, setDisplaySearch] = useState(false);
+  const [searchByText, setSearchByText] = useState("");
+  const [searchByDay, setSearchByDay] = useState("default");
+  const [searchByMonth, setSearchByMonth] = useState("default");
+  const [searchByYear, setSearchByYear] = useState("default");
+  const daysNumber = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
+    "31",
+  ];
+  const monthsNumber = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+  ];
 
+  const handleReset = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSearchByText("");
+    setSearchByDay("default");
+    setSearchByMonth("default");
+    setSearchByYear("default");
+  };
+
+  /** Adapt the component return to window's width => RESPONSIVE */
   useEffect(() => {
     const modal = document.body.querySelector(".event-modal");
     const tournamentsDiv = document.body.querySelector(".tournaments");
@@ -39,6 +106,7 @@ const Homepage = () => {
     setIsModalActive?.(false);
   };
 
+  //** Fetches functions for events and tournaments */
   useEffect(() => {
     if (authToken) {
       fetchEvents(authToken)
@@ -88,15 +156,123 @@ const Homepage = () => {
 
         <div className="tournaments-block">
           <h2>Tournois référencés par le club</h2>
+          <div className={displaySearch ? "search-container active" : "search-container"}>
+            <button id="searchMobileBtn" onClick={() => setDisplaySearch(!displaySearch)}>
+              Rechercher un tournoi 🔎
+            </button>
+            <form>
+              <div className="form-control">
+                <div className="form-row">
+                  <input
+                    type="text"
+                    placeholder="nom ou ville"
+                    value={searchByText}
+                    defaultValue=""
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchByText(e.target.value)}
+                  />
+                </div>
+                <span>ou</span>
+                <div className="form-row">
+                  {/* Day search */}
+                  <select
+                    id="daySelected"
+                    defaultValue="default"
+                    value={searchByDay}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => setSearchByDay(e.target.value)}
+                  >
+                    <option value="default">--</option>
+                    {daysNumber.map((day: string, index: number) => (
+                      <option key={index} value={day}>
+                        {day}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Month search */}
+                  <select
+                    id="monthSelected"
+                    defaultValue="default"
+                    value={searchByMonth}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                      setSearchByMonth(e.target.value)
+                    }
+                  >
+                    <option value="default">------</option>
+                    {monthsNumber.map((month: string, index: number) => (
+                      <option key={index} value={month.toLowerCase()}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Year search */}
+                  <select
+                    id="yearSelected"
+                    defaultValue="default"
+                    value={searchByYear}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                      setSearchByYear(e.target.value)
+                    }
+                  >
+                    <option value="default">----</option>
+                    {[new Date().getFullYear(), new Date().getFullYear() + 1].map(
+                      (year: number, index: number) => (
+                        <option key={index} value={year}>
+                          {year}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+              </div>
+              <button className="btn btn-secondary btn-small" id="resetBtn" onClick={handleReset}>
+                Réinitialiser les filtres
+              </button>
+            </form>
+          </div>
+          {/* )} */}
           <div className="tournaments">
             {display === "mobile" ? (
               // MOBILE
               <>
                 {tournaments
-                  .filter(
-                    (tournament: ITournament) =>
-                      new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10
-                  )
+                  .filter((tournament: ITournament) => {
+                    if (searchByText.length >= 3) {
+                      return (
+                        (new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+                          tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
+                        tournament.name?.toLowerCase().includes(searchByText.toLowerCase())
+                      );
+                    } else if (
+                      searchByDay !== "default" ||
+                      searchByMonth !== "default" ||
+                      searchByYear !== "default"
+                    ) {
+                      return (
+                        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+                        (new Date(tournament.startDate).getDate() === Number(searchByDay) ||
+                          getMonthOfYear(
+                            String(new Date(tournament.startDate)),
+                            "long"
+                          ).toLowerCase() === searchByMonth ||
+                          new Date(tournament.startDate).getFullYear() === Number(searchByYear))
+                      );
+                    } else if (
+                      searchByDay !== "default" &&
+                      searchByMonth !== "default" &&
+                      searchByYear !== "default"
+                    ) {
+                      return (
+                        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+                        (new Date(tournament.startDate).getDate() === Number(searchByDay) ||
+                          getMonthOfYear(
+                            String(new Date(tournament.startDate)),
+                            "long"
+                          ).toLowerCase() === searchByMonth ||
+                          new Date(tournament.startDate).getFullYear() === Number(searchByYear))
+                      );
+                    } else {
+                      return new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10;
+                    }
+                  })
                   .sort((a: ITournament, b: ITournament) => {
                     const firstDate = new Date(a.startDate);
                     const secondDate = new Date(b.startDate);

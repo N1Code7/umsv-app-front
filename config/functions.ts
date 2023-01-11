@@ -225,7 +225,7 @@ export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat
  * @param entryDate the date taken to determine the day of week
  */
 export const getDayOfWeek = (entryDate: string, format = "short") => {
-  let week = [
+  let days = [
     { short: "Lun", long: "Lundi" },
     { short: "Mar", long: "Mardi" },
     { short: "Mer", long: "Mercredi" },
@@ -238,13 +238,13 @@ export const getDayOfWeek = (entryDate: string, format = "short") => {
   let dayNumber = new Date(entryDate).getDay();
 
   if (format === "long") {
-    return week[dayNumber].long;
+    return days[dayNumber].long;
   }
-  return week[dayNumber].short;
+  return days[dayNumber].short;
 };
 
 export const getMonthOfYear = (entryDate: string, format = "short") => {
-  let year = [
+  let months = [
     { short: "Jan", long: "Janvier" },
     { short: "Fev", long: "Février" },
     { short: "Mar", long: "Mars" },
@@ -262,7 +262,7 @@ export const getMonthOfYear = (entryDate: string, format = "short") => {
   let monthNumber = new Date(entryDate).getMonth();
 
   if (format === "long") {
-    return year[monthNumber].long;
+    return months[monthNumber].long;
   }
-  return year[monthNumber].short;
+  return months[monthNumber].short;
 };

@@ -45,6 +45,7 @@
     color: $bg-1;
     padding: 0.5rem 0.5rem 0.3rem;
     border-radius: 12px 12px 0 0;
+    font-size: 0.9rem;
 
     @include ptt {
       font-size: 1.1rem;
@@ -59,6 +60,7 @@
     border-radius: 0 0 12px 12px;
     height: 2.2rem;
     width: 100%;
+    font-size: 0.8rem;
 
     @include ptt {
       font-size: 0.9rem;
