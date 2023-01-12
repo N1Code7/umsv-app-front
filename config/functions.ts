@@ -223,6 +223,7 @@ export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat
 /**
  * Get the day of week, either in short (default) or long format
  * @param entryDate the date taken to determine the day of week
+ * @param format the name format of output date
  */
 export const getDayOfWeek = (entryDate: string, format = "short") => {
   let days = [
@@ -243,6 +244,11 @@ export const getDayOfWeek = (entryDate: string, format = "short") => {
   return days[dayNumber].short;
 };
 
+/**
+ * Get the month of the year, either in short (default) or long format
+ * @param entryDate the taken date to determine the month of year
+ * @param format the name format of output month
+ */
 export const getMonthOfYear = (entryDate: string, format = "short") => {
   let months = [
     { short: "Jan", long: "Janvier" },

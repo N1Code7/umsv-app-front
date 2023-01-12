@@ -1,14 +1,13 @@
-import { MouseEvent, useContext, useState } from "react";
 import { formatDate } from "../../config/functions";
 import { ITournament, ITournamentRegistration } from "../../config/interfaces";
 
 interface ITournamentProps {
   tournament: ITournament;
-  onMobile: boolean;
+  displayOnMobile: boolean;
 }
 
-const Tournament = ({ tournament, onMobile }: ITournamentProps) => {
-  return onMobile ? (
+const Tournament = ({ tournament, displayOnMobile }: ITournamentProps) => {
+  return displayOnMobile ? (
     <div className="tournament card">
       <div className="name">{tournament.name}</div>
       <div className="city">{tournament.city}</div>

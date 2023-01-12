@@ -1,27 +1,26 @@
-import { MouseEvent, useContext, useEffect, useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useEffect } from "react";
 import { formatDate, getDayOfWeek } from "../../config/functions";
 import { IClubEvent } from "../../config/interfaces";
-import Image from "next/image";
-import { ModalEventContext } from "../../contexts/ModalEventContext";
 
 interface IEventProps {
   event: IClubEvent;
+  isModalActive: boolean;
+  setFocusedEvent: Dispatch<SetStateAction<IClubEvent>>;
+  setIsModalActive: Dispatch<SetStateAction<boolean>>;
 }
 
-const Event = ({ event }: IEventProps) => {
-  const { setFocusedEvent, isModalActive, setIsModalActive } = useContext(ModalEventContext);
-
+const Event = ({ event, setFocusedEvent, isModalActive, setIsModalActive }: IEventProps) => {
   const handleDisplayModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setFocusedEvent?.(event);
-    setIsModalActive?.(true);
+    setFocusedEvent(event);
+    setIsModalActive(true);
   };
 
   useEffect(() => {
     if (isModalActive) {
       document.body.querySelector(".event-modal-backdrop")?.addEventListener("click", (e) => {
-        setFocusedEvent?.({});
-        setIsModalActive?.(false);
+        setFocusedEvent({} as IClubEvent);
+        setIsModalActive(false);
       });
     }
     document.body
