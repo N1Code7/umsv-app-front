@@ -160,6 +160,7 @@ const Homepage = () => {
             <button id="searchMobileBtn" onClick={() => setDisplaySearch(!displaySearch)}>
               Rechercher un tournoi 🔎
             </button>
+            <h3>Rechercher un tournoi 🔎</h3>
             <form>
               <div className="form-control">
                 <div className="form-row">
@@ -362,7 +363,12 @@ const Homepage = () => {
                         ).toLowerCase() === searchByMonth &&
                         new Date(tournament.startDate).getFullYear() === Number(searchByYear)
                       );
-                    } else {
+                    } else if (
+                      searchByText.length >= 3 ||
+                      searchByDay !== "default" ||
+                      searchByMonth !== "default" ||
+                      searchByYear !== "default"
+                    ) {
                       /** Search by city/name OR day OR month OR year */
                       return (
                         new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
@@ -376,6 +382,8 @@ const Homepage = () => {
                           ).toLowerCase() === searchByMonth ||
                           new Date(tournament.startDate).getFullYear() === Number(searchByYear))
                       );
+                    } else {
+                      return new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10;
                     }
                   })
                   .sort((a: ITournament, b: ITournament) => {
@@ -536,7 +544,12 @@ const Homepage = () => {
                           ).toLowerCase() === searchByMonth &&
                           new Date(tournament.startDate).getFullYear() === Number(searchByYear)
                         );
-                      } else {
+                      } else if (
+                        searchByText.length >= 3 ||
+                        searchByDay !== "default" ||
+                        searchByMonth !== "default" ||
+                        searchByYear !== "default"
+                      ) {
                         /** Search by city/name OR day OR month OR year */
                         return (
                           new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
@@ -551,6 +564,10 @@ const Homepage = () => {
                               "long"
                             ).toLowerCase() === searchByMonth ||
                             new Date(tournament.startDate).getFullYear() === Number(searchByYear))
+                        );
+                      } else {
+                        return (
+                          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10
                         );
                       }
                     })
