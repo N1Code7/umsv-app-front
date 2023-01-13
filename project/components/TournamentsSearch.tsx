@@ -91,7 +91,7 @@ const TournamentsSearch = ({
               type="text"
               placeholder="nom ou ville"
               value={searchByText}
-              defaultValue=""
+              // defaultValue=""
               onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchByText(e.target.value)}
             />
           </div>
@@ -100,7 +100,7 @@ const TournamentsSearch = ({
             {/* Day search */}
             <select
               id="daySelected"
-              defaultValue="default"
+              // defaultValue="default"
               value={searchByDay}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => setSearchByDay(e.target.value)}
             >

@@ -39,6 +39,7 @@ export interface ITournament {
   createdAt: string;
   updatedAt: string;
   tournamentRegistrations: Array<ITournamentRegistration>;
+  playersAlreadyRegistered: number;
 }
 
 export interface ITournamentRegistration {

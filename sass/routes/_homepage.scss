@@ -51,35 +51,49 @@
     thead {
       height: 4rem;
       font-size: clamp(0.9rem, 1vw, 1.1rem);
-    }
 
-    thead th {
-      border-bottom: 3px solid black;
-      padding: 1.2rem 0.6rem;
+      tr {
+        &:first-of-type {
+          th {
+            padding: 1.2rem 0.6rem 0.6rem;
+          }
+        }
 
-      &:first-of-type {
-        width: 17%;
+        &:nth-of-type(2) {
+          border-bottom: 3px solid black;
+
+          th {
+            padding: 0 0.6rem 1.2rem;
+          }
+        }
       }
+      th {
+        // padding: 1.2rem 0.6rem;
 
-      &:nth-of-type(2) {
-        width: 30%;
-      }
+        &:first-of-type {
+          width: 17%;
+        }
 
-      &:nth-of-type(3) {
-        width: 17%;
-      }
+        &:nth-of-type(2) {
+          width: 30%;
+        }
 
-      &:nth-of-type(4),
-      &:nth-of-type(5) {
-        width: 11%;
-      }
+        &:nth-of-type(3) {
+          width: 17%;
+        }
 
-      &:nth-of-type(6) {
-        width: 6%;
-      }
+        &:nth-of-type(4),
+        &:nth-of-type(5) {
+          width: 11%;
+        }
 
-      &:last-of-type {
-        width: 8%;
+        &:nth-of-type(6) {
+          width: 6%;
+        }
+
+        &:last-of-type {
+          width: 8%;
+        }
       }
     }
 
@@ -90,6 +104,23 @@
         height: 4rem;
         border-bottom: 1px solid black;
         padding: 0.6rem;
+      }
+    }
+
+    .sort-btn-container {
+      display: flex;
+      // flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 0.3rem;
+
+      i {
+        font-size: 0.7rem;
+      }
+
+      button.active {
+        background: $primary-1;
+        color: $content-light;
       }
     }
   }

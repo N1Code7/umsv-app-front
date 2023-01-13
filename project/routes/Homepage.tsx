@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useContext, useEffect, useState } from "react";
 import { fetchEvents, fetchTournaments, getMonthOfYear } from "../../config/functions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
@@ -6,6 +6,7 @@ import { IClubEvent, ITournament } from "../../config/interfaces";
 import Tournament from "../components/Tournament";
 import TournamentsSearch from "../components/TournamentsSearch";
 import EventModal from "../components/EventModal";
+import SortTournamentsBtn from "../components/SortTournamentsBtn";
 
 const Homepage = () => {
   const { authToken } = useContext(AuthenticationContext);
@@ -18,141 +19,197 @@ const Homepage = () => {
   const [searchByDay, setSearchByDay] = useState("default");
   const [searchByMonth, setSearchByMonth] = useState("default");
   const [searchByYear, setSearchByYear] = useState("default");
+  const [activeSort, setActiveSort] = useState("startDate-ascending");
 
-  /** Array which contains the filtered tournaments */
-  const filteredTournaments = tournaments.filter((tournament: ITournament) => {
-    if (
-      /** Search by name/city and full date */
-      searchByText.length >= 3 &&
-      searchByDay !== "default" &&
-      searchByMonth !== "default" &&
-      searchByYear !== "default"
-    ) {
-      return (
-        (new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-          tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
-        (tournament.name?.toLowerCase().includes(searchByText.toLowerCase()) &&
+  /** Filter tournaments depending on selected criteria (name/city, day, month, year) */
+  const filterTournaments = (tournaments: Array<ITournament>) => {
+    return tournaments.filter((tournament: ITournament) => {
+      if (
+        /** Search by name/city and full date */
+        searchByText.length >= 3 &&
+        searchByDay !== "default" &&
+        searchByMonth !== "default" &&
+        searchByYear !== "default"
+      ) {
+        return (
+          (new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+            tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
+          (tournament.name?.toLowerCase().includes(searchByText.toLowerCase()) &&
+            new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+            new Date(tournament.startDate).getDate() === Number(searchByDay) &&
+            getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
+              searchByMonth &&
+            new Date(tournament.startDate).getFullYear() === Number(searchByYear))
+        );
+      } else if (
+        searchByText.length >= 3 &&
+        (searchByDay !== "default" || searchByMonth !== "default" || searchByYear !== "default")
+      ) {
+        /** Search by name/city and one of date parameter */
+        return (
+          ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+            tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
+            tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
+          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          (new Date(tournament.startDate).getDate() === Number(searchByDay) ||
+            getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
+              searchByMonth ||
+            new Date(tournament.startDate).getFullYear() === Number(searchByYear))
+        );
+      } else if (
+        searchByText.length >= 3 &&
+        searchByDay !== "default" &&
+        searchByMonth !== "default"
+      ) {
+        /** Search by name/city, day AND month */
+        return (
+          ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+            tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
+            tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
+          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          new Date(tournament.startDate).getDate() === Number(searchByDay) &&
+          getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
+            searchByMonth
+        );
+      } else if (
+        searchByText.length >= 3 &&
+        searchByDay !== "default" &&
+        searchByYear !== "default"
+      ) {
+        /** Search by name/city, day AND year */
+        return (
+          ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+            tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
+            tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
+          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          new Date(tournament.startDate).getDate() === Number(searchByDay) &&
+          new Date(tournament.startDate).getFullYear() === Number(searchByYear)
+        );
+      } else if (
+        searchByText.length >= 3 &&
+        searchByDay !== "default" &&
+        searchByMonth !== "default"
+      ) {
+        /** Search by name/city, year AND month */
+        return (
+          ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+            tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
+            tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
+          getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
+            searchByMonth &&
+          new Date(tournament.startDate).getFullYear() === Number(searchByYear)
+        );
+      } else if (
+        searchByDay !== "default" &&
+        searchByMonth !== "default" &&
+        searchByYear !== "default"
+      ) {
+        /** Search only by full date */
+        return (
           new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
           new Date(tournament.startDate).getDate() === Number(searchByDay) &&
           getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
             searchByMonth &&
-          new Date(tournament.startDate).getFullYear() === Number(searchByYear))
-      );
-    } else if (
-      searchByText.length >= 3 &&
-      (searchByDay !== "default" || searchByMonth !== "default" || searchByYear !== "default")
-    ) {
-      /** Search by name/city and one of date parameter */
-      return (
-        ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-          tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
-          tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
-        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-        (new Date(tournament.startDate).getDate() === Number(searchByDay) ||
+          new Date(tournament.startDate).getFullYear() === Number(searchByYear)
+        );
+      } else if (searchByDay !== "default" && searchByMonth !== "default") {
+        /** Search only by day AND month */
+        return (
+          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          new Date(tournament.startDate).getDate() === Number(searchByDay) &&
           getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
-            searchByMonth ||
-          new Date(tournament.startDate).getFullYear() === Number(searchByYear))
-      );
-    } else if (
-      searchByText.length >= 3 &&
-      searchByDay !== "default" &&
-      searchByMonth !== "default"
-    ) {
-      /** Search by name/city, day AND month */
-      return (
-        ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-          tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
-          tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
-        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-        new Date(tournament.startDate).getDate() === Number(searchByDay) &&
-        getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
-          searchByMonth
-      );
-    } else if (
-      searchByText.length >= 3 &&
-      searchByDay !== "default" &&
-      searchByYear !== "default"
-    ) {
-      /** Search by name/city, day AND year */
-      return (
-        ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-          tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
-          tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
-        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-        new Date(tournament.startDate).getDate() === Number(searchByDay) &&
-        new Date(tournament.startDate).getFullYear() === Number(searchByYear)
-      );
-    } else if (
-      searchByText.length >= 3 &&
-      searchByDay !== "default" &&
-      searchByMonth !== "default"
-    ) {
-      /** Search by name/city, year AND month */
-      return (
-        ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-          tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
-          tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
-        getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
-          searchByMonth &&
-        new Date(tournament.startDate).getFullYear() === Number(searchByYear)
-      );
-    } else if (
-      searchByDay !== "default" &&
-      searchByMonth !== "default" &&
-      searchByYear !== "default"
-    ) {
-      /** Search only by full date */
-      return (
-        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-        new Date(tournament.startDate).getDate() === Number(searchByDay) &&
-        getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
-          searchByMonth &&
-        new Date(tournament.startDate).getFullYear() === Number(searchByYear)
-      );
-    } else if (searchByDay !== "default" && searchByMonth !== "default") {
-      /** Search only by day AND month */
-      return (
-        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-        new Date(tournament.startDate).getDate() === Number(searchByDay) &&
-        getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
-          searchByMonth
-      );
-    } else if (searchByDay !== "default" && searchByYear !== "default") {
-      /** Search only by day AND year */
-      return (
-        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-        new Date(tournament.startDate).getDate() === Number(searchByDay) &&
-        new Date(tournament.startDate).getFullYear() === Number(searchByYear)
-      );
-    } else if (searchByYear !== "default" && searchByMonth !== "default") {
-      /** Search only by year AND month */
-      return (
-        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-        getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
-          searchByMonth &&
-        new Date(tournament.startDate).getFullYear() === Number(searchByYear)
-      );
-    } else if (
-      searchByText.length >= 3 ||
-      searchByDay !== "default" ||
-      searchByMonth !== "default" ||
-      searchByYear !== "default"
-    ) {
-      /** Search by city/name OR day OR month OR year */
-      return (
-        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
-        ((searchByText.length >= 3 &&
-          (tournament.city?.toLowerCase().includes(searchByText.toLowerCase()) ||
-            tournament.name?.toLowerCase().includes(searchByText.toLowerCase()))) ||
-          new Date(tournament.startDate).getDate() === Number(searchByDay) ||
+            searchByMonth
+        );
+      } else if (searchByDay !== "default" && searchByYear !== "default") {
+        /** Search only by day AND year */
+        return (
+          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          new Date(tournament.startDate).getDate() === Number(searchByDay) &&
+          new Date(tournament.startDate).getFullYear() === Number(searchByYear)
+        );
+      } else if (searchByYear !== "default" && searchByMonth !== "default") {
+        /** Search only by year AND month */
+        return (
+          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
           getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
-            searchByMonth ||
-          new Date(tournament.startDate).getFullYear() === Number(searchByYear))
-      );
-    } else {
-      return new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10;
-    }
-  });
+            searchByMonth &&
+          new Date(tournament.startDate).getFullYear() === Number(searchByYear)
+        );
+      } else if (
+        searchByText.length >= 3 ||
+        searchByDay !== "default" ||
+        searchByMonth !== "default" ||
+        searchByYear !== "default"
+      ) {
+        /** Search by city/name OR day OR month OR year */
+        return (
+          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          ((searchByText.length >= 3 &&
+            (tournament.city?.toLowerCase().includes(searchByText.toLowerCase()) ||
+              tournament.name?.toLowerCase().includes(searchByText.toLowerCase()))) ||
+            new Date(tournament.startDate).getDate() === Number(searchByDay) ||
+            getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
+              searchByMonth ||
+            new Date(tournament.startDate).getFullYear() === Number(searchByYear))
+        );
+      } else {
+        return new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10;
+      }
+    });
+  };
+
+  /** Sort tournaments depending on the selected sort button */
+  const sortTournaments = (tournaments: Array<ITournament>) => {
+    return tournaments.sort((a: ITournament, b: ITournament) => {
+      switch (activeSort) {
+        case "startDate-ascending":
+          return Number(new Date(a.startDate)) - Number(new Date(b.startDate));
+          break;
+        case "startDate-descending":
+          return Number(new Date(b.startDate)) - Number(new Date(a.startDate));
+          break;
+        case "name-ascending":
+          return a.name?.localeCompare(b.name);
+          break;
+        case "name-descending":
+          return b.name?.localeCompare(a.name);
+          break;
+        case "city-ascending":
+          return a.city.localeCompare(b.city);
+          break;
+        case "city-descending":
+          return b.city.localeCompare(a.city);
+          break;
+        case "registrationClosingDate-ascending":
+          return (
+            Number(new Date(a.registrationClosingDate)) -
+            Number(new Date(b.registrationClosingDate))
+          );
+          break;
+        case "registrationClosingDate-descending":
+          return (
+            Number(new Date(b.registrationClosingDate)) -
+            Number(new Date(a.registrationClosingDate))
+          );
+          break;
+        case "randomDraw-ascending":
+          return Number(new Date(a.randomDraw)) - Number(new Date(b.randomDraw));
+          break;
+        case "randomDraw-descending":
+          return Number(new Date(b.randomDraw)) - Number(new Date(a.randomDraw));
+          break;
+        case "playersAlreadyRegistered-ascending":
+          return a.tournamentRegistrations.length - b.tournamentRegistrations.length;
+          break;
+        case "playersAlreadyRegistered-descending":
+          return b.tournamentRegistrations.length - a.tournamentRegistrations.length;
+          break;
+        default:
+          return Number(new Date(a.startDate)) - Number(new Date(b.startDate));
+          break;
+      }
+    });
+  };
 
   /** Adapt the component return to window's width => RESPONSIVE */
   useEffect(() => {
@@ -250,15 +307,9 @@ const Homepage = () => {
           {deviceDisplay === "mobile" ? (
             /** MOBILE */
             <>
-              {filteredTournaments
-                .sort((a: ITournament, b: ITournament) => {
-                  const firstDate = new Date(a.startDate);
-                  const secondDate = new Date(b.startDate);
-                  return Number(firstDate) - Number(secondDate);
-                })
-                .map((tournament: ITournament) => (
-                  <Tournament key={tournament.id} tournament={tournament} displayOnMobile />
-                ))}
+              {filterTournaments(tournaments).map((tournament: ITournament) => (
+                <Tournament key={tournament.id} tournament={tournament} displayOnMobile />
+              ))}
             </>
           ) : (
             /** DESKTOP */
@@ -273,21 +324,55 @@ const Homepage = () => {
                   <th>Déjà inscrit(s)</th>
                   <th>Actions</th>
                 </tr>
+                <tr>
+                  <th>
+                    <SortTournamentsBtn
+                      activeSort={activeSort}
+                      property="startDate"
+                      setActiveSort={setActiveSort}
+                    />
+                  </th>
+                  <th>
+                    <SortTournamentsBtn
+                      activeSort={activeSort}
+                      property="name"
+                      setActiveSort={setActiveSort}
+                    />
+                  </th>
+                  <th>
+                    <SortTournamentsBtn
+                      activeSort={activeSort}
+                      property="city"
+                      setActiveSort={setActiveSort}
+                    />
+                  </th>
+                  <th>
+                    <SortTournamentsBtn
+                      activeSort={activeSort}
+                      property="registrationClosingDate"
+                      setActiveSort={setActiveSort}
+                    />
+                  </th>
+                  <th>
+                    <SortTournamentsBtn
+                      activeSort={activeSort}
+                      property="randomDraw"
+                      setActiveSort={setActiveSort}
+                    />
+                  </th>
+                  <th>
+                    <SortTournamentsBtn
+                      activeSort={activeSort}
+                      property="playersAlreadyRegistered"
+                      setActiveSort={setActiveSort}
+                    />
+                  </th>
+                </tr>
               </thead>
               <tbody>
-                {filteredTournaments
-                  .sort((a: ITournament, b: ITournament) => {
-                    const firstDate = new Date(a.startDate);
-                    const secondDate = new Date(b.startDate);
-                    return Number(firstDate) - Number(secondDate);
-                  })
-                  .map((tournament: ITournament) => (
-                    <Tournament
-                      key={tournament.id}
-                      tournament={tournament}
-                      displayOnMobile={false}
-                    />
-                  ))}
+                {sortTournaments(filterTournaments(tournaments)).map((tournament: ITournament) => (
+                  <Tournament key={tournament.id} tournament={tournament} displayOnMobile={false} />
+                ))}
               </tbody>
             </table>
           )}

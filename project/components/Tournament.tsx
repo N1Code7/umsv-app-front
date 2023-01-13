@@ -43,10 +43,13 @@ const Tournament = ({ tournament, displayOnMobile }: ITournamentProps) => {
           : formatDate(tournament.randomDraw, "XX/XX/XX")}
       </td>
       <td>
-        {tournament.tournamentRegistrations.filter(
-          (registration: ITournamentRegistration) =>
-            registration.tournamentId === tournament.id && registration.requestState === "validated"
-        ).length + 1}
+        {
+          tournament.tournamentRegistrations.filter(
+            (registration: ITournamentRegistration) =>
+              // registration.tournamentId === tournament.id &&
+              registration.requestState === "validated"
+          ).length
+        }
       </td>
       <td>
         <div className="cta-container">
