@@ -39,12 +39,13 @@ export interface ITournament {
   createdAt: string;
   updatedAt: string;
   tournamentRegistrations: Array<ITournamentRegistration>;
-  playersAlreadyRegistered: number;
 }
 
 export interface ITournamentRegistration {
   id: number;
+  user: IUser;
   userId: number;
+  tournament: ITournament;
   tournamentId: number;
   requestState: string;
   hasParticipated: boolean;
@@ -63,7 +64,7 @@ export interface ITournamentRegistration {
   updatedAt: string;
 }
 
-export interface User {
+export interface IUser {
   id: number;
   lastName: string;
   firstName: string;

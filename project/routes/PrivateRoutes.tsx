@@ -1,17 +1,16 @@
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Homepage from "./Homepage";
-import Tournaments from "./Tournaments";
-import TournamentRegistration from "./TournamentRegistration";
+import UserTournaments from "./UserTournaments";
+import TournamentRegistration from "./NewTournamentRegistration";
 import Results from "./Results";
 import Settings from "./Settings";
 import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { fetchRefreshToken, fetchUser, getRefreshTokenFromCookie } from "../../config/functions";
-import { ModalEventContext } from "../../contexts/ModalEventContext";
 import MemberHeader from "../components/MemberHeader";
 import Navigation from "../components/Navigation";
 import Header from "../components/Header";
-import { User } from "../../config/interfaces";
+import { IUser } from "../../config/interfaces";
 
 interface RefreshTokenResponse {
   token: string;
@@ -22,6 +21,7 @@ const PrivateRoutes = () => {
   const navigate = useNavigate();
   const { authToken, setAuthToken, setUser, isAuthenticated, setIsAuthenticated } =
     useContext(AuthenticationContext);
+  const [deviceDisplay, setDeviceDisplay] = useState("");
 
   useEffect(() => {
     if (authToken && authToken !== "") {
@@ -34,39 +34,39 @@ const PrivateRoutes = () => {
           navigate("/");
           throw new Error("An error occurs when try to get user's data : " + res.statusText);
         })
-        .then(({ id, lastName, firstName, email, roles, FFBadStats: array }: User) => {
+        .then(({ id, lastName, firstName, email, roles, FFBadStats: array }: IUser) => {
           setUser?.({
             id,
             lastName,
             firstName,
             email,
             roles,
-            birthDate: array[array.length - 1].birthDate,
-            license: array[array.length - 1].license,
-            isPlayerTransferred: array[array.length - 1].isPlayerTransferred,
-            feather: array[array.length - 1].feather,
+            birthDate: array[array.length - 1]?.birthDate,
+            license: array[array.length - 1]?.license,
+            isPlayerTransferred: array[array.length - 1]?.isPlayerTransferred,
+            feather: array[array.length - 1]?.feather,
             rankings: {
-              effectiveDate: array[array.length - 1].rankingsDate,
+              effectiveDate: array[array.length - 1]?.rankingsDate,
               single: {
-                cpph: array[array.length - 1].singleCPPH,
-                rankNumber: array[array.length - 1].singleRankNumber,
-                rankName: array[array.length - 1].singleRankName,
+                cpph: array[array.length - 1]?.singleCPPH,
+                rankNumber: array[array.length - 1]?.singleRankNumber,
+                rankName: array[array.length - 1]?.singleRankName,
               },
               double: {
-                cpph: array[array.length - 1].doubleCPPH,
-                rankNumber: array[array.length - 1].doubleRankNumber,
-                rankName: array[array.length - 1].doubleRankName,
+                cpph: array[array.length - 1]?.doubleCPPH,
+                rankNumber: array[array.length - 1]?.doubleRankNumber,
+                rankName: array[array.length - 1]?.doubleRankName,
               },
               mixed: {
-                cpph: array[array.length - 1].mixedCPPH,
-                rankNumber: array[array.length - 1].mixedRankNumber,
-                rankName: array[array.length - 1].mixedRankName,
+                cpph: array[array.length - 1]?.mixedCPPH,
+                rankNumber: array[array.length - 1]?.mixedRankNumber,
+                rankName: array[array.length - 1]?.mixedRankName,
               },
             },
             category: {
-              short: array[array.length - 1].categoryShort,
-              long: array[array.length - 1].categoryLong,
-              global: array[array.length - 1].categoryGlobal,
+              short: array[array.length - 1]?.categoryShort,
+              long: array[array.length - 1]?.categoryLong,
+              global: array[array.length - 1]?.categoryGlobal,
             },
           });
         });
@@ -99,23 +99,46 @@ const PrivateRoutes = () => {
     }
   }, [authToken]);
 
+  /** Adapt the component return to window's width => RESPONSIVE */
+  useEffect(() => {
+    const modal = document.body.querySelector(".event-modal");
+    const tournamentsDiv = document.body.querySelector(".tournaments");
+    const observer = new ResizeObserver((entries) => {
+      entries.forEach(() => {
+        if (window.innerWidth < 1000) {
+          setDeviceDisplay("mobile");
+        } else {
+          setDeviceDisplay("desktop");
+        }
+      });
+    });
+
+    if (modal) observer.observe(modal);
+    if (tournamentsDiv) observer.observe(tournamentsDiv);
+  }, [deviceDisplay]);
+
   return (
     <>
-      {/* {isAuthenticated && ( */}
-      <>
-        <Header />
-        <MemberHeader />
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Navigate to="/utilisateur/accueil" replace />} />
-          <Route path="/accueil" element={<Homepage />} />
-          <Route path="/tournois" element={<Tournaments />} />
-          <Route path="/inscription" element={<TournamentRegistration />} />
-          <Route path="/resultats" element={<Results />} />
-          <Route path="/reglages" element={<Settings />} />
-        </Routes>
-      </>
-      {/* )} */}
+      {isAuthenticated && (
+        <>
+          <Header />
+          <MemberHeader />
+          <Navigation />
+          <Routes>
+            <Route path="/" element={<Navigate to="/utilisateur/accueil" replace />} />
+            <Route
+              path="/accueil"
+              element={
+                <Homepage deviceDisplay={deviceDisplay} setDeviceDisplay={setDeviceDisplay} />
+              }
+            />
+            <Route path="/tournois" element={<UserTournaments />} />
+            <Route path="/inscription" element={<TournamentRegistration />} />
+            <Route path="/resultats" element={<Results />} />
+            <Route path="/reglages" element={<Settings />} />
+          </Routes>
+        </>
+      )}
     </>
   );
 };

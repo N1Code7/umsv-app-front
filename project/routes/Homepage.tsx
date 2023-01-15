@@ -1,4 +1,4 @@
-import { Dispatch, MouseEvent, SetStateAction, useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { fetchEvents, fetchTournaments, getMonthOfYear } from "../../config/functions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
@@ -8,12 +8,17 @@ import TournamentsSearch from "../components/TournamentsSearch";
 import EventModal from "../components/EventModal";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
 
-const Homepage = () => {
+interface IHomepageProps {
+  deviceDisplay: string;
+  setDeviceDisplay: Dispatch<SetStateAction<string>>;
+}
+
+const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
   const { authToken } = useContext(AuthenticationContext);
   const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({} as IClubEvent);
-  const [deviceDisplay, setDeviceDisplay] = useState("");
+  // const [deviceDisplay, setDeviceDisplay] = useState("");
   const [tournaments, setTournaments] = useState([]);
   const [searchByText, setSearchByText] = useState("");
   const [searchByDay, setSearchByDay] = useState("default");
@@ -211,23 +216,23 @@ const Homepage = () => {
     });
   };
 
-  /** Adapt the component return to window's width => RESPONSIVE */
-  useEffect(() => {
-    const modal = document.body.querySelector(".event-modal");
-    const tournamentsDiv = document.body.querySelector(".tournaments");
-    const observer = new ResizeObserver((entries) => {
-      entries.forEach(() => {
-        if (window.innerWidth < 1000) {
-          setDeviceDisplay("mobile");
-        } else {
-          setDeviceDisplay("desktop");
-        }
-      });
-    });
+  // /** Adapt the component return to window's width => RESPONSIVE */
+  // useEffect(() => {
+  //   const modal = document.body.querySelector(".event-modal");
+  //   const tournamentsDiv = document.body.querySelector(".tournaments");
+  //   const observer = new ResizeObserver((entries) => {
+  //     entries.forEach(() => {
+  //       if (window.innerWidth < 1000) {
+  //         setDeviceDisplay("mobile");
+  //       } else {
+  //         setDeviceDisplay("desktop");
+  //       }
+  //     });
+  //   });
 
-    if (modal) observer.observe(modal);
-    if (tournamentsDiv) observer.observe(tournamentsDiv);
-  }, [deviceDisplay]);
+  //   if (modal) observer.observe(modal);
+  //   if (tournamentsDiv) observer.observe(tournamentsDiv);
+  // }, [deviceDisplay]);
 
   //** Fetches functions for events and tournaments */
   useEffect(() => {

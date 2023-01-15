@@ -195,6 +195,18 @@ export const fetchTournaments = async (token: string) => {
 };
 
 /**
+ * Get information of all user's tournament registrations
+ * @param token the user's authentication token
+ */
+export const fetchUserRegistrations = async (token: string) => {
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "tournament-registrations", {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response;
+};
+
+/**
  * Format the input date into the selected schema
  * @param entryDate1 the date to format
  * @param entryDate2 the second date in case of interval
