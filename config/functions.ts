@@ -35,16 +35,16 @@ export const fetchLogin = async (email: string, password: string) => {
 
 /**
  * Keep the user's authentication and generate a new authToken
- * @param refreshToken the refreshToken stored in cookie
+ * This function get the refresh token from the function @see getRefreshTokenFromCookie()
  */
-export const fetchRefreshToken = async (refreshToken: string) => {
+export const fetchRefreshToken = async () => {
   const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh", {
     method: "POST",
     headers: {
       "Content-type": "application/json",
     },
     body: JSON.stringify({
-      refreshToken,
+      refreshToken: getRefreshTokenFromCookie(),
     }),
   });
   return response;

@@ -20,45 +20,4 @@
       font-style: italic;
     }
   }
-
-  .cta-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.6rem;
-    box-sizing: content-box;
-
-    @include from(1000) {
-      gap: 0.6rem;
-    }
-
-    .see-file {
-      background: rgba($infos, 0.35);
-      box-shadow: 2px 2px 8px 2px darken(rgba($infos, 0.35), 20%);
-    }
-
-    .register {
-      background: rgba($success-1, 0.35);
-      box-shadow: 2px 2px 6px 1px darken(rgba($success-1, 0.35), 20%);
-    }
-
-    button,
-    a {
-      width: 3.5rem;
-      padding: 0;
-      aspect-ratio: 1/1;
-      border-radius: 50%;
-      font-size: 2rem;
-      transition: box-shadow 0.2s ease-out;
-
-      @include from(1000) {
-        width: 2.5rem;
-        font-size: 1.5rem;
-      }
-
-      &:active {
-        box-shadow: none;
-      }
-    }
-  }
 }

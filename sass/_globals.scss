@@ -134,6 +134,71 @@ a {
   }
 }
 
+.user-space {
+  margin-top: 2rem;
+
+  @include from(1600) {
+    min-width: 100rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  table {
+    width: 100%;
+    text-align: center;
+    background: $bg-3;
+    border-collapse: collapse;
+
+    thead {
+      height: 4rem;
+      font-size: clamp(0.9rem, 1vw, 1.1rem);
+
+      tr {
+        &:first-of-type {
+          th {
+            padding: 1.2rem 0.6rem 0.6rem;
+          }
+        }
+
+        &:nth-of-type(2) {
+          border-bottom: 3px solid black;
+
+          th {
+            padding: 0 0.6rem 1.2rem;
+          }
+        }
+      }
+    }
+
+    tbody {
+      font-size: clamp(0.8rem, 1vw, 1rem);
+
+      td {
+        height: 4rem;
+        border-bottom: 1px solid black;
+        padding: 0.6rem;
+      }
+    }
+  }
+
+  .sort-btn-container {
+    display: flex;
+    // flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+
+    i {
+      font-size: 0.7rem;
+    }
+
+    button.active {
+      background: $primary-1;
+      color: $content-light;
+    }
+  }
+}
+
 .flash {
   display: block;
   padding: 1.2rem;

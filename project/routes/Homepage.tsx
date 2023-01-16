@@ -1,5 +1,11 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { fetchEvents, fetchTournaments, getMonthOfYear } from "../../config/functions";
+import {
+  fetchEvents,
+  fetchRefreshToken,
+  fetchTournaments,
+  getMonthOfYear,
+  getRefreshTokenFromCookie,
+} from "../../config/functions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
 import { IClubEvent, ITournament } from "../../config/interfaces";
@@ -7,6 +13,7 @@ import Tournament from "../components/Tournament";
 import TournamentsSearch from "../components/TournamentsSearch";
 import EventModal from "../components/EventModal";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
+import { useNavigate } from "react-router-dom";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -14,7 +21,8 @@ interface IHomepageProps {
 }
 
 const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
-  const { authToken } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
+  const { authToken, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
   const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({} as IClubEvent);
@@ -216,23 +224,25 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
     });
   };
 
-  // /** Adapt the component return to window's width => RESPONSIVE */
-  // useEffect(() => {
-  //   const modal = document.body.querySelector(".event-modal");
-  //   const tournamentsDiv = document.body.querySelector(".tournaments");
-  //   const observer = new ResizeObserver((entries) => {
-  //     entries.forEach(() => {
-  //       if (window.innerWidth < 1000) {
-  //         setDeviceDisplay("mobile");
-  //       } else {
-  //         setDeviceDisplay("desktop");
-  //       }
-  //     });
-  //   });
-
-  //   if (modal) observer.observe(modal);
-  //   if (tournamentsDiv) observer.observe(tournamentsDiv);
-  // }, [deviceDisplay]);
+  /** Refresh the token as soon as the sub-route is mounted before fetch events and tournaments */
+  useEffect(() => {
+    getRefreshTokenFromCookie() &&
+      getRefreshTokenFromCookie() !== "" &&
+      fetchRefreshToken()
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+          navigate("/");
+          throw new Error("An error occurs when try to refresh the token : " + res.statusText);
+        })
+        .then((res) => {
+          setIsAuthenticated?.(true);
+          setAuthToken?.(res.token);
+          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+        });
+  }, [authToken]);
 
   //** Fetches functions for events and tournaments */
   useEffect(() => {
@@ -242,6 +252,7 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
           if (res.ok) {
             return res.json();
           }
+          setAuthToken?.("");
           throw new Error("An error occurs when try to fetch events : " + res.statusText);
         })
         .then((res) => setEvents(res))
@@ -252,6 +263,7 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
           if (res.ok) {
             return res.json();
           }
+          setAuthToken?.("");
           throw new Error("An error occurs when try to fetch tournaments list : " + res.statusText);
         })
         .then((res) => setTournaments(res));
@@ -259,7 +271,7 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
   }, [authToken]);
 
   return (
-    <main className="homepage">
+    <main className="homepage user-space">
       <div className="events-block">
         <h2>Événements à venir</h2>
         <div className="events">
@@ -318,7 +330,7 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
             </>
           ) : (
             /** DESKTOP */
-            <table>
+            <table className="table">
               <thead>
                 <tr>
                   <th>Date</th>

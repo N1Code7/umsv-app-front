@@ -22,6 +22,8 @@ const TournamentRegistration = ({
         )}
       </div>
       <div className="cta-container">
+        <button className="btn modify">✏️</button>
+        <button className="btn cancel">🗑️</button>
         <a
           // HAVE TO CHANGE URL !!!!!!
           href="https://www.lifb.org/wp-content/uploads/2022/09/OPS_Reglement_Autorisations_Tournois_2022-2023_NVF-1.pdf"
@@ -31,7 +33,6 @@ const TournamentRegistration = ({
         >
           📄
         </a>
-        <button className="btn register">➕</button>
       </div>
     </div>
   ) : (
@@ -46,28 +47,29 @@ const TournamentRegistration = ({
       <td>{tournamentRegistration.tournament.name}</td>
       <td>{tournamentRegistration.tournament.city}</td>
       <td>
-        {new Date(tournamentRegistration.tournament.registrationClosingDate).getTime() -
-          new Date().getTime() <
-        0
-          ? "🙅"
-          : formatDate(tournamentRegistration.tournament.registrationClosingDate, "XX/XX/XX")}
+        {tournamentRegistration.participationSingle === true && <span>Simple</span>}
+        {tournamentRegistration.participationDouble === true && (
+          <span>Double avec {tournamentRegistration.doublePartnerName}</span>
+        )}
+        {tournamentRegistration.participationSingle === true && (
+          <span>Mixte avec {tournamentRegistration.mixedPartnerName}</span>
+        )}
       </td>
+
       <td>
-        {new Date(tournamentRegistration.tournament.randomDraw).getTime() - new Date().getTime() < 0
-          ? "🙅"
-          : formatDate(tournamentRegistration.tournament.randomDraw, "XX/XX/XX")}
+        {tournamentRegistration.requestState === "pending" ? (
+          <span className="status-tag status-tag-warning">En attente</span>
+        ) : tournamentRegistration.requestState === "validated" ? (
+          <span className="status-tag status-tag-success">Validée</span>
+        ) : (
+          <span className="status-tag status-tag-canceled">Annulée</span>
+        )}
       </td>
-      <td>
-        {
-          // tournamentRegistration.tournament.tournamentRegistrations.filter(
-          //   (registration: ITournamentRegistration) =>
-          //     // registration.tournamentId === tournament.id &&
-          //     registration.requestState === "validated"
-          // ).length
-        }
-      </td>
+
       <td>
         <div className="cta-container">
+          <button className="btn modify">✏️</button>
+          <button className="btn cancel">🗑️</button>
           <a
             // HAVE TO CHANGE URL !!!!!!
             href="https://www.lifb.org/wp-content/uploads/2022/09/OPS_Reglement_Autorisations_Tournois_2022-2023_NVF-1.pdf"
@@ -77,7 +79,6 @@ const TournamentRegistration = ({
           >
             📄
           </a>
-          <button className="btn register">➕</button>
         </div>
       </td>
     </tr>

@@ -8,7 +8,7 @@ import {
 } from "../../config/functions";
 import { ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;
@@ -17,79 +17,46 @@ interface IUserTournamentsProps {
 
 const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsProps) => {
   const navigate = useNavigate();
-  const { authToken, setAuthToken, setIsAuthenticated, setUser } =
-    useContext(AuthenticationContext);
-  // const [deviceDisplay, setDeviceDisplay] = useState("");
+  const { authToken, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
   const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
   const [activeSort, setActiveSort] = useState("startDate-ascending");
   console.log(deviceDisplay);
 
   useEffect(() => {
-    if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-      fetchRefreshToken(getRefreshTokenFromCookie())
+    getRefreshTokenFromCookie() &&
+      getRefreshTokenFromCookie() !== "" &&
+      fetchRefreshToken()
         .then((res) => {
-          if (res.ok) return res.json();
-          throw new Error(
-            "An error occurs when try to refresh user authentication token before fetch user's registrations : " +
-              res.statusText
-          );
+          if (res.ok) {
+            return res.json();
+          }
+          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+          navigate("/");
+          throw new Error("An error occurs when try to refresh the token : " + res.statusText);
         })
-        .then((res) => fetchUserRegistrations(res.token))
+        .then((res) => {
+          setIsAuthenticated?.(true);
+          setAuthToken?.(res.token);
+          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+        });
+  }, [authToken]);
+
+  useEffect(() => {
+    authToken &&
+      fetchUserRegistrations(authToken)
         .then((res) => {
           if (res.ok) return res.json();
+          setAuthToken?.("");
           throw new Error(
-            " error occurs when try to fetch user's registrations after refresh token : " +
-              res.statusText
+            res.status +
+              " An error occurs when try to fetch user's registrations after refresh token"
           );
         })
         .then((res) => setTournamentsRegistrations(res));
-    } else {
-      setIsAuthenticated?.(false);
-      setAuthToken?.("");
-      setUser?.({});
-      document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-      navigate("/");
-    }
-
-    // if (authToken) {
-    //   fetchUserRegistrations(authToken)
-    //     .then((res) => {
-    //       if (res.ok) {
-    //         return res.json();
-    //       }
-    //       throw new Error(
-    //         "An error occurs when try to fetch user's tournaments registrations  : " +
-    //           res.statusText
-    //       );
-    //     })
-    //     .then((res) => setTournamentsRegistrations(res));
-    // } else if (!authToken && getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-    //   fetchRefreshToken(getRefreshTokenFromCookie())
-    //     .then((res) => {
-    //       if (res.ok) {
-    //         return res.json();
-    //       }
-    //       throw new Error(
-    //         "An error occurs when try to refresh user authentication token before fetch user's registrations : " +
-    //           res.statusText
-    //       );
-    //     })
-    //     .then((res) => fetchUserRegistrations(res.token))
-    //     .then((res) => {
-    //       if (res.ok) return res.json();
-    //       throw new Error(
-    //         " error occurs when try to fetch user's registrations after refresh token : " +
-    //           res.statusText
-    //       );
-    //     })
-    //     .then((res) => setTournamentsRegistrations(res));
-    // }
-  }, [tournamentsRegistrations]);
-
-  // console.log(tournamentsRegistrations);
+  }, [authToken]);
 
   return (
-    <main>
+    <main className="user-tournaments user-space">
       <h2>Mes Tournois</h2>
 
       <div className="tournaments">
@@ -119,11 +86,9 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                 <th>Date</th>
                 <th>Nom du tournoi</th>
                 <th>Ville</th>
-                <th>Limite d&apos;inscription</th>
-                <th>Tirage au sort</th>
-                <th>Simple</th>
-                <th>Double</th>
-                <th>Mixte</th>
+                <th>Tableau(x)</th>
+                <th>État</th>
+                <th>Actions</th>
               </tr>
               <tr>
                 <th>
@@ -147,6 +112,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                     setActiveSort={setActiveSort}
                   />
                 </th>
+                <th></th>
                 <th>
                   <SortTournamentsBtn
                     activeSort={activeSort}
@@ -154,20 +120,13 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                     setActiveSort={setActiveSort}
                   />
                 </th>
-                <th>
+                {/* <th>
                   <SortTournamentsBtn
                     activeSort={activeSort}
                     property="randomDraw"
                     setActiveSort={setActiveSort}
                   />
-                </th>
-                <th>
-                  <SortTournamentsBtn
-                    activeSort={activeSort}
-                    property="playersAlreadyRegistered"
-                    setActiveSort={setActiveSort}
-                  />
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>

@@ -60,7 +60,7 @@ const Login = () => {
   useEffect(() => {
     getRefreshTokenFromCookie() &&
       getRefreshTokenFromCookie() !== "" &&
-      fetchRefreshToken(getRefreshTokenFromCookie())
+      fetchRefreshToken()
         .then((res) => {
           if (res.ok) {
             return res.json();
