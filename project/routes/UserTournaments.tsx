@@ -1,33 +1,92 @@
-import { useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { fetchUserRegistrations } from "../../config/functions";
-import { ITournament, ITournamentRegistration } from "../../config/interfaces";
+import {
+  fetchRefreshToken,
+  fetchUserRegistrations,
+  getRefreshTokenFromCookie,
+} from "../../config/functions";
+import { ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
+import { Navigate, useNavigate } from "react-router-dom";
 
-const UserTournaments = () => {
-  const { authToken } = useContext(AuthenticationContext);
-  const [deviceDisplay, setDeviceDisplay] = useState("");
+interface IUserTournamentsProps {
+  deviceDisplay: string;
+  setDeviceDisplay: Dispatch<SetStateAction<string>>;
+}
+
+const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsProps) => {
+  const navigate = useNavigate();
+  const { authToken, setAuthToken, setIsAuthenticated, setUser } =
+    useContext(AuthenticationContext);
+  // const [deviceDisplay, setDeviceDisplay] = useState("");
   const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
   const [activeSort, setActiveSort] = useState("startDate-ascending");
+  console.log(deviceDisplay);
 
   useEffect(() => {
-    if (authToken) {
-      fetchUserRegistrations(authToken)
+    if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
+      fetchRefreshToken(getRefreshTokenFromCookie())
         .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
+          if (res.ok) return res.json();
           throw new Error(
-            "An error occurs when try to fetch user's tournaments registrations  : " +
+            "An error occurs when try to refresh user authentication token before fetch user's registrations : " +
+              res.statusText
+          );
+        })
+        .then((res) => fetchUserRegistrations(res.token))
+        .then((res) => {
+          if (res.ok) return res.json();
+          throw new Error(
+            " error occurs when try to fetch user's registrations after refresh token : " +
               res.statusText
           );
         })
         .then((res) => setTournamentsRegistrations(res));
+    } else {
+      setIsAuthenticated?.(false);
+      setAuthToken?.("");
+      setUser?.({});
+      document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+      navigate("/");
     }
-  }, [authToken]);
 
-  console.log(tournamentsRegistrations);
+    // if (authToken) {
+    //   fetchUserRegistrations(authToken)
+    //     .then((res) => {
+    //       if (res.ok) {
+    //         return res.json();
+    //       }
+    //       throw new Error(
+    //         "An error occurs when try to fetch user's tournaments registrations  : " +
+    //           res.statusText
+    //       );
+    //     })
+    //     .then((res) => setTournamentsRegistrations(res));
+    // } else if (!authToken && getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
+    //   fetchRefreshToken(getRefreshTokenFromCookie())
+    //     .then((res) => {
+    //       if (res.ok) {
+    //         return res.json();
+    //       }
+    //       throw new Error(
+    //         "An error occurs when try to refresh user authentication token before fetch user's registrations : " +
+    //           res.statusText
+    //       );
+    //     })
+    //     .then((res) => fetchUserRegistrations(res.token))
+    //     .then((res) => {
+    //       if (res.ok) return res.json();
+    //       throw new Error(
+    //         " error occurs when try to fetch user's registrations after refresh token : " +
+    //           res.statusText
+    //       );
+    //     })
+    //     .then((res) => setTournamentsRegistrations(res));
+    // }
+  }, [tournamentsRegistrations]);
+
+  // console.log(tournamentsRegistrations);
 
   return (
     <main>

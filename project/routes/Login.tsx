@@ -58,6 +58,26 @@ const Login = () => {
   };
 
   useEffect(() => {
+    getRefreshTokenFromCookie() &&
+      getRefreshTokenFromCookie() !== "" &&
+      fetchRefreshToken(getRefreshTokenFromCookie())
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+          navigate("/");
+          throw new Error("An error occurs when try to refresh the token : " + res.statusText);
+        })
+        .then((res) => {
+          setIsAuthenticated?.(true);
+          setAuthToken?.(res.token);
+          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+          navigate("/utilisateur/accueil");
+        });
+  }, []);
+
+  useEffect(() => {
     email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6
       ? setSubmitEnabled(true)
       : setSubmitEnabled(false);
