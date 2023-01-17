@@ -1,14 +1,21 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { fetchLogin, fetchRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
+import {
+  fetchLogin,
+  fetchRefreshToken,
+  fetchUser,
+  getRefreshTokenFromCookie,
+} from "../../config/fetchFunctions";
 import Header from "../components/Header";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/accueil";
 
-  const { user, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
+  const { user, setAuthToken, setIsAuthenticated, setAuth } = useContext(AuthenticationContext);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -35,47 +42,46 @@ const Login = () => {
     if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
       fetchLogin(email, password)
         .then((res) => {
-          setPassword("");
-          if (res.ok) {
-            setEmail("");
-            setHasErrorOccurred(false);
-            return res.json();
-          } else {
-            setTimeout(() => {
-              setHasErrorOccurred(true);
-            }, 5000);
-          }
+          setEmail("");
+          setHasErrorOccurred(false);
+          setAuth?.({ accessToken: res.token, isAuthenticated: true });
+          return res.token;
         })
+        .then((res) => fetchUser(res))
         .then((res) => {
-          if (res) {
-            setIsAuthenticated?.(true);
-            setAuthToken?.(res.token);
-            document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-            navigate("/utilisateur/accueil");
-          }
+          setAuth?.((prev) => ({ ...prev, user: res }));
+          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+          navigate(from, { replace: true });
+        })
+        .catch(() => {
+          setTimeout(() => {
+            setHasErrorOccurred(true);
+          }, 5000);
         });
     }
   };
 
-  useEffect(() => {
-    getRefreshTokenFromCookie() &&
-      getRefreshTokenFromCookie() !== "" &&
-      fetchRefreshToken()
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-          navigate("/");
-          throw new Error("An error occurs when try to refresh the token : " + res.statusText);
-        })
-        .then((res) => {
-          setIsAuthenticated?.(true);
-          setAuthToken?.(res.token);
-          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-          navigate("/utilisateur/accueil");
-        });
-  }, []);
+  // useEffect(() => {}, []);
+
+  // useEffect(() => {
+  //   getRefreshTokenFromCookie() &&
+  //     getRefreshTokenFromCookie() !== "" &&
+  //     fetchRefreshToken()
+  //       .then((res) => {
+  //         if (res.ok) {
+  //           return res.json();
+  //         }
+  //         document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+  //         navigate("/");
+  //         throw new Error("An error occurs when try to refresh the token : " + res.statusText);
+  //       })
+  //       .then((res) => {
+  //         setIsAuthenticated?.(true);
+  //         setAuthToken?.(res.token);
+  //         document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+  //         navigate("/utilisateur/accueil");
+  //       });
+  // }, []);
 
   useEffect(() => {
     email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6

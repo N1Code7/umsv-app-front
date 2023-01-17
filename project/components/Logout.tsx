@@ -1,10 +1,14 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { useContext } from "react";
-import { fetchInvalidateRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
+import {
+  fetchInvalidateRefreshToken,
+  getRefreshTokenFromCookie,
+} from "../../config/fetchFunctions";
 
 const Logout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { setUser, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
 
@@ -21,7 +25,7 @@ const Logout = () => {
         setIsAuthenticated?.(false);
         setAuthToken?.("");
         document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-        navigate("/");
+        navigate("/", { state: { from: location }, replace: true });
       });
   };
 

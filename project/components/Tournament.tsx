@@ -1,4 +1,4 @@
-import { formatDate } from "../../config/functions";
+import { formatDate } from "../../config/dateFunctions";
 import { ITournament, ITournamentRegistration } from "../../config/interfaces";
 
 interface ITournamentProps {

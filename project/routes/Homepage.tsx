@@ -3,9 +3,8 @@ import {
   fetchEvents,
   fetchRefreshToken,
   fetchTournaments,
-  getMonthOfYear,
   getRefreshTokenFromCookie,
-} from "../../config/functions";
+} from "../../config/fetchFunctions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
 import { IClubEvent, ITournament } from "../../config/interfaces";
@@ -14,6 +13,7 @@ import TournamentsSearch from "../components/TournamentsSearch";
 import EventModal from "../components/EventModal";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
 import { useNavigate } from "react-router-dom";
+import { getMonthOfYear } from "../../config/dateFunctions";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -225,50 +225,50 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
   };
 
   /** Refresh the token as soon as the sub-route is mounted before fetch events and tournaments */
-  useEffect(() => {
-    getRefreshTokenFromCookie() &&
-      getRefreshTokenFromCookie() !== "" &&
-      fetchRefreshToken()
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-          navigate("/");
-          throw new Error("An error occurs when try to refresh the token : " + res.statusText);
-        })
-        .then((res) => {
-          setIsAuthenticated?.(true);
-          setAuthToken?.(res.token);
-          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-        });
-  }, [authToken]);
+  // useEffect(() => {
+  //   getRefreshTokenFromCookie() &&
+  //     getRefreshTokenFromCookie() !== "" &&
+  //     fetchRefreshToken()
+  //       .then((res) => {
+  //         if (res.ok) {
+  //           return res.json();
+  //         }
+  //         document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+  //         navigate("/");
+  //         throw new Error("An error occurs when try to refresh the token : " + res.statusText);
+  //       })
+  //       .then((res) => {
+  //         setIsAuthenticated?.(true);
+  //         setAuthToken?.(res.token);
+  //         document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+  //       });
+  // }, [authToken]);
 
   //** Fetches functions for events and tournaments */
-  useEffect(() => {
-    if (authToken) {
-      fetchEvents(authToken)
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          setAuthToken?.("");
-          throw new Error("An error occurs when try to fetch events : " + res.statusText);
-        })
-        .then((res) => setEvents(res))
-        .catch((err) => console.error(err));
+  // useEffect(() => {
+  //   if (authToken) {
+  //     fetchEvents(authToken)
+  //       .then((res) => {
+  //         if (res.ok) {
+  //           return res.json();
+  //         }
+  //         setAuthToken?.("");
+  //         throw new Error("An error occurs when try to fetch events : " + res.statusText);
+  //       })
+  //       .then((res) => setEvents(res))
+  //       .catch((err) => console.error(err));
 
-      fetchTournaments(authToken!)
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          setAuthToken?.("");
-          throw new Error("An error occurs when try to fetch tournaments list : " + res.statusText);
-        })
-        .then((res) => setTournaments(res));
-    }
-  }, [authToken]);
+  //     fetchTournaments(authToken!)
+  //       .then((res) => {
+  //         if (res.ok) {
+  //           return res.json();
+  //         }
+  //         setAuthToken?.("");
+  //         throw new Error("An error occurs when try to fetch tournaments list : " + res.statusText);
+  //       })
+  //       .then((res) => setTournaments(res));
+  //   }
+  // }, [authToken]);
 
   return (
     <main className="homepage user-space">

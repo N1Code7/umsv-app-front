@@ -29,9 +29,14 @@ interface authenticationContextType {
       global?: string;
     };
   };
+  auth: {
+    accessToken?: string;
+    isAuthenticated?: boolean;
+  };
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   setAuthToken: Dispatch<SetStateAction<string>>;
   setUser: Dispatch<SetStateAction<object>>;
+  setAuth: Dispatch<SetStateAction<object>>;
 }
 
 // Partial<> allow properties to be undefined

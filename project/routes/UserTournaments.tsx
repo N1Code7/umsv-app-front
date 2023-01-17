@@ -5,7 +5,7 @@ import {
   fetchRefreshToken,
   fetchUserRegistrations,
   getRefreshTokenFromCookie,
-} from "../../config/functions";
+} from "../../config/fetchFunctions";
 import { ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
 import { useNavigate } from "react-router-dom";

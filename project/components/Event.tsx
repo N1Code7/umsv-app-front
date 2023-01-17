@@ -1,5 +1,5 @@
 import { Dispatch, MouseEvent, SetStateAction, useEffect } from "react";
-import { formatDate, getDayOfWeek } from "../../config/functions";
+import { formatDate, getDayOfWeek } from "../../config/fetchFunctions";
 import { IClubEvent } from "../../config/interfaces";
 
 interface IEventProps {
