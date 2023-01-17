@@ -1,7 +1,7 @@
 import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { IClubEvent } from "../../config/interfaces";
-import { formatDate, getDayOfWeek } from "../../config/fetchFunctions";
 import Image from "next/image";
+import { formatDate, getDayOfWeek } from "../../config/dateFunctions";
 
 interface IProps {
   isModalActive: boolean;

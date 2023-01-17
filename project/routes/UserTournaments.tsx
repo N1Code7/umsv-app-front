@@ -1,14 +1,9 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import {
-  fetchRefreshToken,
-  fetchUserRegistrations,
-  getRefreshTokenFromCookie,
-} from "../../config/fetchFunctions";
+import { fetchRefreshToken, fetchUserRegistrations } from "../../config/fetchFunctions";
 import { ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
-import { useNavigate } from "react-router-dom";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;
@@ -20,6 +15,49 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
   const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
   const [activeSort, setActiveSort] = useState("startDate-ascending");
   console.log(deviceDisplay);
+
+  /** Sort tournaments depending on the selected sort button */
+  const sortRegistrations = (tournamentsRegistrations: Array<ITournamentRegistration>) => {
+    return tournamentsRegistrations.sort(
+      (a: ITournamentRegistration, b: ITournamentRegistration) => {
+        switch (activeSort) {
+          case "startDate-ascending":
+            return (
+              Number(new Date(a.tournament.startDate)) - Number(new Date(b.tournament.startDate))
+            );
+            break;
+          case "startDate-descending":
+            return (
+              Number(new Date(b.tournament.startDate)) - Number(new Date(a.tournament.startDate))
+            );
+            break;
+          case "name-ascending":
+            return a.tournament.name?.localeCompare(b.tournament.name);
+            break;
+          case "name-descending":
+            return b.tournament.name?.localeCompare(a.tournament.name);
+            break;
+          case "city-ascending":
+            return a.tournament.city.localeCompare(b.tournament.city);
+            break;
+          case "city-descending":
+            return b.tournament.city.localeCompare(a.tournament.city);
+            break;
+          case "requestState-ascending":
+            return a.requestState?.localeCompare(b.requestState);
+            break;
+          case "requestState-descending":
+            return b.requestState?.localeCompare(a.requestState);
+            break;
+          default:
+            return (
+              Number(new Date(a.tournament.startDate)) - Number(new Date(b.tournament.startDate))
+            );
+            break;
+        }
+      }
+    );
+  };
 
   /** Refresh token before fetch events and tournaments */
   useEffect(() => {
@@ -95,7 +133,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                 <th>
                   <SortTournamentsBtn
                     activeSort={activeSort}
-                    property="registrationClosingDate"
+                    property="requestState"
                     setActiveSort={setActiveSort}
                   />
                 </th>
@@ -109,13 +147,14 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
               </tr>
             </thead>
             <tbody>
-              {tournamentsRegistrations
-                .sort((a: ITournamentRegistration, b: ITournamentRegistration) => {
-                  return (
-                    Number(new Date(a.tournament.startDate)) -
-                    Number(new Date(b.tournament.startDate))
-                  );
-                })
+              {sortRegistrations(tournamentsRegistrations)
+                // tournamentsRegistrations
+                //   .sort((a: ITournamentRegistration, b: ITournamentRegistration) => {
+                //     return (
+                //       Number(new Date(a.tournament.startDate)) -
+                //       Number(new Date(b.tournament.startDate))
+                //     );
+                //   })
                 .map((tournamentRegistration: ITournamentRegistration) => (
                   <TournamentRegistration
                     key={tournamentRegistration.id}

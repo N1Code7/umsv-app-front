@@ -70,6 +70,7 @@ export interface IUser {
   firstName: string;
   email: string;
   roles: Array<string>;
+  gender?: string;
   FFBadStats: Array<{
     rankingsDate: string;
     license: string;
