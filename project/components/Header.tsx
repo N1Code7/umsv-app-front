@@ -7,11 +7,11 @@ import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 
 const Header = () => {
   const { toggleDisplay } = useContext(NavigationContext);
-  const { isAuthenticated, user } = useContext(AuthenticationContext);
+  const { user, auth } = useContext(AuthenticationContext);
 
   return (
     <header className="header">
-      {isAuthenticated ? (
+      {auth?.isAuthenticated ? (
         <>
           {user?.roles?.includes("ROLE_ADMIN") || user?.roles?.includes("ROLE_SUPERADMIN") ? (
             <div className="switch-container">

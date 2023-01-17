@@ -45,7 +45,7 @@ const MemberHeader = () => {
       <h1>Bonjour {user?.firstName}</h1>
       <div className="member-infos">
         <div className="license">Licence : {user?.license}</div>
-        {user?.license !== "" && (
+        {user?.feather && (
           <div className="feather">
             Plume : <i className="fa-solid fa-feather-pointed" style={{ color: colorFeather }}></i>
           </div>

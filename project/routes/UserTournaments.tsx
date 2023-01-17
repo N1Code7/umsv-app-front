@@ -5,7 +5,7 @@ import {
   fetchRefreshToken,
   fetchUserRegistrations,
   getRefreshTokenFromCookie,
-} from "../../config/functions";
+} from "../../config/fetchFunctions";
 import { ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
 import { useNavigate } from "react-router-dom";
@@ -16,44 +16,23 @@ interface IUserTournamentsProps {
 }
 
 const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsProps) => {
-  const navigate = useNavigate();
-  const { authToken, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
+  const { setAuth } = useContext(AuthenticationContext);
   const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
   const [activeSort, setActiveSort] = useState("startDate-ascending");
   console.log(deviceDisplay);
 
+  /** Refresh token before fetch events and tournaments */
   useEffect(() => {
-    getRefreshTokenFromCookie() &&
-      getRefreshTokenFromCookie() !== "" &&
-      fetchRefreshToken()
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-          navigate("/");
-          throw new Error("An error occurs when try to refresh the token : " + res.statusText);
-        })
-        .then((res) => {
-          setIsAuthenticated?.(true);
-          setAuthToken?.(res.token);
-          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-        });
-  }, [authToken]);
-
-  useEffect(() => {
-    authToken &&
-      fetchUserRegistrations(authToken)
-        .then((res) => {
-          if (res.ok) return res.json();
-          setAuthToken?.("");
-          throw new Error(
-            res.status +
-              " An error occurs when try to fetch user's registrations after refresh token"
-          );
-        })
-        .then((res) => setTournamentsRegistrations(res));
-  }, [authToken]);
+    fetchRefreshToken()
+      .then((res) => {
+        setAuth?.((prev) => ({ ...prev, accessToken: res.token }));
+        document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+        return res.token;
+      })
+      .then((res) => fetchUserRegistrations(res))
+      .then((res) => setTournamentsRegistrations(res))
+      .catch((err) => console.error(err));
+  }, [setAuth]);
 
   return (
     <main className="user-tournaments user-space">

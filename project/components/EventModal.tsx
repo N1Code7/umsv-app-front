@@ -1,6 +1,6 @@
 import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { IClubEvent } from "../../config/interfaces";
-import { formatDate, getDayOfWeek } from "../../config/functions";
+import { formatDate, getDayOfWeek } from "../../config/fetchFunctions";
 import Image from "next/image";
 
 interface IProps {
