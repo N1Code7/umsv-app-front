@@ -14,7 +14,7 @@ const Logout = () => {
       setAuth?.({});
       setUser?.({});
       document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-      navigate("/", { state: { from: location }, replace: true });
+      navigate("/se_connecter", { state: { from: location }, replace: true });
     });
   };
 

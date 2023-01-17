@@ -9,7 +9,7 @@ const Navigation = () => {
     <nav className={display === true ? "nav-mobile active" : "nav-mobile"}>
       <ul>
         <li>
-          <NavLink to="/accueil" className={(nav) => (nav.isActive ? "link-active" : "")}>
+          <NavLink to="/" className={(nav) => (nav.isActive ? "link-active" : "")}>
             <span>🛎️</span>
             <span>Accueil</span>
           </NavLink>

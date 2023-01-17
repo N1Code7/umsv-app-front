@@ -22,7 +22,7 @@ interface IHomepageProps {
 
 const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
   const navigate = useNavigate();
-  const { authToken, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
+  const { auth, user } = useContext(AuthenticationContext);
   const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({} as IClubEvent);

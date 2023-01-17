@@ -32,29 +32,35 @@ export default function MyApp() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/se_connecter" element={<Navigate to="/" replace />} />
-        <Route path="/creer_un_compte" element={<SignUp />} />
-        <Route path="/reinitialiser_mot_de_passe/*" element={<ResetPassword />} />
+        <Route path="/" element={<Outlet />}>
+          <Route path="/se_connecter" element={<Login />} />
+          <Route path="/creer_un_compte" element={<SignUp />} />
+          <Route path="/reinitialiser_mot_de_passe/*" element={<ResetPassword />} />
 
-        <Route element={<PrivateRoutes />}>
-          <Route
-            path="/accueil"
-            element={<Homepage deviceDisplay={deviceDisplay} setDeviceDisplay={setDeviceDisplay} />}
-          />
-          <Route
-            path="/tournois"
-            element={
-              <UserTournaments deviceDisplay={deviceDisplay} setDeviceDisplay={setDeviceDisplay} />
-            }
-          />
-          <Route path="/inscription" element={<NewTournamentRegistration />} />
-          <Route path="/resultats" element={<Results />} />
-          <Route path="/reglages" element={<Settings />} />
+          <Route element={<PrivateRoutes />}>
+            <Route
+              path="/"
+              element={
+                <Homepage deviceDisplay={deviceDisplay} setDeviceDisplay={setDeviceDisplay} />
+              }
+            />
+            <Route
+              path="/tournois"
+              element={
+                <UserTournaments
+                  deviceDisplay={deviceDisplay}
+                  setDeviceDisplay={setDeviceDisplay}
+                />
+              }
+            />
+            <Route path="/inscription" element={<NewTournamentRegistration />} />
+            <Route path="/resultats" element={<Results />} />
+            <Route path="/reglages" element={<Settings />} />
+          </Route>
+
+          <Route path="/page_introuvable" element={<PageNotFound />} />
+          <Route path="*" element={<Navigate to="/page_introuvable" replace />} />
         </Route>
-
-        <Route path="/page_introuvable" element={<PageNotFound />} />
-        <Route path="*" element={<Navigate to="/page_introuvable" replace />} />
       </Routes>
     </BrowserRouter>
   );
