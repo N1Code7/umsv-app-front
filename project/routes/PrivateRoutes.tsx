@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { fetchUser } from "../../config/fetchFunctions";
 import MemberHeader from "../components/MemberHeader";

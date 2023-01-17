@@ -232,9 +232,13 @@ export const fetchTournaments = async (token: string) => {
  * @param token the user's authentication token
  */
 export const fetchUserRegistrations = async (token: string) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "tournament-registrations", {
-    method: "GET",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response;
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "tournament-registrations", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.json();
+  } catch (err) {
+    throw new Error(err + "An error occurs when try to fetch the user's tournaments registrations");
+  }
 };
