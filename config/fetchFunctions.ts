@@ -2,14 +2,20 @@
  * Extract the value of cookie which includes the name refreshToken
  */
 export const getRefreshTokenFromCookie = () => {
-  const cookies = document.cookie.split(";");
-  let refreshToken = "";
-  cookies.forEach((cookie) => {
-    if (cookie.split("=")[0].includes("refreshToken")) {
-      refreshToken = cookie.split("=")[1];
-    }
-  });
-  return refreshToken;
+  try {
+    const cookies = document.cookie.split(";");
+    let refreshToken = "";
+    cookies.forEach((cookie) => {
+      if (cookie.split("=")[0].includes("refreshToken")) {
+        refreshToken = cookie.split("=")[1];
+      }
+    });
+    return refreshToken;
+  } catch (err) {
+    throw new Error(
+      "An error occurs when try to get the refresh token stored in the cookie " + err
+    );
+  }
 };
 
 /**
@@ -32,8 +38,8 @@ export const fetchLogin = async (email: string, password: string) => {
       }),
     });
     return response.json();
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    throw new Error("An error occurs when try to log in the user " + err);
   }
 };
 
@@ -53,28 +59,35 @@ export const fetchRefreshToken = async () => {
       }),
     });
     return response.json();
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    throw new Error("An error occurs when try to refresh the user's access token " + err);
   }
 };
 
 /**
  * Remove the refreshToken from the database and so disconnect the user from the service
+ * This function get the refresh token from the function @see getRefreshTokenFromCookie()
  * @param refreshToken the refreshToken stored in cookie
  */
-export const fetchInvalidateRefreshToken = async (refreshToken: string) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh/invalidate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    mode: "cors",
-    cache: "default",
-    body: JSON.stringify({
-      refreshToken,
-    }),
-  });
-  return response;
+export const fetchInvalidateRefreshToken = async () => {
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh/invalidate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+      cache: "default",
+      body: JSON.stringify({
+        refreshToken: getRefreshTokenFromCookie(),
+      }),
+    });
+    return response.json();
+  } catch (err) {
+    throw new Error(
+      "An error occurs when try to invalidate the user's refresh token at logout " + err
+    );
+  }
 };
 
 /**
@@ -174,7 +187,7 @@ export const fetchUser = async (token: string) => {
     });
     return response.json();
   } catch (err) {
-    console.error(err + "FetchUser function");
+    throw new Error("An error occurs when try to fetch User " + err);
   }
 };
 

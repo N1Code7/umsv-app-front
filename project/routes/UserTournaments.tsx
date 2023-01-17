@@ -17,7 +17,7 @@ interface IUserTournamentsProps {
 
 const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsProps) => {
   const navigate = useNavigate();
-  const { authToken, setAuthToken, setIsAuthenticated } = useContext(AuthenticationContext);
+  const { auth } = useContext(AuthenticationContext);
   const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
   const [activeSort, setActiveSort] = useState("startDate-ascending");
   console.log(deviceDisplay);

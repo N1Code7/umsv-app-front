@@ -9,8 +9,6 @@ const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 
 const Home = () => {
   const [display, setDisplay] = useState(false);
-  const [authToken, setAuthToken] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState({});
   const [auth, setAuth] = useState({});
 
@@ -30,10 +28,6 @@ const Home = () => {
 
       <AuthenticationContext.Provider
         value={{
-          authToken,
-          setAuthToken,
-          isAuthenticated,
-          setIsAuthenticated,
           user,
           setUser,
           auth,

@@ -1,8 +1,10 @@
 import { Dispatch, SetStateAction, createContext } from "react";
 
 interface authenticationContextType {
-  isAuthenticated: boolean;
-  authToken: string;
+  auth: {
+    accessToken?: string;
+    isAuthenticated?: boolean;
+  };
   user: {
     id?: number;
     lastName?: string;
@@ -29,12 +31,6 @@ interface authenticationContextType {
       global?: string;
     };
   };
-  auth: {
-    accessToken?: string;
-    isAuthenticated?: boolean;
-  };
-  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
-  setAuthToken: Dispatch<SetStateAction<string>>;
   setUser: Dispatch<SetStateAction<object>>;
   setAuth: Dispatch<SetStateAction<object>>;
 }

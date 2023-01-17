@@ -9,14 +9,13 @@ import {
   getRefreshTokenFromCookie,
 } from "../../config/fetchFunctions";
 import Header from "../components/Header";
+import { IUser } from "../../config/interfaces";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/accueil";
-
-  const { user, setAuthToken, setIsAuthenticated, setAuth } = useContext(AuthenticationContext);
-
+  const { user, setUser, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -42,20 +41,54 @@ const Login = () => {
     if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
       fetchLogin(email, password)
         .then((res) => {
-          setEmail("");
+          setPassword("");
           setHasErrorOccurred(false);
           setAuth?.({ accessToken: res.token, isAuthenticated: true });
+          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
           return res.token;
         })
         .then((res) => fetchUser(res))
-        .then((res) => {
-          setAuth?.((prev) => ({ ...prev, user: res }));
-          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+        .then(({ id, lastName, firstName, email, roles, FFBadStats: array }: IUser) => {
+          setUser?.({
+            id,
+            lastName,
+            firstName,
+            email,
+            roles,
+            birthDate: array[array.length - 1]?.birthDate,
+            license: array[array.length - 1]?.license,
+            isPlayerTransferred: array[array.length - 1]?.isPlayerTransferred,
+            feather: array[array.length - 1]?.feather,
+            rankings: {
+              effectiveDate: array[array.length - 1]?.rankingsDate,
+              single: {
+                cpph: array[array.length - 1]?.singleCPPH,
+                rankNumber: array[array.length - 1]?.singleRankNumber,
+                rankName: array[array.length - 1]?.singleRankName,
+              },
+              double: {
+                cpph: array[array.length - 1]?.doubleCPPH,
+                rankNumber: array[array.length - 1]?.doubleRankNumber,
+                rankName: array[array.length - 1]?.doubleRankName,
+              },
+              mixed: {
+                cpph: array[array.length - 1]?.mixedCPPH,
+                rankNumber: array[array.length - 1]?.mixedRankNumber,
+                rankName: array[array.length - 1]?.mixedRankName,
+              },
+            },
+            category: {
+              short: array[array.length - 1]?.categoryShort,
+              long: array[array.length - 1]?.categoryLong,
+              global: array[array.length - 1]?.categoryGlobal,
+            },
+          });
           navigate(from, { replace: true });
         })
         .catch(() => {
+          setHasErrorOccurred(true);
           setTimeout(() => {
-            setHasErrorOccurred(true);
+            setHasErrorOccurred(false);
           }, 5000);
         });
     }
@@ -109,7 +142,6 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            {/* <Input type="email " id="email" value={user?.email && user?.email} ref={email} /> */}
             {emailError && <div className="errorMessage-input">{emailError}</div>}
           </div>
           <div className="form-row">
@@ -122,7 +154,6 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              {/* <Input type={passwordVisible ? "text" : "password"} id="password" ref={password} /> */}
               <button
                 className={passwordVisible ? "hide" : "display"}
                 onClick={togglePasswordVisibility}
