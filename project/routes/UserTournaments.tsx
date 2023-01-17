@@ -14,9 +14,9 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
   const { setAuth } = useContext(AuthenticationContext);
   const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
   const [activeSort, setActiveSort] = useState("startDate-ascending");
-  console.log(deviceDisplay);
+  const [activeRegistration, setActiveRegistration] = useState({});
 
-  /** Sort tournaments depending on the selected sort button */
+  /** Sort registrations depending on the selected sort button */
   const sortRegistrations = (tournamentsRegistrations: Array<ITournamentRegistration>) => {
     return tournamentsRegistrations.sort(
       (a: ITournamentRegistration, b: ITournamentRegistration) => {
@@ -70,7 +70,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
       .then((res) => fetchUserRegistrations(res))
       .then((res) => setTournamentsRegistrations(res))
       .catch((err) => console.error(err));
-  }, [setAuth]);
+  }, [setAuth, activeRegistration]);
 
   return (
     <main className="user-tournaments user-space">
@@ -92,6 +92,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                   key={tournamentRegistration.id}
                   tournamentRegistration={tournamentRegistration}
                   displayOnMobile
+                  setActiveRegistration={setActiveRegistration}
                 />
               ))}
           </>
@@ -137,31 +138,19 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                     setActiveSort={setActiveSort}
                   />
                 </th>
-                {/* <th>
-                  <SortTournamentsBtn
-                    activeSort={activeSort}
-                    property="randomDraw"
-                    setActiveSort={setActiveSort}
-                  />
-                </th> */}
               </tr>
             </thead>
             <tbody>
-              {sortRegistrations(tournamentsRegistrations)
-                // tournamentsRegistrations
-                //   .sort((a: ITournamentRegistration, b: ITournamentRegistration) => {
-                //     return (
-                //       Number(new Date(a.tournament.startDate)) -
-                //       Number(new Date(b.tournament.startDate))
-                //     );
-                //   })
-                .map((tournamentRegistration: ITournamentRegistration) => (
+              {sortRegistrations(tournamentsRegistrations).map(
+                (tournamentRegistration: ITournamentRegistration) => (
                   <TournamentRegistration
                     key={tournamentRegistration.id}
                     tournamentRegistration={tournamentRegistration}
                     displayOnMobile={false}
+                    setActiveRegistration={setActiveRegistration}
                   />
-                ))}
+                )
+              )}
             </tbody>
           </table>
         )}

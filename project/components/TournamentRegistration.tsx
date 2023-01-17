@@ -1,18 +1,32 @@
-import { MouseEvent } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useContext } from "react";
 import { formatDate } from "../../config/dateFunctions";
 import { ITournamentRegistration } from "../../config/interfaces";
+import { fetchCancelUserRegistration, fetchRefreshToken } from "../../config/fetchFunctions";
+import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 
 interface ITournamentRegistrationProps {
   tournamentRegistration: ITournamentRegistration;
   displayOnMobile: boolean;
+  setActiveRegistration: Dispatch<SetStateAction<object>>;
 }
 
 const TournamentRegistration = ({
   tournamentRegistration,
   displayOnMobile,
+  setActiveRegistration,
 }: ITournamentRegistrationProps) => {
-  const handleCancel = (e: MouseEvent<HTMLButtonElement>) => {
+  const { setAuth } = useContext(AuthenticationContext);
+  const handleCancel = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    fetchRefreshToken()
+      .then((res) => {
+        setAuth?.((prev) => ({ ...prev, accessToken: res.token }));
+        document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+        return res.token;
+      })
+      .then((res) => fetchCancelUserRegistration(res, tournamentRegistration.id))
+      .then((res) => setActiveRegistration(res))
+      .catch((err) => console.error(err));
   };
 
   return displayOnMobile ? (

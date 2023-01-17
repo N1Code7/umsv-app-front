@@ -242,3 +242,23 @@ export const fetchUserRegistrations = async (token: string) => {
     throw new Error(err + "An error occurs when try to fetch the user's tournaments registrations");
   }
 };
+
+/**
+ * Cancel the selected user registration from its id (Not delete)
+ * @param token the user's access token
+ * @param registrationId the id of the selected tournament registration's
+ */
+export const fetchCancelUserRegistration = async (token: string, registrationId: number) => {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_HOST_BACK + `tournament-registration/cancel/${registrationId}`,
+      {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.json();
+  } catch (err) {
+    throw new Error(err + "An error occurs when try to cancel a user's tournament registration");
+  }
+};
