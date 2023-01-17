@@ -9,7 +9,7 @@ import { IUser } from "../../config/interfaces";
 
 const PrivateRoutes = () => {
   const location = useLocation();
-  const { auth, setAuth, setUser } = useContext(AuthenticationContext);
+  const { auth, setUser } = useContext(AuthenticationContext);
 
   useEffect(() => {
     auth?.accessToken &&

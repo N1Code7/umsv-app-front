@@ -7,7 +7,7 @@ import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 
 const Header = () => {
   const { toggleDisplay } = useContext(NavigationContext);
-  const { isAuthenticated, user, auth } = useContext(AuthenticationContext);
+  const { user, auth } = useContext(AuthenticationContext);
 
   return (
     <header className="header">

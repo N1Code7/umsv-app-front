@@ -196,13 +196,17 @@ export const fetchUser = async (token: string) => {
  * @param token the authentication token
  */
 export const fetchEvents = async (token: string) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "events", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response;
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "events", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  } catch (err) {
+    throw new Error(err + " An error occurs when try to fetch events");
+  }
 };
 
 /**
@@ -210,13 +214,17 @@ export const fetchEvents = async (token: string) => {
  * @param token the authentication token
  */
 export const fetchTournaments = async (token: string) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "tournaments", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response;
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "tournaments", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  } catch (err) {
+    throw new Error(err + "An error occurs when try to fetch tournaments");
+  }
 };
 
 /**
