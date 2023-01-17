@@ -1,20 +1,21 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { fetchLogin, fetchRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
+import {
+  fetchLogin,
+  fetchRefreshToken,
+  fetchUser,
+  getRefreshTokenFromCookie,
+} from "../../config/fetchFunctions";
 import Header from "../components/Header";
+import { IUser } from "../../config/interfaces";
 
 const Login = () => {
   const navigate = useNavigate();
-
-  // const email = useRef<HTMLInputElement>(null);
-  // const password = useRef<HTMLInputElement>(null);
-
-  const { setIsAuthenticated } = useContext(AuthenticationContext);
-  const { setAuthToken } = useContext(AuthenticationContext);
-  const { user } = useContext(AuthenticationContext);
-
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+  const { user, setUser, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -38,51 +39,34 @@ const Login = () => {
       : setPasswordError("");
 
     if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
-      await fetchLogin(email, password)
+      fetchLogin(email, password)
         .then((res) => {
-          setEmail("");
           setPassword("");
-          if (res.ok) {
-            setHasErrorOccurred(false);
-            return res.json();
-          } else {
-            setHasErrorOccurred(true);
-          }
+          setHasErrorOccurred(false);
+          setAuth?.({ accessToken: res.token, isAuthenticated: true });
+          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+          navigate(from, { replace: true });
         })
-        .then((res) => {
-          if (res) {
-            setIsAuthenticated?.(true);
-            setAuthToken?.(res.token);
-            document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-            navigate("/utilisateur/accueil");
-          }
+        .catch(() => {
+          setHasErrorOccurred(true);
+          setTimeout(() => {
+            setHasErrorOccurred(false);
+          }, 5000);
         });
     }
   };
 
-  interface IRefreshToken {
-    token: string;
-    refreshToken: string;
-  }
-
   useEffect(() => {
     if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-      fetchRefreshToken(getRefreshTokenFromCookie())
+      fetchRefreshToken()
         .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          throw new Error("An error occurs when try to refresh authToken after reload!");
+          setAuth?.({ accessToken: res.token, isAuthenticated: true });
+          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+          navigate(from, { replace: true });
         })
-        .then(({ token, refreshToken }: IRefreshToken) => {
-          setIsAuthenticated?.(true);
-          setAuthToken?.(token);
-          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-          navigate("/utilisateur/accueil");
-          // navigate(-1);
-        });
+        .catch((err) => console.error(err));
     }
-  }, []);
+  }, [setAuth, navigate, from]);
 
   useEffect(() => {
     email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6
@@ -110,7 +94,6 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            {/* <Input type="email " id="email" value={user?.email && user?.email} ref={email} /> */}
             {emailError && <div className="errorMessage-input">{emailError}</div>}
           </div>
           <div className="form-row">
@@ -123,7 +106,6 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              {/* <Input type={passwordVisible ? "text" : "password"} id="password" ref={password} /> */}
               <button
                 className={passwordVisible ? "hide" : "display"}
                 onClick={togglePasswordVisibility}

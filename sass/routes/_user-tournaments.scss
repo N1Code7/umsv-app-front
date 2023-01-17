@@ -1,0 +1,118 @@
+.user-tournaments {
+  .tournaments {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+
+    @include from(1000) {
+      display: block;
+      width: 100%;
+      background: $bg-3;
+      padding: 0.6rem;
+      border-radius: 5px;
+    }
+
+    thead {
+      th {
+        &:first-of-type {
+          width: 17%;
+        }
+
+        &:nth-of-type(2) {
+          width: 28%;
+        }
+
+        &:nth-of-type(3) {
+          width: 17%;
+        }
+
+        &:nth-of-type(4) {
+          width: 28%;
+        }
+
+        &:nth-of-type(5) {
+          min-width: 6.5rem;
+          width: min-content;
+          // width: 12%;
+        }
+
+        &:last-of-type {
+          width: 10%;
+        }
+      }
+    }
+
+    td {
+      text-align: center;
+      line-height: 22px;
+
+      span {
+        display: block;
+      }
+    }
+
+    .status-tag {
+      display: inline-block;
+      padding: 0.3rem;
+      border-radius: 5px;
+
+      &-success {
+        background: $success-2;
+      }
+      &-warning {
+        background: $warning-2;
+      }
+      &-canceled {
+        background: $canceled-2;
+      }
+    }
+  }
+
+  .cta-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.6rem;
+    box-sizing: content-box;
+
+    @include from(1000) {
+      gap: 0.6rem;
+    }
+
+    .see-file {
+      background: rgba($infos, 0.35);
+      box-shadow: 2px 2px 8px 2px darken(rgba($infos, 0.35), 20%);
+    }
+
+    .modify {
+      background: rgba($warning, 0.35);
+      box-shadow: 2px 2px 6px 1px darken(rgba($warning, 0.35), 20%);
+    }
+
+    .cancel {
+      background: rgba($canceled, 0.35);
+      box-shadow: 2px 2px 6px 1px darken(rgba($canceled, 0.35), 20%);
+    }
+
+    button,
+    a {
+      width: 2.7rem;
+      padding: 0;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      transition: box-shadow 0.2s ease-out;
+
+      @include from(1000) {
+        width: 2rem;
+        font-size: 1rem;
+      }
+
+      &:active {
+        box-shadow: none;
+      }
+    }
+  }
+}

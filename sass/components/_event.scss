@@ -1,0 +1,88 @@
+.event {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: $bg-3;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 3px 4px 2px 0px rgb(6 41 109 / 50%);
+  transition: box-shadow 0.2s ease-out;
+  color: $content-dark;
+
+  @include fine {
+    &:hover,
+    &:hover .event-date,
+    &:hover .event-content {
+      background: $bg-2;
+      color: $content-light;
+    }
+  }
+
+  @include coarse {
+    &:active,
+    &:active .event-date,
+    &:active .event-content {
+      background: $bg-2;
+      color: $content-light;
+    }
+
+    &:hover {
+      box-shadow: 0 0 0 0 rgb(6 41 109 / 50%);
+    }
+  }
+
+  @include from(1000) {
+    width: 19rem;
+    box-shadow: 4px 6px 9px 0px #06296d80;
+  }
+
+  span {
+    font-weight: 500;
+  }
+
+  &-date {
+    color: $bg-1;
+    padding: 0.5rem 0.5rem 0.3rem;
+    border-radius: 12px 12px 0 0;
+    font-size: 0.9rem;
+
+    @include ptt {
+      font-size: 1rem;
+    }
+  }
+
+  &-content {
+    display: flex;
+    align-items: center;
+    background: $bg-3;
+    padding: 0 0.5rem 0.5rem;
+    border-radius: 0 0 12px 12px;
+    height: 2.2rem;
+    width: 100%;
+    font-size: 0.8rem;
+
+    @include ptt {
+      font-size: 0.9rem;
+    }
+
+    @include from(1000) {
+      height: 5rem;
+    }
+
+    p {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      @include from(1000) {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        white-space: normal;
+      }
+    }
+  }
+}

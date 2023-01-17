@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Header from "../components/Header";
-import { fetchCreateAccount } from "../../config/functions";
+import { fetchCreateAccount } from "../../config/fetchFunctions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 
 const SignUp = () => {

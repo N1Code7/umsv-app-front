@@ -9,46 +9,31 @@ const Navigation = () => {
     <nav className={display === true ? "nav-mobile active" : "nav-mobile"}>
       <ul>
         <li>
-          <NavLink
-            to="/utilisateur/accueil"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/" className={(nav) => (nav.isActive ? "link-active" : "")}>
             <span>🛎️</span>
             <span>Accueil</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/utilisateur/tournois"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/tournois" className={(nav) => (nav.isActive ? "link-active" : "")}>
             <span>🏟️</span>
             <span>Mes Tournois</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/utilisateur/inscription"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/inscription" className={(nav) => (nav.isActive ? "link-active" : "")}>
             <span>📝</span>
             <span>Inscription</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/utilisateur/resultats"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/resultats" className={(nav) => (nav.isActive ? "link-active" : "")}>
             <span>🏅</span>
             <span>Mes Résultats</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/utilisateur/reglages"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/reglages" className={(nav) => (nav.isActive ? "link-active" : "")}>
             <span>🧑</span>
             <span>Mon Profil</span>
           </NavLink>

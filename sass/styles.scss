@@ -7,6 +7,12 @@
 @import "./components/navigation.scss";
 @import "./components/switch.scss";
 @import "./components/member-header";
+@import "./components/event";
+@import "./components/eventModal";
+@import "./components/tournament";
+@import "./components/tournament-search";
 @import "./routes/login";
 @import "./routes/reset-password";
 @import "./routes/sign-up.scss";
+@import "./routes/homepage";
+@import "./routes/user-tournaments";

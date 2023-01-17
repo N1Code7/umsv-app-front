@@ -2,12 +2,12 @@ import Header from "../components/Header";
 import MemberHeader from "../components/MemberHeader";
 import Navigation from "../components/Navigation";
 
-const TournamentRegistration = () => {
+const NewTournamentRegistration = () => {
   return (
     <>
-      <Header />
+      {/* <Header />
       <MemberHeader />
-      <Navigation />
+      <Navigation /> */}
       <main>
         <h2>Demande d&apos;inscription</h2>
       </main>
@@ -15,4 +15,4 @@ const TournamentRegistration = () => {
   );
 };
 
-export default TournamentRegistration;
+export default NewTournamentRegistration;

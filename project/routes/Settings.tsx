@@ -5,9 +5,9 @@ import Navigation from "../components/Navigation";
 const Settings = () => {
   return (
     <>
-      <Header />
+      {/* <Header />
       <MemberHeader />
-      <Navigation />
+      <Navigation /> */}
       <main>
         <h2>Mes réglages</h2>
       </main>

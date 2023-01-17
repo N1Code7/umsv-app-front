@@ -1,32 +1,21 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { useContext } from "react";
-import { fetchInvalidateRefreshToken, getRefreshTokenFromCookie } from "../../config/functions";
+import { fetchInvalidateRefreshToken } from "../../config/fetchFunctions";
 
 const Logout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const { user, setUser } = useContext(AuthenticationContext);
-  const { authToken, setAuthToken } = useContext(AuthenticationContext);
-  const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
+  const { setUser, setAuth } = useContext(AuthenticationContext);
 
-  const logout = async () => {
-    await fetchInvalidateRefreshToken(getRefreshTokenFromCookie())
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error("An error occurs when the refresh token should be invalidated!");
-      })
-      .then((res) => {
-        console.log(res);
-
-        setUser?.({});
-        setIsAuthenticated?.(false);
-        setAuthToken?.("");
-        document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-        navigate("/");
-      });
+  const logout = () => {
+    fetchInvalidateRefreshToken().then(() => {
+      setAuth?.({});
+      setUser?.({});
+      document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+      navigate("/se_connecter", { state: { from: location }, replace: true });
+    });
   };
 
   return (

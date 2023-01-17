@@ -1,7 +1,7 @@
 import { use, useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import Input from "../components/Input";
-import { fetchInitResetPassword, fetchValidNewPassword } from "../../config/functions";
+import { fetchInitResetPassword, fetchValidNewPassword } from "../../config/fetchFunctions";
 import { NavLink, Route, Routes, useParams } from "react-router-dom";
 
 const ResetPassword = () => {

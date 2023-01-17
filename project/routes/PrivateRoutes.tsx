@@ -1,80 +1,73 @@
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import Homepage from "./Homepage";
-import Tournaments from "./Tournaments";
-import TournamentRegistration from "./TournamentRegistration";
-import Results from "./Results";
-import Settings from "./Settings";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { fetchRefreshToken, fetchUser, getRefreshTokenFromCookie } from "../../config/functions";
-
-interface RefreshTokenResponse {
-  token: string;
-  refreshToken: string;
-}
-
-interface UserResponse {
-  id: number;
-  lastName: string;
-  firstName: string;
-  email: string;
-  roles: Array<string>;
-}
+import { fetchUser } from "../../config/fetchFunctions";
+import MemberHeader from "../components/MemberHeader";
+import Navigation from "../components/Navigation";
+import Header from "../components/Header";
+import { IUser } from "../../config/interfaces";
 
 const PrivateRoutes = () => {
-  const navigate = useNavigate();
-
-  const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
-  const { user, setUser } = useContext(AuthenticationContext);
-  const { authToken, setAuthToken } = useContext(AuthenticationContext);
+  const location = useLocation();
+  const { auth, setUser } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/");
-    } else if (authToken !== "") {
-      fetchUser(authToken)
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          throw new Error("Authentication does not work!");
-        })
-        .then(({ id, lastName, firstName, email, roles }: UserResponse) => {
-          setUser?.({ id, lastName, firstName, email, roles });
-        });
-    } else if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-      fetchRefreshToken(getRefreshTokenFromCookie())
-        .then((res) => {
-          if (res.ok) {
-            res.json();
-          }
-          throw new Error("Can't refresh the token!");
-        })
-        .then(({ token, refreshToken }: RefreshTokenResponse) => {
-          setIsAuthenticated?.(true);
-          setAuthToken?.(token);
-          document.cookie = `refreshToken=${refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-        });
-    } else {
-      setIsAuthenticated?.(false);
-      setAuthToken?.("");
-      setUser?.({});
-      navigate("/");
-    }
+    auth?.accessToken &&
+      fetchUser(auth.accessToken).then(
+        ({ id, lastName, firstName, email, roles, FFBadStats: array }: IUser) => {
+          setUser?.({
+            id,
+            lastName,
+            firstName,
+            email,
+            roles,
+            birthDate: array[array.length - 1]?.birthDate,
+            license: array[array.length - 1]?.license,
+            isPlayerTransferred: array[array.length - 1]?.isPlayerTransferred,
+            feather: array[array.length - 1]?.feather,
+            rankings: {
+              effectiveDate: array[array.length - 1]?.rankingsDate,
+              single: {
+                cpph: array[array.length - 1]?.singleCPPH,
+                rankNumber: array[array.length - 1]?.singleRankNumber,
+                rankName: array[array.length - 1]?.singleRankName,
+              },
+              double: {
+                cpph: array[array.length - 1]?.doubleCPPH,
+                rankNumber: array[array.length - 1]?.doubleRankNumber,
+                rankName: array[array.length - 1]?.doubleRankName,
+              },
+              mixed: {
+                cpph: array[array.length - 1]?.mixedCPPH,
+                rankNumber: array[array.length - 1]?.mixedRankNumber,
+                rankName: array[array.length - 1]?.mixedRankName,
+              },
+            },
+            category: {
+              short: array[array.length - 1]?.categoryShort,
+              long: array[array.length - 1]?.categoryLong,
+              global: array[array.length - 1]?.categoryGlobal,
+            },
+          });
+        }
+      );
+  }, [auth?.accessToken, setUser]);
+
+  useEffect(() => {
+    console.log("private routes re-render");
   }, []);
 
   return (
     <>
-      {isAuthenticated && (
-        <Routes>
-          <Route path="/" element={<Navigate to="/utilisateur/accueil" replace />} />
-          {/* <Route path="/" element={<Homepage />} /> */}
-          <Route path="/accueil" element={<Homepage />} />
-          <Route path="/tournois" element={<Tournaments />} />
-          <Route path="/inscription" element={<TournamentRegistration />} />
-          <Route path="/resultats" element={<Results />} />
-          <Route path="/reglages" element={<Settings />} />
-        </Routes>
+      {auth?.isAuthenticated ? (
+        <>
+          <Header />
+          <MemberHeader />
+          <Navigation />
+          <Outlet />
+        </>
+      ) : (
+        <Navigate to="/se_connecter" state={{ from: location }} replace />
       )}
     </>
   );

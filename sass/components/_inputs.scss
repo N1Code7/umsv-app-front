@@ -6,13 +6,15 @@ input {
 
   &[type="text"],
   &[type="email"],
-  &[type="password"] {
-    border-radius: 3px;
-    transition: border-radius 0.3s ease-out;
+  &[type="password"],
+  &[type="date"] {
     height: 3rem;
-    font-size: 1.2rem;
     border: 1.5px solid grey;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 1.2rem;
     font-family: inherit;
+    transition: border-radius 0.3s ease-out;
 
     &:focus {
       border: 2px solid $primary-1;
@@ -28,6 +30,25 @@ input {
     font-weight: 500;
     cursor: pointer;
     margin-top: 0.6rem;
+  }
+}
+
+select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 3rem;
+  border: 1.5px solid grey;
+  border-radius: 3px;
+  background: #fff;
+  font-size: 1.2rem;
+  font-family: inherit;
+  transition: border-radius 0.3s ease-out;
+
+  &:focus {
+    border: 2px solid $primary-1;
+    border-radius: 10px;
   }
 }
 
