@@ -5,10 +5,10 @@ import Event from "../components/Event";
 import { IClubEvent, ITournament } from "../../config/interfaces";
 import Tournament from "../components/Tournament";
 import TournamentsSearch from "../components/TournamentsSearch";
-import EventModal from "../components/EventModal";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
-import { useNavigate } from "react-router-dom";
-import { getMonthOfYear } from "../../config/dateFunctions";
+import { formatDate, getDayOfWeek, getMonthOfYear } from "../../config/dateFunctions";
+import Modal from "../components/Modal";
+import Image from "next/image";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -16,7 +16,6 @@ interface IHomepageProps {
 }
 
 const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
-  const navigate = useNavigate();
   const { setAuth } = useContext(AuthenticationContext);
   const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -253,19 +252,65 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
               <Event
                 key={event.id}
                 event={event}
+                focusedEvent={focusedEvent}
                 isModalActive={isModalActive}
                 setIsModalActive={setIsModalActive}
                 setFocusedEvent={setFocusedEvent}
               />
             ))}
         </div>
-        {isModalActive && (focusedEvent as IClubEvent) && (
-          <EventModal
-            focusedEvent={focusedEvent}
-            setFocusedEvent={setFocusedEvent}
-            isModalActive={isModalActive}
-            setIsModalActive={setIsModalActive}
-          />
+        {isModalActive && Object.keys(focusedEvent).length !== 0 && (
+          <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
+            <div
+              className="modal-container_event"
+              style={
+                isModalActive
+                  ? window.innerWidth < 1000
+                    ? { display: "block" }
+                    : { display: "grid" }
+                  : { display: "none" }
+              }
+            >
+              <div className="title">
+                {focusedEvent.endDate ? (
+                  <h2>
+                    Du{" "}
+                    <span>
+                      {getDayOfWeek(focusedEvent.startDate)}{" "}
+                      {formatDate(focusedEvent.startDate, "XX/XX/XX")}
+                    </span>{" "}
+                    au{" "}
+                    <span>
+                      {getDayOfWeek(focusedEvent.endDate)}{" "}
+                      {formatDate(focusedEvent.endDate, "XX/XX/XX")}
+                    </span>
+                  </h2>
+                ) : (
+                  <h2>
+                    Le{" "}
+                    <span>
+                      {getDayOfWeek(focusedEvent.startDate, "long")}{" "}
+                      {formatDate(focusedEvent.startDate, "XX/XX/XX")}
+                    </span>
+                  </h2>
+                )}
+              </div>
+              <div className="image">
+                {
+                  <Image
+                    src={focusedEvent.imageUrl}
+                    alt={`image de l'événement du ${getDayOfWeek(
+                      focusedEvent.startDate,
+                      "long"
+                    )} ${formatDate(focusedEvent.startDate, "XX/XX/XX")}`}
+                    fill
+                    sizes=""
+                  />
+                }
+              </div>
+              <div className="content">{focusedEvent.content}</div>
+            </div>
+          </Modal>
         )}
       </div>
 

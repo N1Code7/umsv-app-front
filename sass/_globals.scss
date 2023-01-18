@@ -153,6 +153,10 @@ a {
       height: 4rem;
       font-size: clamp(0.9rem, 1vw, 1.1rem);
 
+      th {
+        font-weight: 600;
+      }
+
       tr {
         &:first-of-type {
           th {

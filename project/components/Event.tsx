@@ -5,11 +5,18 @@ import { formatDate, getDayOfWeek } from "../../config/dateFunctions";
 interface IEventProps {
   event: IClubEvent;
   isModalActive: boolean;
+  focusedEvent: IClubEvent;
   setFocusedEvent: Dispatch<SetStateAction<IClubEvent>>;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
 }
 
-const Event = ({ event, setFocusedEvent, isModalActive, setIsModalActive }: IEventProps) => {
+const Event = ({
+  event,
+  focusedEvent,
+  setFocusedEvent,
+  isModalActive,
+  setIsModalActive,
+}: IEventProps) => {
   const handleDisplayModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setFocusedEvent(event);
@@ -17,16 +24,20 @@ const Event = ({ event, setFocusedEvent, isModalActive, setIsModalActive }: IEve
   };
 
   useEffect(() => {
-    if (isModalActive) {
-      document.body.querySelector(".event-modal-backdrop")?.addEventListener("click", (e) => {
+    isModalActive &&
+      document.body.querySelector(".modal-backdrop")?.addEventListener("click", () => {
         setFocusedEvent({} as IClubEvent);
-        setIsModalActive(false);
       });
-    }
+
     document.body
       .querySelector(".events")
-      ?.setAttribute("style", `animation-play-state: ${isModalActive ? "paused" : "running"};`);
-  }, [isModalActive, setFocusedEvent, setIsModalActive]);
+      ?.setAttribute(
+        "style",
+        `animation-play-state: ${
+          isModalActive && focusedEvent !== ({} as IClubEvent) ? "paused" : "running"
+        };`
+      );
+  }, [isModalActive, focusedEvent, setFocusedEvent]);
 
   return (
     <>

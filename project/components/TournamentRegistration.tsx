@@ -16,6 +16,11 @@ const TournamentRegistration = ({
   setActiveRegistration,
 }: ITournamentRegistrationProps) => {
   const { setAuth } = useContext(AuthenticationContext);
+
+  const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+
   const handleCancel = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     fetchRefreshToken()
@@ -112,7 +117,9 @@ const TournamentRegistration = ({
 
       <td>
         <div className="cta-container">
-          <button className="btn modify">✏️</button>
+          <button className="btn modify" onClick={handleModify}>
+            ✏️
+          </button>
           <button className="btn cancel" onClick={handleCancel}>
             🗑️
           </button>

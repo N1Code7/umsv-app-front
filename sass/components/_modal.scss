@@ -1,5 +1,4 @@
-.event-modal {
-  display: none;
+.modal {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -16,9 +15,6 @@
   }
 
   @include from(1000) {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 1fr 30vw;
     width: auto;
     height: auto;
     padding: 1.2rem;
@@ -29,6 +25,7 @@
     justify-content: center;
     align-items: center;
     position: absolute;
+    z-index: 2;
     top: 0.6rem;
     right: 1rem;
     border: none;
@@ -69,31 +66,43 @@
     }
   }
 
-  .image {
-    width: 90%;
-    aspect-ratio: 1 / 1;
-    margin: 1.2rem auto;
-    position: relative;
-
-    @include ptt {
-      width: 52vw;
-    }
-
-    @include from(1000) {
-      width: 40vw;
-      margin: 1.2rem;
-    }
-
-    img {
-      object-fit: cover;
-    }
-  }
-
   .content {
     padding: 0.6rem 0.9rem;
 
     @include from(1000) {
       align-self: center;
+    }
+  }
+
+  &-container_event {
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr 30vw;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    @include from(1000) {
+      position: static;
+    }
+
+    .image {
+      width: 90%;
+      aspect-ratio: 1 / 1;
+      margin: 1.2rem auto;
+      position: relative;
+
+      @include ptt {
+        width: 52vw;
+      }
+
+      @include from(1000) {
+        width: 40vw;
+        margin: 1.2rem;
+      }
+
+      img {
+        object-fit: cover;
+      }
     }
   }
 
