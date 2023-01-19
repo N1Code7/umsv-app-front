@@ -16,7 +16,7 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const { user, setUser, setAuth } = useContext(AuthenticationContext);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(user?.email || "");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);

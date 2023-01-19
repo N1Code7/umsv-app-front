@@ -8,17 +8,23 @@ interface ITournamentRegistrationProps {
   tournamentRegistration: ITournamentRegistration;
   displayOnMobile: boolean;
   setActiveRegistration: Dispatch<SetStateAction<object>>;
+  setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
+  setIsModalActive: Dispatch<SetStateAction<boolean>>;
 }
 
 const TournamentRegistration = ({
   tournamentRegistration,
   displayOnMobile,
   setActiveRegistration,
+  setIsModalActive,
+  setFocusedRegistration,
 }: ITournamentRegistrationProps) => {
   const { setAuth } = useContext(AuthenticationContext);
 
   const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setFocusedRegistration(tournamentRegistration);
+    setIsModalActive(true);
   };
 
   const handleCancel = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -30,12 +36,12 @@ const TournamentRegistration = ({
         return res.token;
       })
       .then((res) => fetchCancelUserRegistration(res, tournamentRegistration.id))
-      .then((res) => setActiveRegistration(res))
+      .then((res) => setFocusedRegistration(res))
       .catch((err) => console.error(err));
   };
 
   return displayOnMobile ? (
-    <div className="tournament card">
+    <div className="registration card">
       <div className="name">{tournamentRegistration.tournament.name}</div>
       <div className="city">{tournamentRegistration.tournament.city}</div>
       <div className="dates">
@@ -46,8 +52,12 @@ const TournamentRegistration = ({
         )}
       </div>
       <div className="cta-container">
-        <button className="btn modify">✏️</button>
-        <button className="btn cancel">🗑️</button>
+        <button className="btn modify" onClick={handleModify}>
+          ✏️
+        </button>
+        <button className="btn cancel" onClick={handleCancel}>
+          🗑️
+        </button>
         <a
           // HAVE TO CHANGE URL !!!!!!
           href="https://www.lifb.org/wp-content/uploads/2022/09/OPS_Reglement_Autorisations_Tournois_2022-2023_NVF-1.pdf"

@@ -1,17 +1,23 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { fetchUser } from "../../config/fetchFunctions";
+import { fetchUser, getRefreshTokenFromCookie } from "../../config/fetchFunctions";
 import MemberHeader from "../components/MemberHeader";
 import Navigation from "../components/Navigation";
 import Header from "../components/Header";
 import { IUser } from "../../config/interfaces";
 
 const PrivateRoutes = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { auth, setUser } = useContext(AuthenticationContext);
 
   useEffect(() => {
+    if (getRefreshTokenFromCookie() === undefined || getRefreshTokenFromCookie() === "undefined") {
+      document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+      return navigate("/se_connecter");
+    }
+
     auth?.accessToken &&
       fetchUser(auth.accessToken).then(
         ({ id, lastName, firstName, email, roles, FFBadStats: array }: IUser) => {
@@ -45,6 +51,7 @@ const PrivateRoutes = () => {
             },
             category: {
               short: array[array.length - 1]?.categoryShort,
+
               long: array[array.length - 1]?.categoryLong,
               global: array[array.length - 1]?.categoryGlobal,
             },
@@ -52,10 +59,6 @@ const PrivateRoutes = () => {
         }
       );
   }, [auth?.accessToken, setUser]);
-
-  useEffect(() => {
-    console.log("private routes re-render");
-  }, []);
 
   return (
     <>

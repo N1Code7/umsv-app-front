@@ -52,6 +52,24 @@ select {
   }
 }
 
+textarea {
+  //  height: 3rem;
+  border: 1.5px solid grey;
+  border-radius: 3px;
+  background: #fff;
+  font-size: 1.2rem;
+  font-family: inherit;
+  transition: border-radius 0.3s ease-out;
+  padding: 0.3rem;
+
+  &:focus {
+    // outline: 2px solid $primary-1;
+    // outline-offset: 2px;
+    border: 2px solid $primary-1;
+    border-radius: 10px;
+  }
+}
+
 .password-input {
   position: relative;
   display: flex;
