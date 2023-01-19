@@ -31,6 +31,10 @@ input {
     cursor: pointer;
     margin-top: 0.6rem;
   }
+
+  &[disabled] {
+    background: rgb(236, 230, 230);
+  }
 }
 
 select {
@@ -53,14 +57,14 @@ select {
 }
 
 textarea {
-  //  height: 3rem;
+  resize: vertical;
+  padding: 0.3rem;
+  background: #fff;
   border: 1.5px solid grey;
   border-radius: 3px;
-  background: #fff;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-family: inherit;
   transition: border-radius 0.3s ease-out;
-  padding: 0.3rem;
 
   &:focus {
     // outline: 2px solid $primary-1;

@@ -186,7 +186,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
           <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
             <div className="modal-container_registration">
               <div className="title">
-                <h2>Modification inscription</h2>
+                <h2>Modification inscription :</h2>
               </div>
               <form className="form" onSubmit={handleSubmit}>
                 <div className="form-row">
@@ -208,48 +208,82 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                   />
                 </div>
                 <div className="form-row">
-                  Du{" "}
-                  <span>{formatDate(focusedRegistration.tournament.startDate, "XX xxx XXXX")}</span>
-                  Au{" "}
-                  <span>{formatDate(focusedRegistration.tournament.endDate, "XX xxx XXXX")}</span>
+                  <div className="dates">
+                    Du{" "}
+                    <span>
+                      {formatDate(focusedRegistration.tournament.startDate, "XX xxx XXXX")}
+                    </span>{" "}
+                    au{" "}
+                    <span>{formatDate(focusedRegistration.tournament.endDate, "XX xxx XXXX")}</span>
+                  </div>
                 </div>
-                <div className="form-row">
-                  <label htmlFor="single">Simple</label>
-                  <input type="checkbox" name="single" id="single" ref={checkboxSingle} />
-                  <label htmlFor="double">Double</label>
-                  <input
-                    type="checkbox"
-                    name="double"
-                    id="double"
-                    checked={checkboxDouble}
-                    onChange={() => setCheckboxDouble((prev) => !prev)}
-                  />
-                  <label htmlFor="mixte">Mixte</label>
-                  <input
-                    type="checkbox"
-                    name="mixed"
-                    id="mixed"
-                    checked={checkboxMixed}
-                    onChange={() => setCheckboxMixed((prev) => !prev)}
-                  />
+                <div className="checkboxes-container">
+                  <div className="form-row">
+                    <input type="checkbox" name="single" id="single" ref={checkboxSingle} />
+                    <label htmlFor="single">Simple</label>
+                  </div>
+
+                  <div className="form-row">
+                    <input
+                      type="checkbox"
+                      name="double"
+                      id="double"
+                      checked={checkboxDouble}
+                      onChange={() => setCheckboxDouble((prev) => !prev)}
+                    />
+
+                    <label htmlFor="double">Double</label>
+                  </div>
+                  <div className="form-row">
+                    <input
+                      type="checkbox"
+                      name="mixed"
+                      id="mixed"
+                      checked={checkboxMixed}
+                      onChange={() => setCheckboxMixed((prev) => !prev)}
+                    />
+                    <label htmlFor="mixed">Mixte</label>
+                  </div>
                 </div>
                 {checkboxDouble && (
                   <div className="form-row">
                     <label htmlFor="doublePartner">Partenaire de Double</label>
-                    <input type="text" id="doublePartner" placeholder="NOM / Prénom" />
-                    <input type="text" placeholder="Club" />
+                    <div className="partner-container">
+                      <input
+                        type="text"
+                        id="doublePartner"
+                        placeholder="NOM / Prénom"
+                        value={focusedRegistration.doublePartnerName}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Club"
+                        value={focusedRegistration.doublePartnerClub}
+                      />
+                    </div>
                   </div>
                 )}
                 {checkboxMixed && (
                   <div className="form-row">
                     <label htmlFor="mixedPartner">Partenaire de mixte</label>
-                    <input type="text" id="mixedPartner" placeholder="NOM / Prénom" />
-                    <input type="text" placeholder="Club" />
+                    <div className="partner-container">
+                      <input
+                        type="text"
+                        id="mixedPartner"
+                        placeholder="NOM / Prénom"
+                        value={focusedRegistration.mixedPartnerName}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Club"
+                        value={focusedRegistration.mixedPartnerClub}
+                      />
+                    </div>
                   </div>
                 )}
                 <div className="form-row">
                   <label htmlFor="comments">Commentaires</label>
-                  <textarea id="comments" cols={30} rows={10}>
+                  <textarea id="comments" cols={30} rows={5}>
                     {focusedRegistration.comment}
                   </textarea>
                 </div>
