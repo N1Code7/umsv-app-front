@@ -25,19 +25,12 @@ body {
 }
 
 main {
-  flex: 2;
-  margin: 7rem 1rem 5rem;
-  max-width: 1500px;
+  flex-grow: 2;
+  min-width: 90vw;
+  margin: 7rem auto 5rem;
+  padding: 0 3rem;
+  min-width: min(100vw, 1500px);
   overflow-x: hidden;
-
-  @include ptt {
-    margin: 7rem 4rem 5rem;
-    // margin: 7rem clamp(5rem, 12vmin, 13rem) 5rem;
-  }
-
-  @include big-screen {
-    margin: 7rem auto 5rem;
-  }
 }
 
 h1,
@@ -46,16 +39,6 @@ h3,
 h4 {
   font-family: $font-title;
 }
-
-// @media (prefers-color-scheme: dark) {
-//   html {
-//     color-scheme: dark;
-//   }
-//   body {
-//     color: white;
-//     background: black;
-//   }
-// }
 
 h1 {
   text-align: center;
@@ -137,12 +120,6 @@ a {
 .user-space {
   margin-top: 2rem;
 
-  @include from(1600) {
-    min-width: 100rem;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   table {
     width: 100%;
     text-align: center;
@@ -210,6 +187,7 @@ a {
     gap: 0.6rem;
     width: min(100%, 15rem);
     padding: 0.6rem;
+    padding-bottom: 0.8rem;
     background: $bg-3;
     border-radius: 5px;
     font-size: clamp(0.8rem, 3vmin, 1rem);

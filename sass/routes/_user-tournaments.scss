@@ -8,7 +8,6 @@
 
     @include from(1000) {
       display: block;
-      width: 100%;
       background: $bg-3;
       padding: 0.6rem;
       border-radius: 5px;
@@ -55,7 +54,7 @@
 
     .status-tag {
       display: inline-block;
-      padding: 0.3rem;
+      padding: 0.1rem 0.3rem;
       border-radius: 5px;
 
       &-success {
