@@ -119,6 +119,7 @@
 
     form {
       padding: 0.9rem;
+      gap: 2rem;
 
       @include from(1000) {
         min-width: 40rem;
@@ -126,11 +127,25 @@
       }
     }
 
+    label {
+      font-size: clamp(0.9rem, 3vmin, 1.1rem);
+
+      @include ptt {
+        font-weight: 500;
+      }
+    }
+
     .dates {
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      gap: clamp(0.3rem, 2vmin, 1.2rem);
 
       span {
         font-weight: 500;
+      }
+
+      input {
+        font-size: clamp(0.8rem, 3vmin, 1.2rem);
       }
     }
 
@@ -157,11 +172,35 @@
       }
 
       label {
+        position: relative;
         min-width: clamp(4rem, 20vmin, 7rem);
         padding: 0.6rem 0.3rem;
         border: 2px solid $primary-1;
         border-radius: 3px;
+
+        background-image: linear-gradient($primary-1 0 0);
+        background-origin: border-box;
+        background-position: 0 100%;
+        background-size: 0 100%;
+        background-repeat: no-repeat;
+        transition: 0.4s;
         text-align: center;
+        font-size: 0.9rem;
+
+        @include coarse {
+          box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
+        }
+
+        @include fine {
+          &:hover {
+            background-size: 100% 100%;
+            color: $content-light;
+          }
+        }
+
+        @include from(1000) {
+          font-size: 1.1rem;
+        }
       }
 
       .form-row {

@@ -7,7 +7,6 @@ import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 interface ITournamentRegistrationProps {
   tournamentRegistration: ITournamentRegistration;
   displayOnMobile: boolean;
-  setActiveRegistration: Dispatch<SetStateAction<object>>;
   setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
 }
@@ -15,7 +14,6 @@ interface ITournamentRegistrationProps {
 const TournamentRegistration = ({
   tournamentRegistration,
   displayOnMobile,
-  setActiveRegistration,
   setIsModalActive,
   setFocusedRegistration,
 }: ITournamentRegistrationProps) => {
@@ -42,9 +40,34 @@ const TournamentRegistration = ({
 
   return displayOnMobile ? (
     <div className="registration card">
-      <div className="name">{tournamentRegistration.tournament.name}</div>
-      <div className="city">{tournamentRegistration.tournament.city}</div>
-      <div className="dates">
+      <div
+        className="name"
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
+        {tournamentRegistration.tournament.name}
+      </div>
+      <div
+        className="city"
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
+        {tournamentRegistration.tournament.city}
+      </div>
+      <div
+        className="dates"
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
         {formatDate(
           tournamentRegistration.tournament.startDate,
           tournamentRegistration.tournament.endDate,
@@ -70,23 +93,45 @@ const TournamentRegistration = ({
       </div>
     </div>
   ) : (
-    <tr
-      style={
-        tournamentRegistration.requestState === "cancelled"
-          ? { textDecoration: "line-through", textDecorationThickness: 2 }
-          : {}
-      }
-    >
-      <td>
+    <tr>
+      <td
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
         {formatDate(
           tournamentRegistration.tournament.startDate,
           tournamentRegistration.tournament.endDate,
           "XX & XX xxx XXXX"
         )}
       </td>
-      <td>{tournamentRegistration.tournament.name}</td>
-      <td>{tournamentRegistration.tournament.city}</td>
-      <td>
+      <td
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
+        {tournamentRegistration.tournament.name}
+      </td>
+      <td
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
+        {tournamentRegistration.tournament.city}
+      </td>
+      <td
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
         {tournamentRegistration.participationSingle === true &&
           (tournamentRegistration.user?.gender ? (
             tournamentRegistration.user?.gender === "male" ? (

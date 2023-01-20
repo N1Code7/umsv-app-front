@@ -93,6 +93,7 @@ const Login = () => {
               value={user?.email ? user?.email : email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoFocus
             />
             {emailError && <div className="errorMessage-input">{emailError}</div>}
           </div>

@@ -12,7 +12,7 @@ input {
     border: 1.5px solid grey;
     border-radius: 3px;
     background: #fff;
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 5vmin, 1.2rem);
     font-family: inherit;
     transition: border-radius 0.3s ease-out;
 
@@ -58,11 +58,11 @@ select {
 
 textarea {
   resize: vertical;
-  padding: 0.3rem;
+  padding: 0.8rem;
   background: #fff;
   border: 1.5px solid grey;
   border-radius: 3px;
-  font-size: 1rem;
+  font-size: clamp(1rem, 5vmin, 1.2rem);
   font-family: inherit;
   transition: border-radius 0.3s ease-out;
 

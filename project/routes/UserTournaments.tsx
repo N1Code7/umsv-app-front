@@ -24,9 +24,17 @@ interface IUserTournamentsProps {
 const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsProps) => {
   const { setAuth } = useContext(AuthenticationContext);
   const checkboxSingle = useRef<HTMLInputElement>(null);
+  const registrationName = useRef<HTMLInputElement>(null);
+  const registrationCity = useRef<HTMLInputElement>(null);
+  const registrationStartDate = useRef<HTMLInputElement>(null);
+  const registrationEndDate = useRef<HTMLInputElement>(null);
+  const registrationDoublePartnerName = useRef<HTMLInputElement>(null);
+  const registrationDoublePartnerClub = useRef<HTMLInputElement>(null);
+  const registrationMixedPartnerName = useRef<HTMLInputElement>(null);
+  const registrationMixedPartnerClub = useRef<HTMLInputElement>(null);
+  const registrationComment = useRef<HTMLTextAreaElement>(null);
   const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
   const [activeSort, setActiveSort] = useState("startDate-ascending");
-  const [activeRegistration, setActiveRegistration] = useState({});
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedRegistration, setFocusedRegistration] = useState({} as ITournamentRegistration);
   const [checkboxDouble, setCheckboxDouble] = useState(false);
@@ -92,10 +100,6 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
       .catch((err) => console.error(err));
   }, [setAuth, focusedRegistration]);
 
-  useEffect(() => {
-    setFocusedRegistration({} as ITournamentRegistration);
-  }, []);
-
   return (
     <main className="user-tournaments user-space">
       <h2>Mes Tournois</h2>
@@ -116,7 +120,6 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                   key={tournamentRegistration.id}
                   tournamentRegistration={tournamentRegistration}
                   displayOnMobile
-                  setActiveRegistration={setActiveRegistration}
                   setIsModalActive={setIsModalActive}
                   setFocusedRegistration={setFocusedRegistration}
                 />
@@ -173,7 +176,6 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                     key={tournamentRegistration.id}
                     tournamentRegistration={tournamentRegistration}
                     displayOnMobile={false}
-                    setActiveRegistration={setActiveRegistration}
                     setIsModalActive={setIsModalActive}
                     setFocusedRegistration={setFocusedRegistration}
                   />
@@ -194,8 +196,9 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                   <input
                     type="text"
                     id="tournamentName"
-                    value={focusedRegistration.tournament.name}
-                    disabled
+                    defaultValue={focusedRegistration.tournament.name}
+                    ref={registrationName}
+                    autoFocus
                   />
                 </div>
                 <div className="form-row">
@@ -203,18 +206,34 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                   <input
                     type="text"
                     id="tournamentCity"
-                    value={focusedRegistration.tournament.city}
-                    disabled
+                    defaultValue={focusedRegistration.tournament.city}
+                    ref={registrationCity}
                   />
                 </div>
                 <div className="form-row">
                   <div className="dates">
-                    Du{" "}
-                    <span>
-                      {formatDate(focusedRegistration.tournament.startDate, "XX xxx XXXX")}
-                    </span>{" "}
-                    au{" "}
-                    <span>{formatDate(focusedRegistration.tournament.endDate, "XX xxx XXXX")}</span>
+                    <label htmlFor="startDate">Du </label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      defaultValue={formatDate(
+                        focusedRegistration.tournament.startDate,
+                        undefined,
+                        "XXXX-XX-XX"
+                      )}
+                      ref={registrationStartDate}
+                    />
+                    <label htmlFor="endDate"> au </label>
+                    <input
+                      type="date"
+                      id="endDate"
+                      defaultValue={formatDate(
+                        focusedRegistration.tournament.endDate,
+                        undefined,
+                        "XXXX-XX-XX"
+                      )}
+                      ref={registrationEndDate}
+                    />
                   </div>
                 </div>
                 <div className="checkboxes-container">
@@ -253,12 +272,14 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                         type="text"
                         id="doublePartner"
                         placeholder="NOM / Prénom"
-                        value={focusedRegistration.doublePartnerName}
+                        defaultValue={focusedRegistration.doublePartnerName}
+                        ref={registrationDoublePartnerName}
                       />
                       <input
                         type="text"
                         placeholder="Club"
-                        value={focusedRegistration.doublePartnerClub}
+                        defaultValue={focusedRegistration.doublePartnerClub}
+                        ref={registrationDoublePartnerClub}
                       />
                     </div>
                   </div>
@@ -271,21 +292,27 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                         type="text"
                         id="mixedPartner"
                         placeholder="NOM / Prénom"
-                        value={focusedRegistration.mixedPartnerName}
+                        defaultValue={focusedRegistration.mixedPartnerName}
+                        ref={registrationMixedPartnerName}
                       />
                       <input
                         type="text"
                         placeholder="Club"
-                        value={focusedRegistration.mixedPartnerClub}
+                        defaultValue={focusedRegistration.mixedPartnerClub}
+                        ref={registrationMixedPartnerClub}
                       />
                     </div>
                   </div>
                 )}
                 <div className="form-row">
                   <label htmlFor="comments">Commentaires</label>
-                  <textarea id="comments" cols={30} rows={5}>
-                    {focusedRegistration.comment}
-                  </textarea>
+                  <textarea
+                    id="comments"
+                    cols={30}
+                    rows={5}
+                    ref={registrationComment}
+                    defaultValue={focusedRegistration.comment}
+                  ></textarea>
                 </div>
                 <input type="submit" value="Modifier mon inscription" className="btn btn-primary" />
               </form>

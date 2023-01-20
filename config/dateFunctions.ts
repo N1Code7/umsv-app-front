@@ -9,6 +9,8 @@ export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat
 
   if (outputFormat === "XX/XX/XX") {
     return `${formattedDate[2]}/${formattedDate[1]}/${formattedDate[0][2]}${formattedDate[0][3]}`;
+  } else if (outputFormat === "XXXX-XX-XX") {
+    return `${formattedDate[0]}-${formattedDate[1]}-${formattedDate[1]}`;
   } else if (outputFormat === "XX & XX xxx XXXX" && entryDate2 !== undefined) {
     let formattedDate2 = entryDate2.split("T")[0].split("-");
     if (new Date(entryDate1).getMonth() === new Date(entryDate2).getMonth()) {

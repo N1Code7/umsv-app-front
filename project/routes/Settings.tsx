@@ -5,11 +5,12 @@ import Navigation from "../components/Navigation";
 const Settings = () => {
   return (
     <>
-      {/* <Header />
-      <MemberHeader />
-      <Navigation /> */}
       <main>
         <h2>Mes réglages</h2>
+
+        <p style={{ fontSize: 50, textAlign: "center", marginTop: 100, marginBottom: 100 }}>
+          Prochainement...
+        </p>
       </main>
     </>
   );
