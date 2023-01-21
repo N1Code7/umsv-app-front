@@ -17,7 +17,9 @@ const PrivateRoutes = () => {
       document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
       return navigate("/se_connecter");
     }
+  }, [navigate]);
 
+  useEffect(() => {
     auth?.accessToken &&
       fetchUser(auth.accessToken).then(
         ({ id, lastName, firstName, email, roles, FFBadStats: array }: IUser) => {
@@ -70,6 +72,7 @@ const PrivateRoutes = () => {
           <Outlet />
         </>
       ) : (
+        // <Navigate to="/se_connecter" replace />
         <Navigate to="/se_connecter" state={{ from: location }} replace />
       )}
     </>

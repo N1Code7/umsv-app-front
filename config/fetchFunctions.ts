@@ -13,7 +13,7 @@ export const getRefreshTokenFromCookie = () => {
     return refreshToken;
   } catch (err) {
     throw new Error(
-      "An error occurs when try to get the refresh token stored in the cookie " + err
+      " => An error occurs when try to get the refresh token stored in the cookie " + err
     );
   }
 };
@@ -24,23 +24,19 @@ export const getRefreshTokenFromCookie = () => {
  * @param password the user's plain password
  */
 export const fetchLogin = async (email: string, password: string) => {
-  try {
-    const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "login", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      mode: "cors",
-      cache: "default",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-    return response.json();
-  } catch (err) {
-    throw new Error("An error occurs when try to log in the user " + err);
-  }
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "login", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      password,
+    }),
+  });
+  if (!response.ok)
+    throw new Error(response.status + " => An error occurs when try to log in the user");
+  return response.json();
 };
 
 /**
@@ -48,20 +44,20 @@ export const fetchLogin = async (email: string, password: string) => {
  * This function get the refresh token from the function @see getRefreshTokenFromCookie()
  */
 export const fetchRefreshToken = async () => {
-  try {
-    const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        refreshToken: getRefreshTokenFromCookie(),
-      }),
-    });
-    return response.json();
-  } catch (err) {
-    throw new Error("An error occurs when try to refresh the user's access token " + err);
-  }
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "token/refresh", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      refreshToken: getRefreshTokenFromCookie(),
+    }),
+  });
+  if (!response.ok)
+    throw new Error(
+      response.status + " => An error occurs when try to refresh the user's access token "
+    );
+  return response.json();
 };
 
 /**
@@ -85,7 +81,7 @@ export const fetchInvalidateRefreshToken = async () => {
     return response.json();
   } catch (err) {
     throw new Error(
-      "An error occurs when try to invalidate the user's refresh token at logout " + err
+      err + " => An error occurs when try to invalidate the user's refresh token at logout "
     );
   }
 };
@@ -187,7 +183,7 @@ export const fetchUser = async (token: string) => {
     });
     return response.json();
   } catch (err) {
-    throw new Error("An error occurs when try to fetch User " + err);
+    throw new Error(err + " => An error occurs when try to fetch User ");
   }
 };
 
@@ -205,7 +201,7 @@ export const fetchEvents = async (token: string) => {
     });
     return response.json();
   } catch (err) {
-    throw new Error(err + " An error occurs when try to fetch events");
+    throw new Error(err + " => An error occurs when try to fetch events");
   }
 };
 
@@ -223,7 +219,7 @@ export const fetchTournaments = async (token: string) => {
     });
     return response.json();
   } catch (err) {
-    throw new Error(err + "An error occurs when try to fetch tournaments");
+    throw new Error(err + " => An error occurs when try to fetch tournaments");
   }
 };
 
@@ -239,7 +235,9 @@ export const fetchUserRegistrations = async (token: string) => {
     });
     return response.json();
   } catch (err) {
-    throw new Error(err + "An error occurs when try to fetch the user's tournaments registrations");
+    throw new Error(
+      err + " => An error occurs when try to fetch the user's tournaments registrations"
+    );
   }
 };
 
@@ -259,6 +257,8 @@ export const fetchCancelUserRegistration = async (token: string, registrationId:
     );
     return response.json();
   } catch (err) {
-    throw new Error(err + "An error occurs when try to cancel a user's tournament registration");
+    throw new Error(
+      err + " => An error occurs when try to cancel a user's tournament registration"
+    );
   }
 };

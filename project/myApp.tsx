@@ -10,7 +10,6 @@ import NewTournamentRegistration from "./routes/NewTournamentRegistration";
 import Results from "./routes/Results";
 import Settings from "./routes/Settings";
 import { useEffect, useState } from "react";
-import { getRefreshTokenFromCookie } from "../config/fetchFunctions";
 
 export default function MyApp() {
   const [deviceDisplay, setDeviceDisplay] = useState("");
@@ -29,8 +28,6 @@ export default function MyApp() {
 
     if (document.body) observer.observe(document.body);
   }, [deviceDisplay]);
-
-  console.log(getRefreshTokenFromCookie());
 
   return (
     <BrowserRouter>

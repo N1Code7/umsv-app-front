@@ -1,21 +1,17 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useContext, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import {
-  fetchLogin,
-  fetchRefreshToken,
-  fetchUser,
-  getRefreshTokenFromCookie,
-} from "../../config/fetchFunctions";
+import { fetchLogin, getRefreshTokenFromCookie } from "../../config/fetchFunctions";
 import Header from "../components/Header";
-import { IUser } from "../../config/interfaces";
+import useRefreshToken from "../../hooks/useRefreshToken";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const { user, setUser, setAuth } = useContext(AuthenticationContext);
+  const refresh = useRefreshToken();
+  const { user, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState(user?.email || "");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -29,44 +25,43 @@ const Login = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    !email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/)
-      ? setEmailError("L'adresse email renseignée n'est pas conforme 🚨")
-      : setEmailError("");
-    password.length < 6
-      ? setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨")
-      : setPasswordError("");
+  const handleSubmit = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      !email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/)
+        ? setEmailError("L'adresse email renseignée n'est pas conforme 🚨")
+        : setEmailError("");
+      password.length < 6
+        ? setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨")
+        : setPasswordError("");
 
-    if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
-      fetchLogin(email, password)
-        .then((res) => {
-          setPassword("");
-          setHasErrorOccurred(false);
-          setAuth?.({ accessToken: res.token, isAuthenticated: true });
-          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-          navigate(from, { replace: true });
-        })
-        .catch(() => {
-          setHasErrorOccurred(true);
-          setTimeout(() => {
+      if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
+        fetchLogin(email, password)
+          .then((res) => {
+            setPassword("");
             setHasErrorOccurred(false);
-          }, 5000);
-        });
-    }
-  };
+            setAuth?.({ accessToken: res.token, isAuthenticated: true });
+            document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+            navigate(from, { replace: true });
+          })
+          .catch((err) => {
+            console.error(err);
+            setHasErrorOccurred(true);
+            setTimeout(() => {
+              setHasErrorOccurred(false);
+            }, 5000);
+          });
+      }
+    },
+    [email, from, password, setAuth, navigate]
+  );
 
   useEffect(() => {
     if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-      fetchRefreshToken()
-        .then((res) => {
-          setAuth?.({ accessToken: res.token, isAuthenticated: true });
-          document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-          navigate(from, { replace: true });
-        })
-        .catch((err) => console.error(err));
+      refresh();
+      navigate(from, { replace: true });
     }
-  }, [setAuth, navigate, from]);
+  }, [navigate, refresh]);
 
   useEffect(() => {
     email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6
@@ -91,7 +86,7 @@ const Login = () => {
               type="email"
               id="email"
               value={user?.email ? user?.email : email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(user?.email || e.target.value)}
               required
               autoFocus
             />

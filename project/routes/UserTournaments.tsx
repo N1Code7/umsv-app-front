@@ -1,20 +1,12 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  MouseEvent,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
-import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { fetchRefreshToken, fetchUserRegistrations } from "../../config/fetchFunctions";
-import { ITournamentRegistration } from "../../config/interfaces";
+import { fetchTournaments, fetchUserRegistrations } from "../../config/fetchFunctions";
+import { ITournament, ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
 import Modal from "../components/Modal";
 import { formatDate } from "../../config/dateFunctions";
+import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import useRefreshToken from "../../hooks/useRefreshToken";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;
@@ -22,7 +14,8 @@ interface IUserTournamentsProps {
 }
 
 const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsProps) => {
-  const { setAuth } = useContext(AuthenticationContext);
+  const { auth } = useContext(AuthenticationContext);
+  const refresh = useRefreshToken();
   const checkboxSingle = useRef<HTMLInputElement>(null);
   const registrationName = useRef<HTMLInputElement>(null);
   const registrationCity = useRef<HTMLInputElement>(null);
@@ -34,6 +27,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
   const registrationMixedPartnerClub = useRef<HTMLInputElement>(null);
   const registrationComment = useRef<HTMLTextAreaElement>(null);
   const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
+  const [tournaments, setTournaments] = useState(Array<ITournament>);
   const [activeSort, setActiveSort] = useState("startDate-ascending");
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedRegistration, setFocusedRegistration] = useState({} as ITournamentRegistration);
@@ -83,22 +77,29 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
     );
   };
 
+  const handleTournamentNameFocus = () => {
+    // console.log("test");
+  };
+
   const handleSubmit = () => {};
 
   /** Refresh token before fetch events and tournaments */
   useEffect(() => {
-    fetchRefreshToken()
-      .then((res) => {
-        setAuth?.((prev) => ({ ...prev, accessToken: res.token }));
-        document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-        return res.token;
-      })
-      .then((res) => fetchUserRegistrations(res))
-      .then((res) => {
-        setTournamentsRegistrations(res);
+    let ignore = false;
+    refresh()
+      .then((res) => Promise.all([fetchUserRegistrations(res.token), fetchTournaments(res.token)]))
+      .then(([registrations, tournaments]) => {
+        if (!ignore) {
+          setTournamentsRegistrations(registrations);
+          setTournaments(tournaments);
+        }
       })
       .catch((err) => console.error(err));
-  }, [setAuth, focusedRegistration]);
+
+    return () => {
+      ignore = true;
+    };
+  }, [auth?.accessToken]);
 
   return (
     <main className="user-tournaments user-space">
@@ -199,7 +200,23 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                     defaultValue={focusedRegistration.tournament.name}
                     ref={registrationName}
                     autoFocus
+                    onFocus={handleTournamentNameFocus}
                   />
+                  <select id="">
+                    <option value="new">
+                      <input type="text" />
+                    </option>
+                    {tournaments
+                      .filter(
+                        (tournament: ITournament) =>
+                          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10
+                      )
+                      .map((tournament: ITournament) => (
+                        <option key={tournament.id} value={tournament.name?.toLowerCase()}>
+                          {tournament.name + " - " + tournament.city}
+                        </option>
+                      ))}
+                  </select>
                 </div>
                 <div className="form-row">
                   <label htmlFor="tournamentCity">Ville du tournoi</label>

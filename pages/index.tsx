@@ -1,20 +1,40 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NavigationContext } from "../contexts/NavigationContext";
 import Footer from "../project/components/Footer";
 import { AuthenticationContext } from "../contexts/AuthenticationContext";
+import { getRefreshTokenFromCookie } from "../config/fetchFunctions";
+import useRefreshToken from "../hooks/useRefreshToken";
 
 const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 
 const Home = () => {
+  const refresh = useRefreshToken();
   const [display, setDisplay] = useState(false);
   const [user, setUser] = useState({});
   const [auth, setAuth] = useState({});
+  const [isFirstMounted, setIsFirstMounted] = useState(true);
 
   const toggleDisplay = () => {
     setDisplay(!display);
   };
+
+  // useEffect(() => {
+  //   if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
+  //     // Check on the first render
+  //     if (isFirstMounted) {
+  //       refresh();
+  //     }
+
+  //     // Keep checking after a certain time
+  //     const intervalId = setInterval(() => {
+  //       refresh();
+  //     }, Number(process.env.NEXT_PUBLIC_ACCESS_TOKEN_LIFETIME) * 1000);
+  //     return () => clearInterval(intervalId);
+  //   }
+  //   return undefined;
+  // }, [auth]);
 
   return (
     <>

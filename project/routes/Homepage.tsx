@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from "react";
 import { fetchEvents, fetchRefreshToken, fetchTournaments } from "../../config/fetchFunctions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
@@ -9,6 +9,7 @@ import SortTournamentsBtn from "../components/SortTournamentsBtn";
 import { formatDate, getDayOfWeek, getMonthOfYear } from "../../config/dateFunctions";
 import Modal from "../components/Modal";
 import Image from "next/image";
+import useRefreshToken from "../../hooks/useRefreshToken";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -16,7 +17,8 @@ interface IHomepageProps {
 }
 
 const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
-  const { setAuth } = useContext(AuthenticationContext);
+  const refresh = useRefreshToken();
+  const { auth, setAuth } = useContext(AuthenticationContext);
   const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({} as IClubEvent);
@@ -29,7 +31,7 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
 
   /** Filter tournaments depending on selected criteria (name/city, day, month, year) */
   const filterTournaments = (tournaments: Array<ITournament>) => {
-    return tournaments.filter((tournament: ITournament) => {
+    return tournaments?.filter((tournament: ITournament) => {
       if (
         /** Search by name/city and full date */
         searchByText.length >= 3 &&
@@ -166,7 +168,7 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
 
   /** Sort tournaments depending on the selected sort button */
   const sortTournaments = (tournaments: Array<ITournament>) => {
-    return tournaments.sort((a: ITournament, b: ITournament) => {
+    return tournaments?.sort((a: ITournament, b: ITournament) => {
       switch (activeSort) {
         case "startDate-ascending":
           return Number(new Date(a.startDate)) - Number(new Date(b.startDate));
@@ -219,17 +221,20 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
 
   /** Refresh token before fetch events and tournaments */
   useEffect(() => {
-    fetchRefreshToken()
-      .then((res) => {
-        setAuth?.((prev) => ({ ...prev, accessToken: res.token }));
-        document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-        Promise.all([fetchEvents(res.token), fetchTournaments(res.token)]).then(([ev, tou]) => {
+    let ignore = false;
+    refresh()
+      .then((res) => Promise.all([fetchEvents(res.token), fetchTournaments(res.token)]))
+      .then(([ev, tou]) => {
+        if (!ignore) {
           setEvents(ev);
           setTournaments(tou);
-        });
+        }
       })
       .catch((err) => console.error(err));
-  }, [setAuth]);
+    return () => {
+      ignore = true;
+    };
+  }, [auth?.accessToken]);
 
   return (
     <main className="homepage user-space">
