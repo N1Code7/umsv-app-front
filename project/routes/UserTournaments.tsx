@@ -1,12 +1,10 @@
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
-import { fetchTournaments, fetchUserRegistrations } from "../../config/fetchFunctions";
 import { ITournament, ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
 import Modal from "../components/Modal";
 import { formatDate } from "../../config/dateFunctions";
-import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import useRefreshToken from "../../hooks/useRefreshToken";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;
@@ -14,8 +12,7 @@ interface IUserTournamentsProps {
 }
 
 const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsProps) => {
-  const { auth } = useContext(AuthenticationContext);
-  const refresh = useRefreshToken();
+  const axiosPrivate = useAxiosPrivate();
   const checkboxSingle = useRef<HTMLInputElement>(null);
   const registrationName = useRef<HTMLInputElement>(null);
   const registrationCity = useRef<HTMLInputElement>(null);
@@ -83,23 +80,38 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
 
   const handleSubmit = () => {};
 
-  /** Refresh token before fetch events and tournaments */
+  /** Fetch events and tournaments */
   useEffect(() => {
     let ignore = false;
-    refresh()
-      .then((res) => Promise.all([fetchUserRegistrations(res.token), fetchTournaments(res.token)]))
-      .then(([registrations, tournaments]) => {
+    const controller = new AbortController();
+
+    const getTournaments = async () =>
+      (await axiosPrivate.get("tournaments", { signal: controller.signal })).data;
+
+    const getRegistrations = async () =>
+      (await axiosPrivate.get("tournament-registrations", { signal: controller.signal })).data;
+
+    Promise.all([getTournaments(), getRegistrations()])
+      .then(([tour, reg]) => {
         if (!ignore) {
-          setTournamentsRegistrations(registrations);
-          setTournaments(tournaments);
+          setTournamentsRegistrations(reg);
+          setTournaments(tour);
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        if (controller.signal.aborted) {
+          console.log("The user aborted the request");
+        } else {
+          console.error("The request failed");
+        }
+      });
 
     return () => {
       ignore = true;
+      controller.abort();
     };
-  }, [auth?.accessToken]);
+  }, []);
 
   return (
     <main className="user-tournaments user-space">

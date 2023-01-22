@@ -5,6 +5,7 @@ import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { fetchLogin, getRefreshTokenFromCookie } from "../../config/fetchFunctions";
 import Header from "../components/Header";
 import useRefreshToken from "../../hooks/useRefreshToken";
+import axios from "../../config/axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -36,12 +37,13 @@ const Login = () => {
         : setPasswordError("");
 
       if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
-        fetchLogin(email, password)
-          .then((res) => {
+        await axios
+          .post("login", { email, password })
+          .then(({ data }) => {
             setPassword("");
             setHasErrorOccurred(false);
-            setAuth?.({ accessToken: res.token, isAuthenticated: true });
-            document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+            setAuth?.({ accessToken: data.token, isAuthenticated: true });
+            document.cookie = `refreshToken=${data.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
             navigate(from, { replace: true });
           })
           .catch((err) => {
@@ -56,12 +58,12 @@ const Login = () => {
     [email, from, password, setAuth, navigate]
   );
 
-  useEffect(() => {
-    if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-      refresh();
-      navigate(from, { replace: true });
-    }
-  }, [navigate, refresh]);
+  // useEffect(() => {
+  //   if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
+  //     refresh();
+  //     navigate(from, { replace: true });
+  //   }
+  // }, []);
 
   useEffect(() => {
     email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6

@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from "react";
-import { fetchEvents, fetchRefreshToken, fetchTournaments } from "../../config/fetchFunctions";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Event from "../components/Event";
 import { IClubEvent, ITournament } from "../../config/interfaces";
@@ -9,7 +8,7 @@ import SortTournamentsBtn from "../components/SortTournamentsBtn";
 import { formatDate, getDayOfWeek, getMonthOfYear } from "../../config/dateFunctions";
 import Modal from "../components/Modal";
 import Image from "next/image";
-import useRefreshToken from "../../hooks/useRefreshToken";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -17,8 +16,7 @@ interface IHomepageProps {
 }
 
 const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
-  const refresh = useRefreshToken();
-  const { auth, setAuth } = useContext(AuthenticationContext);
+  const axiosPrivate = useAxiosPrivate();
   const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({} as IClubEvent);
@@ -219,22 +217,38 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
     });
   };
 
-  /** Refresh token before fetch events and tournaments */
+  /** Fetch events and tournaments */
   useEffect(() => {
     let ignore = false;
-    refresh()
-      .then((res) => Promise.all([fetchEvents(res.token), fetchTournaments(res.token)]))
+    const controller = new AbortController();
+
+    const getEvents = async () =>
+      (await axiosPrivate.get("events", { signal: controller.signal })).data;
+
+    const getTournaments = async () =>
+      (await axiosPrivate.get("tournaments", { signal: controller.signal })).data;
+
+    Promise.all([getEvents(), getTournaments()])
       .then(([ev, tou]) => {
         if (!ignore) {
           setEvents(ev);
           setTournaments(tou);
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        if (controller.signal.aborted) {
+          console.log("The user aborted the request");
+        } else {
+          console.error("The request failed");
+        }
+      });
+
     return () => {
       ignore = true;
+      controller.abort();
     };
-  }, [auth?.accessToken]);
+  }, []);
 
   return (
     <main className="homepage user-space">

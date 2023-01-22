@@ -1,21 +1,17 @@
+import axios from "./axios";
+
 /**
  * Extract the value of cookie which includes the name refreshToken
  */
 export const getRefreshTokenFromCookie = () => {
-  try {
-    const cookies = document.cookie.split(";");
-    let refreshToken = "";
-    cookies.forEach((cookie) => {
-      if (cookie.split("=")[0].includes("refreshToken")) {
-        refreshToken = cookie.split("=")[1];
-      }
-    });
-    return refreshToken;
-  } catch (err) {
-    throw new Error(
-      " => An error occurs when try to get the refresh token stored in the cookie " + err
-    );
-  }
+  const cookies = document.cookie.split(";");
+  let refreshToken = "";
+  cookies.forEach((cookie) => {
+    if (cookie.split("=")[0].includes("refreshToken")) {
+      refreshToken = cookie.split("=")[1];
+    }
+  });
+  return refreshToken;
 };
 
 /**
@@ -24,6 +20,12 @@ export const getRefreshTokenFromCookie = () => {
  * @param password the user's plain password
  */
 export const fetchLogin = async (email: string, password: string) => {
+  const res = await axios.post("login", { email, password });
+
+  console.log(res.data);
+
+  return res.data;
+
   const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "login", {
     method: "POST",
     headers: {
@@ -172,18 +174,19 @@ export const fetchCreateAccount = async (
  * @param token the user's authentication token
  */
 export const fetchUser = async (token: string) => {
-  try {
-    const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "user", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      mode: "cors",
-      cache: "default",
-    });
+  const response = await fetch(process.env.NEXT_PUBLIC_HOST_BACK + "user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.ok) {
     return response.json();
-  } catch (err) {
-    throw new Error(err + " => An error occurs when try to fetch User ");
+  } else if (response.status === 401) {
+    fetchRefreshToken().then;
+  } else {
+    throw new Error(response.status + " => An error occurs when try to fetch User ");
   }
 };
 
