@@ -29,7 +29,7 @@ main {
   min-width: 90vw;
   margin: 7rem auto 5rem;
   padding: 0 3rem;
-  min-width: min(100vw, 1500px);
+  width: min(100vw, 1500px);
   overflow-x: hidden;
 }
 
@@ -194,7 +194,7 @@ a {
     text-align: center;
 
     .name {
-      font-weight: 580;
+      font-weight: 500;
     }
 
     .city {

@@ -9,6 +9,7 @@ interface ITournamentRegistrationProps {
   displayOnMobile: boolean;
   setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
+  setChooseExistingTournament: Dispatch<SetStateAction<boolean>>;
 }
 
 const TournamentRegistration = ({
@@ -16,11 +17,15 @@ const TournamentRegistration = ({
   displayOnMobile,
   setIsModalActive,
   setFocusedRegistration,
+  setChooseExistingTournament,
 }: ITournamentRegistrationProps) => {
   const { setAuth } = useContext(AuthenticationContext);
 
   const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    tournamentRegistration.tournament === null
+      ? setChooseExistingTournament(false)
+      : setChooseExistingTournament(true);
     setFocusedRegistration(tournamentRegistration);
     setIsModalActive(true);
   };
@@ -48,7 +53,9 @@ const TournamentRegistration = ({
             : {}
         }
       >
-        {tournamentRegistration.tournament.name}
+        {tournamentRegistration.tournament
+          ? tournamentRegistration.tournament.name
+          : tournamentRegistration.tournamentName}
       </div>
       <div
         className="city"
@@ -58,7 +65,9 @@ const TournamentRegistration = ({
             : {}
         }
       >
-        {tournamentRegistration.tournament.city}
+        {tournamentRegistration.tournament
+          ? tournamentRegistration.tournament.city
+          : tournamentRegistration.tournamentCity}
       </div>
       <div
         className="dates"
@@ -68,11 +77,19 @@ const TournamentRegistration = ({
             : {}
         }
       >
-        {formatDate(
-          tournamentRegistration.tournament.startDate,
-          tournamentRegistration.tournament.endDate,
-          "XX & XX xxx XXXX"
-        )}
+        {tournamentRegistration.tournament
+          ? formatDate(
+              tournamentRegistration.tournament.startDate,
+              tournamentRegistration.tournament.endDate,
+              "XX & XX xxx XXXX"
+            )
+          : tournamentRegistration.tournamentEndDate
+          ? formatDate(
+              tournamentRegistration.tournamentStartDate,
+              tournamentRegistration.tournamentEndDate,
+              "XX & XX xxx XXXX"
+            )
+          : formatDate(tournamentRegistration.tournamentStartDate, undefined, "XX xxx XXXX")}
       </div>
       <div className="cta-container">
         <button className="btn modify" onClick={handleModify}>
@@ -101,11 +118,19 @@ const TournamentRegistration = ({
             : {}
         }
       >
-        {formatDate(
-          tournamentRegistration.tournament.startDate,
-          tournamentRegistration.tournament.endDate,
-          "XX & XX xxx XXXX"
-        )}
+        {tournamentRegistration.tournament
+          ? formatDate(
+              tournamentRegistration.tournament.startDate,
+              tournamentRegistration.tournament.endDate,
+              "XX & XX xxx XXXX"
+            )
+          : tournamentRegistration.tournamentEndDate
+          ? formatDate(
+              tournamentRegistration.tournamentStartDate,
+              tournamentRegistration.tournamentEndDate,
+              "XX & XX xxx XXXX"
+            )
+          : formatDate(tournamentRegistration.tournamentStartDate, undefined, "XX xxx XXXX")}
       </td>
       <td
         style={
@@ -114,7 +139,7 @@ const TournamentRegistration = ({
             : {}
         }
       >
-        {tournamentRegistration.tournament.name}
+        {tournamentRegistration.tournament && tournamentRegistration.tournament.name}
       </td>
       <td
         style={
@@ -123,7 +148,9 @@ const TournamentRegistration = ({
             : {}
         }
       >
-        {tournamentRegistration.tournament.city}
+        {tournamentRegistration.tournament
+          ? tournamentRegistration.tournament.city
+          : tournamentRegistration.tournamentCity}
       </td>
       <td
         style={

@@ -45,7 +45,14 @@ export interface ITournamentRegistration {
   id: number;
   user: IUser;
   userId: number;
+  userLastName: string;
+  userFirstName: string;
+  userEmail: string;
   tournament: ITournament;
+  tournamentName: string;
+  tournamentCity: string;
+  tournamentStartDate: string;
+  tournamentEndDate: string;
   tournamentId: number;
   requestState: string;
   hasParticipated: boolean;

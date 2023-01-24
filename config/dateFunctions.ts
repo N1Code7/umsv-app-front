@@ -1,5 +1,7 @@
 /**
  * Format the input date into the selected schema
+ * Default format : DD/MM/YYYY
+ * Available formats : XX/XX/XX, XXXX-XX-XX, XX xxx XXXX, XX & XX xxx XXXX
  * @param entryDate1 the date to format
  * @param entryDate2 the second date in case of interval
  * @param outputFormat the selected output schema
@@ -11,6 +13,8 @@ export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat
     return `${formattedDate[2]}/${formattedDate[1]}/${formattedDate[0][2]}${formattedDate[0][3]}`;
   } else if (outputFormat === "XXXX-XX-XX") {
     return `${formattedDate[0]}-${formattedDate[1]}-${formattedDate[1]}`;
+  } else if (outputFormat === "XX xxx XXXX") {
+    return `${formattedDate[2]} ${getMonthOfYear(entryDate1)} ${formattedDate[0]}`;
   } else if (outputFormat === "XX & XX xxx XXXX" && entryDate2 !== undefined) {
     let formattedDate2 = entryDate2.split("T")[0].split("-");
     if (new Date(entryDate1).getMonth() === new Date(entryDate2).getMonth()) {

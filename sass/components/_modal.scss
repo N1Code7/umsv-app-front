@@ -135,6 +135,88 @@
       }
     }
 
+    .separating-line {
+      align-self: center;
+      position: relative;
+      width: 100%;
+      margin: -0.6rem 0;
+      text-align: center;
+      font-weight: 500;
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 1px solid black;
+        height: 1px;
+        width: 45%;
+      }
+      &::before {
+        left: 0;
+      }
+      &::after {
+        right: 0;
+      }
+
+      &.just-line {
+        margin: 0;
+        &::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          border: 1px solid black;
+          height: 1px;
+          width: 100%;
+        }
+      }
+    }
+
+    .choose-tournament-identifier {
+      align-self: center;
+      flex-direction: row;
+      align-items: center;
+
+      gap: clamp(0.6rem, 3vmin, 1rem);
+
+      span {
+        width: min-content;
+        text-align: center;
+
+        @include from(500) {
+          width: auto;
+        }
+      }
+
+      .switch-container {
+        position: relative;
+        width: 52px;
+        height: 32px;
+        background: $primary-1;
+        border-radius: 30px;
+
+        &.active {
+          .switch-circle {
+            transform: translate(calc(52px - 28px - 6px), -50%);
+          }
+        }
+      }
+
+      .switch-circle {
+        transition: transform 0.3s ease-out;
+        position: absolute;
+        top: 50%;
+        left: 3px;
+        transform: translateY(-50%);
+        width: 28px;
+        aspect-ratio: 1 / 1;
+        background: $content-light;
+        border-radius: 50%;
+      }
+    }
+
     .dates {
       display: flex;
       align-items: center;
