@@ -26,10 +26,8 @@ body {
 
 main {
   flex-grow: 2;
-  min-width: 90vw;
+  width: 90vw;
   margin: 7rem auto 5rem;
-  padding: 0 3rem;
-  width: min(100vw, 1500px);
   overflow-x: hidden;
 }
 

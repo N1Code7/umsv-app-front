@@ -8,6 +8,8 @@ interface ITournamentRegistrationProps {
   tournamentRegistration: ITournamentRegistration;
   displayOnMobile: boolean;
   setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
+  setCheckboxDouble: Dispatch<SetStateAction<boolean>>;
+  setCheckboxMixed: Dispatch<SetStateAction<boolean>>;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
   setChooseExistingTournament: Dispatch<SetStateAction<boolean>>;
 }
@@ -17,6 +19,8 @@ const TournamentRegistration = ({
   displayOnMobile,
   setIsModalActive,
   setFocusedRegistration,
+  setCheckboxDouble,
+  setCheckboxMixed,
   setChooseExistingTournament,
 }: ITournamentRegistrationProps) => {
   const { setAuth } = useContext(AuthenticationContext);
@@ -27,6 +31,8 @@ const TournamentRegistration = ({
       ? setChooseExistingTournament(false)
       : setChooseExistingTournament(true);
     setFocusedRegistration(tournamentRegistration);
+    setCheckboxDouble(tournamentRegistration.participationDouble);
+    setCheckboxMixed(tournamentRegistration.participationMixed);
     setIsModalActive(true);
   };
 

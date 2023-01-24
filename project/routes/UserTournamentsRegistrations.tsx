@@ -16,13 +16,17 @@ import { formatDate } from "../../config/dateFunctions";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useSWR, { useSWRConfig } from "swr";
 import { AxiosResponse } from "axios";
+import Switch from "../components/Switch";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;
   setDeviceDisplay: Dispatch<SetStateAction<string>>;
 }
 
-const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsProps) => {
+const UserTournamentsRegistrations = ({
+  deviceDisplay,
+  setDeviceDisplay,
+}: IUserTournamentsProps) => {
   const axiosPrivate = useAxiosPrivate();
   const [activeSort, setActiveSort] = useState("startDate-ascending");
   const [isModalActive, setIsModalActive] = useState(false);
@@ -201,7 +205,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
   // }, [focusedRegistration]);
 
   return (
-    <main className="user-tournaments user-space">
+    <main className="user-tournaments-registrations user-space">
       <h2>Mes Tournois</h2>
 
       <div className="registrations">
@@ -232,6 +236,8 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                     displayOnMobile
                     setIsModalActive={setIsModalActive}
                     setFocusedRegistration={setFocusedRegistration}
+                    setCheckboxDouble={setCheckboxDouble}
+                    setCheckboxMixed={setCheckboxMixed}
                     setChooseExistingTournament={setChooseExistingTournament}
                   />
                 ))
@@ -293,6 +299,8 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                       key={tournamentRegistration.id}
                       tournamentRegistration={tournamentRegistration}
                       setFocusedRegistration={setFocusedRegistration}
+                      setCheckboxDouble={setCheckboxDouble}
+                      setCheckboxMixed={setCheckboxMixed}
                       displayOnMobile={false}
                       setIsModalActive={setIsModalActive}
                       setChooseExistingTournament={setChooseExistingTournament}
@@ -306,21 +314,19 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
 
         {isModalActive && Object.keys(focusedRegistration).length !== 0 && (
           <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
-            <div className="modal-container_registration">
+            <div className="modal-container modal-registration">
               <div className="title">
                 <h2>Modification inscription :</h2>
               </div>
               <form className="form" onSubmit={handleModalSubmit}>
                 <div className="form-row choose-tournament-identifier">
                   <span>Tournoi existant</span>
-                  <div
-                    className={
-                      chooseExistingTournament ? "switch-container" : "switch-container active"
-                    }
-                    onClick={() => setChooseExistingTournament(!chooseExistingTournament)}
-                  >
-                    <div className="switch-circle"></div>
-                  </div>
+                  <Switch
+                    customName="toggle-form"
+                    isActive={chooseExistingTournament}
+                    setIsActive={setChooseExistingTournament}
+                  />
+
                   <span>Nouveau tournoi</span>
                 </div>
 
@@ -425,7 +431,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                       type="checkbox"
                       name="double"
                       id="double"
-                      checked={focusedRegistration?.participationDouble || checkboxDouble}
+                      checked={checkboxDouble}
                       onChange={() => setCheckboxDouble((prev) => !prev)}
                     />
 
@@ -436,7 +442,7 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
                       type="checkbox"
                       name="mixed"
                       id="mixed"
-                      checked={focusedRegistration?.participationMixed || checkboxMixed}
+                      checked={checkboxMixed}
                       onChange={() => setCheckboxMixed((prev) => !prev)}
                     />
                     <label htmlFor="mixed">Mixte</label>
@@ -502,4 +508,4 @@ const UserTournaments = ({ deviceDisplay, setDeviceDisplay }: IUserTournamentsPr
   );
 };
 
-export default UserTournaments;
+export default UserTournamentsRegistrations;

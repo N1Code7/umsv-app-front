@@ -1,0 +1,295 @@
+.user-tournaments-registrations {
+  .registrations {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+
+    @include from(1000) {
+      display: block;
+      background: $bg-3;
+      padding: 0.6rem;
+      border-radius: 5px;
+    }
+
+    thead {
+      th {
+        &:first-of-type {
+          width: 17%;
+        }
+
+        &:nth-of-type(2) {
+          width: 28%;
+        }
+
+        &:nth-of-type(3) {
+          width: 17%;
+        }
+
+        &:nth-of-type(4) {
+          width: 28%;
+        }
+
+        &:nth-of-type(5) {
+          min-width: 6.5rem;
+          width: min-content;
+          // width: 12%;
+        }
+
+        &:last-of-type {
+          width: 10%;
+        }
+      }
+    }
+
+    td {
+      text-align: center;
+      line-height: 22px;
+
+      span {
+        display: block;
+      }
+    }
+
+    .status-tag {
+      display: inline-block;
+      padding: 0.1rem 0.3rem;
+      border-radius: 5px;
+
+      &-success {
+        background: $success-2;
+      }
+      &-warning {
+        background: $warning-2;
+      }
+      &-cancelled {
+        background: $canceled-2;
+      }
+    }
+  }
+
+  .cta-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.6rem;
+    box-sizing: content-box;
+
+    @include from(1000) {
+      gap: 0.6rem;
+    }
+
+    .see-file {
+      background: rgba($infos, 0.35);
+      box-shadow: 2px 2px 8px 2px darken(rgba($infos, 0.35), 20%);
+    }
+
+    .modify {
+      background: rgba($warning, 0.35);
+      box-shadow: 2px 2px 6px 1px darken(rgba($warning, 0.35), 20%);
+    }
+
+    .cancel {
+      background: rgba($canceled, 0.35);
+      box-shadow: 2px 2px 6px 1px darken(rgba($canceled, 0.35), 20%);
+    }
+
+    button,
+    a {
+      width: 2.7rem;
+      padding: 0;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      transition: box-shadow 0.2s ease-out;
+
+      @include from(1000) {
+        width: 2rem;
+        font-size: 1rem;
+      }
+
+      &:active {
+        box-shadow: none;
+      }
+    }
+  }
+
+  .modal-registration {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    @include from(1000) {
+      min-height: 70vh;
+      max-height: 85vh;
+    }
+
+    form {
+      padding: 0.9rem;
+      gap: 2rem;
+
+      @include from(1000) {
+        min-width: 40rem;
+        height: auto;
+      }
+    }
+
+    label {
+      font-size: clamp(0.9rem, 3vmin, 1.1rem);
+
+      @include ptt {
+        font-weight: 500;
+      }
+    }
+
+    .separating-line {
+      align-self: center;
+      position: relative;
+      width: 100%;
+      margin: -0.6rem 0;
+      text-align: center;
+      font-weight: 500;
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 1px solid black;
+        height: 1px;
+        width: 45%;
+      }
+      &::before {
+        left: 0;
+      }
+      &::after {
+        right: 0;
+      }
+
+      &.just-line {
+        margin: 0;
+        &::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          border: 1px solid black;
+          height: 1px;
+          width: 100%;
+        }
+      }
+    }
+
+    .choose-tournament-identifier {
+      align-self: center;
+      flex-direction: row;
+      align-items: center;
+
+      gap: clamp(0.6rem, 3vmin, 1rem);
+
+      span {
+        width: min-content;
+        text-align: center;
+
+        @include from(500) {
+          width: auto;
+        }
+      }
+    }
+
+    .dates {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.3rem, 2vmin, 1.2rem);
+
+      span {
+        font-weight: 500;
+      }
+
+      input {
+        font-size: clamp(0.8rem, 3vmin, 1.2rem);
+      }
+    }
+
+    .checkboxes-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+
+      @include ptt {
+        // gap: clamp(2rem, 5vw, 5rem);
+        justify-content: space-around;
+      }
+
+      input[type="checkbox"] {
+        display: none;
+
+        &:checked + label {
+          background: $primary-1;
+          color: $content-light;
+          font-weight: 500;
+        }
+      }
+
+      label {
+        position: relative;
+        min-width: clamp(4rem, 20vmin, 7rem);
+        padding: 0.6rem 0.3rem;
+        border: 2px solid $primary-1;
+        border-radius: 3px;
+
+        background-image: linear-gradient($primary-1 0 0);
+        background-origin: border-box;
+        background-position: 0 100%;
+        background-size: 0 100%;
+        background-repeat: no-repeat;
+        transition: 0.4s;
+        text-align: center;
+        font-size: 0.9rem;
+
+        @include coarse {
+          box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
+        }
+
+        @include fine {
+          &:hover {
+            background-size: 100% 100%;
+            color: $content-light;
+          }
+        }
+
+        @include from(1000) {
+          font-size: 1.1rem;
+        }
+      }
+
+      .form-row {
+        flex-direction: row;
+      }
+    }
+
+    .partner-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+
+      @include ptt {
+        flex-direction: row;
+        gap: 1.2rem;
+
+        input:first-of-type {
+          flex-grow: 2;
+        }
+
+        input:last-of-type {
+          width: 25%;
+        }
+      }
+    }
+  }
+}

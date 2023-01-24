@@ -5,7 +5,7 @@ import PageNotFound from "./routes/PageNotFound";
 import Login from "./routes/Login";
 import ResetPassword from "./routes/ResetPassword";
 import Homepage from "./routes/Homepage";
-import UserTournaments from "./routes/UserTournaments";
+import UserTournamentsRegistrations from "./routes/UserTournamentsRegistrations";
 import NewTournamentRegistration from "./routes/NewTournamentRegistration";
 import Results from "./routes/Results";
 import Settings from "./routes/Settings";
@@ -47,7 +47,7 @@ export default function MyApp() {
             <Route
               path="/tournois"
               element={
-                <UserTournaments
+                <UserTournamentsRegistrations
                   deviceDisplay={deviceDisplay}
                   setDeviceDisplay={setDeviceDisplay}
                 />

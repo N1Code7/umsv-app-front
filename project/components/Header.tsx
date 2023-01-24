@@ -4,6 +4,7 @@ import { NavigationContext } from "../../contexts/NavigationContext";
 import AdminSwitch from "./AdminSwitch";
 import Logout from "./Logout";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import Switch from "./Switch";
 
 const Header = () => {
   const { toggleDisplay } = useContext(NavigationContext);
@@ -16,7 +17,8 @@ const Header = () => {
           {user?.roles?.includes("ROLE_ADMIN") || user?.roles?.includes("ROLE_SUPERADMIN") ? (
             <div className="switch-container">
               <span>Admin</span>
-              <AdminSwitch />
+              <Switch customName="admin" />
+              {/* <AdminSwitch /> */}
             </div>
           ) : (
             <div className="member-role">
