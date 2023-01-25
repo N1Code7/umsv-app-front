@@ -320,14 +320,24 @@ const UserTournamentsRegistrations = ({
               </div>
               <form className="form" onSubmit={handleModalSubmit}>
                 <div className="form-row choose-tournament-identifier">
-                  <span>Tournoi existant</span>
+                  <span
+                    onClick={() => setChooseExistingTournament(true)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Tournoi existant
+                  </span>
                   <Switch
                     customName="toggle-form"
                     isActive={chooseExistingTournament}
                     setIsActive={setChooseExistingTournament}
                   />
 
-                  <span>Nouveau tournoi</span>
+                  <span
+                    onClick={() => setChooseExistingTournament(false)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Nouveau tournoi
+                  </span>
                 </div>
 
                 {chooseExistingTournament ? (
@@ -341,6 +351,10 @@ const UserTournamentsRegistrations = ({
                     >
                       <option value="null">---</option>
                       {tournaments
+                        .filter(
+                          (tournament: ITournament) =>
+                            new Date(tournament.registrationClosingDate) > new Date()
+                        )
                         .sort(
                           (a: ITournament, b: ITournament) =>
                             Number(new Date(a.startDate)) - Number(new Date(b.startDate))

@@ -201,6 +201,31 @@ a {
   }
 }
 
+.notification-message {
+  width: 100%;
+  margin: 1rem 0 1.5rem;
+
+  p {
+    padding: 0.3rem 0;
+    text-align: center;
+    line-height: 1.5rem;
+  }
+
+  .error,
+  .success {
+    padding: 0.8rem 0.6rem;
+    border-radius: 3px;
+  }
+
+  .error {
+    background: $danger-2;
+  }
+
+  .success {
+    background: $success-2;
+  }
+}
+
 .flash {
   display: block;
   padding: 1.2rem;

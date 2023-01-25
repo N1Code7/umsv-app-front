@@ -119,7 +119,7 @@ const SignUp = () => {
       <Header />
       <main className="sign-up">
         <div
-          className="confirm-message"
+          className="notification-message"
           style={displayConfirmMessage ? { display: "block" } : { display: "none" }}
         >
           {displayConfirmMessage &&

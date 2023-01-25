@@ -20,27 +20,115 @@ const NewTournamentRegistration = () => {
   const registrationMixedPartnerName = useRef<HTMLInputElement>(null);
   const registrationMixedPartnerClub = useRef<HTMLInputElement>(null);
   const registrationComment = useRef<HTMLTextAreaElement>(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
 
   const { data: tournaments, error: tournamentsError } = useSWR(
     "tournaments",
     async (url: string) => await axiosPrivate.get(url).then((res) => res.data)
   );
 
-  const handleSubmitForm = (e: FormEvent<HTMLFormElement>) => {};
+  const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const controller = new AbortController();
+    console.log(registrationSelectTournament.current?.value);
+
+    // return;
+
+    await axiosPrivate
+      .post(
+        "tournament-registration",
+        {
+          tournamentName: registrationSelectTournament.current?.value
+            ? tournaments
+                .filter(
+                  (tournament: ITournament) =>
+                    tournament.id == Number(registrationSelectTournament.current?.value)
+                )
+                .map((tournament: ITournament) => tournament.name)[0]
+            : registrationName.current
+            ? registrationName.current?.value
+            : null,
+          tournamentCity: registrationSelectTournament.current?.value
+            ? tournaments
+                .filter(
+                  (tournament: ITournament) =>
+                    tournament.id == Number(registrationSelectTournament.current?.value)
+                )
+                .map((tournament: ITournament) => tournament.city)[0]
+            : registrationCity.current
+            ? registrationCity.current?.value
+            : null,
+          tournamentStartDate: registrationSelectTournament.current?.value
+            ? tournaments
+                .filter(
+                  (tournament: ITournament) =>
+                    tournament.id == Number(registrationSelectTournament.current?.value)
+                )
+                .map((tournament: ITournament) => tournament.startDate)[0]
+            : registrationStartDate.current
+            ? new Date(registrationStartDate.current?.value).toISOString()
+            : null,
+          tournamentEndDate: registrationSelectTournament.current?.value
+            ? tournaments
+                .filter(
+                  (tournament: ITournament) =>
+                    tournament.id == Number(registrationSelectTournament.current?.value)
+                )
+                .map((tournament: ITournament) => tournament.endDate)[0]
+            : registrationEndDate.current
+            ? new Date(registrationEndDate.current?.value).toISOString()
+            : null,
+
+          participationSingle: checkboxSingle.current?.checked,
+          participationDouble: checkboxDouble,
+          participationMixed: checkboxMixed,
+          doublePartnerName: registrationDoublePartnerName.current?.value || null,
+          doublePartnerClub: registrationDoublePartnerClub.current?.value || null,
+          mixedPartnerName: registrationMixedPartnerName.current?.value || null,
+          mixedPartnerClub: registrationMixedPartnerClub.current?.value || null,
+          comment: registrationComment.current?.value || null,
+        },
+        { signal: controller.signal }
+      )
+      .then((res: unknown) =>
+        setConfirmMessage("Votre demande d'inscription a bien été créée ! 👌")
+      )
+      .catch((err: unknown) => {
+        console.error(err);
+        setErrorMessage(
+          "Une erreur est survenue lors de l'envoi de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur. "
+        );
+      });
+  };
 
   return (
     <main className="new-registration user-space">
+      {confirmMessage && (
+        <div className="notification-message">
+          <p className="success">{confirmMessage}</p>
+        </div>
+      )}
+      {errorMessage && (
+        <div className="notification-message">
+          <p className="error">{errorMessage}</p>
+        </div>
+      )}
       <h2>Demande d&apos;inscription à un tournoi</h2>
 
       <form className="form" onSubmit={handleSubmitForm}>
         <div className="form-row choose-tournament-identifier">
-          <span>Tournoi existant</span>
+          <span onClick={() => setChooseExistingTournament(true)} style={{ cursor: "pointer" }}>
+            Tournoi existant
+          </span>
           <Switch
             customName="toggle-form"
             isActive={chooseExistingTournament}
             setIsActive={setChooseExistingTournament}
           />
-          <span>Nouveau tournoi</span>
+          <span onClick={() => setChooseExistingTournament(false)} style={{ cursor: "pointer" }}>
+            Nouveau tournoi
+          </span>
         </div>
 
         {chooseExistingTournament ? (
@@ -51,6 +139,10 @@ const NewTournamentRegistration = () => {
               {!tournaments
                 ? "Chargement..."
                 : tournaments
+                    .filter(
+                      (tournament: ITournament) =>
+                        new Date(tournament.registrationClosingDate) > new Date()
+                    )
                     .sort(
                       (a: ITournament, b: ITournament) =>
                         Number(new Date(a.startDate)) - Number(new Date(b.startDate))

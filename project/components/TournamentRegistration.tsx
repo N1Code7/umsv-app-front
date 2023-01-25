@@ -50,6 +50,7 @@ const TournamentRegistration = ({
   };
 
   return displayOnMobile ? (
+    /** MOBILE */
     <div className="registration card">
       <div
         className="name"
@@ -116,7 +117,9 @@ const TournamentRegistration = ({
       </div>
     </div>
   ) : (
+    /** DESKTOP */
     <tr>
+      {/* Tournament date */}
       <td
         style={
           tournamentRegistration.requestState === "cancelled"
@@ -138,6 +141,7 @@ const TournamentRegistration = ({
             )
           : formatDate(tournamentRegistration.tournamentStartDate, undefined, "XX xxx XXXX")}
       </td>
+      {/* Tournament name */}
       <td
         style={
           tournamentRegistration.requestState === "cancelled"
@@ -147,6 +151,7 @@ const TournamentRegistration = ({
       >
         {tournamentRegistration.tournament && tournamentRegistration.tournament.name}
       </td>
+      {/* Tournament city */}
       <td
         style={
           tournamentRegistration.requestState === "cancelled"
@@ -158,6 +163,7 @@ const TournamentRegistration = ({
           ? tournamentRegistration.tournament.city
           : tournamentRegistration.tournamentCity}
       </td>
+      {/* Participations and partners */}
       <td
         style={
           tournamentRegistration.requestState === "cancelled"
@@ -185,14 +191,14 @@ const TournamentRegistration = ({
           ) : (
             <span>Double : {tournamentRegistration.doublePartnerName}</span>
           ))}
-        {tournamentRegistration.participationSingle === true &&
+        {tournamentRegistration.participationMixed === true &&
           (tournamentRegistration.user?.gender ? (
             <span>DX : {tournamentRegistration.mixedPartnerName}</span>
           ) : (
             <span>Mixte : {tournamentRegistration.mixedPartnerName}</span>
           ))}
       </td>
-
+      {/* Request state */}
       <td>
         {tournamentRegistration.requestState === "pending" ? (
           <span className="status-tag status-tag-warning">En attente</span>
@@ -202,7 +208,7 @@ const TournamentRegistration = ({
           <span className="status-tag status-tag-cancelled">Annulée</span>
         )}
       </td>
-
+      {/* Action buttons */}
       <td>
         <div className="cta-container">
           <button className="btn modify" onClick={handleModify}>
