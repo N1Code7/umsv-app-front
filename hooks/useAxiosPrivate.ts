@@ -5,7 +5,7 @@ import { axiosPrivate } from "../config/axios";
 
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken();
-  const { auth, setAuth } = useContext(AuthenticationContext);
+  const { auth } = useContext(AuthenticationContext);
 
   useEffect(() => {
     const requestIntercept = axiosPrivate.interceptors.request.use(
@@ -39,7 +39,7 @@ const useAxiosPrivate = () => {
       axiosPrivate.interceptors.request.eject(requestIntercept);
       axiosPrivate.interceptors.response.eject(responseIntercept);
     };
-  }, [auth, setAuth, refresh]);
+  }, [auth, refresh]);
 
   return axiosPrivate;
 };

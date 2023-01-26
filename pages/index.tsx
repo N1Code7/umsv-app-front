@@ -4,6 +4,7 @@ import { useState } from "react";
 import { NavigationContext } from "../contexts/NavigationContext";
 import Footer from "../project/components/Footer";
 import { AuthenticationContext } from "../contexts/AuthenticationContext";
+import { IAuth, IUser } from "../config/interfaces";
 
 const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 

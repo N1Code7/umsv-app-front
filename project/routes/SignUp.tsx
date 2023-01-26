@@ -4,6 +4,7 @@ import Input from "../components/Input";
 import Header from "../components/Header";
 import { fetchCreateAccount } from "../../config/fetchFunctions";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import { IUser } from "../../config/interfaces";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ const SignUp = () => {
         })
         .then((res) => {
           if (res) {
-            setUser?.({ email: res.email });
+            setUser?.((prev: IUser) => ({ ...prev, email: res.email }));
             setTimeout(() => {
               navigate("/");
             }, 20000);

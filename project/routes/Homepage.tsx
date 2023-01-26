@@ -9,6 +9,7 @@ import { formatDate, getDayOfWeek, getMonthOfYear } from "../../config/dateFunct
 import Modal from "../components/Modal";
 import Image from "next/image";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useSWR, { useSWRConfig } from "swr";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -17,10 +18,10 @@ interface IHomepageProps {
 
 const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
   const axiosPrivate = useAxiosPrivate();
-  const [events, setEvents] = useState([]);
+  // const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({} as IClubEvent);
-  const [tournaments, setTournaments] = useState([]);
+  // const [tournaments, setTournaments] = useState([]);
   const [searchByText, setSearchByText] = useState("");
   const [searchByDay, setSearchByDay] = useState("default");
   const [searchByMonth, setSearchByMonth] = useState("default");
@@ -217,66 +218,103 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
     });
   };
 
-  /** Fetch events and tournaments */
-  useEffect(() => {
-    let ignore = false;
-    const controller = new AbortController();
-
-    const getEvents = async () =>
-      (await axiosPrivate.get("events", { signal: controller.signal })).data;
-
-    const getTournaments = async () =>
-      (await axiosPrivate.get("tournaments", { signal: controller.signal })).data;
-
-    Promise.all([getEvents(), getTournaments()])
-      .then(([ev, tou]) => {
-        if (!ignore) {
-          setEvents(ev);
-          setTournaments(tou);
-        }
-      })
+  const controller = new AbortController();
+  const fetcher = async (url: string) =>
+    await axiosPrivate
+      .get(url, { signal: controller.signal })
+      .then((res) => res.data)
       .catch((err) => {
         console.error(err);
-        if (controller.signal.aborted) {
-          console.log("The user aborted the request");
-        } else {
-          console.error("The request failed");
-        }
+        controller.abort();
       });
 
-    return () => {
-      ignore = true;
-      controller.abort();
-    };
-  }, []);
+  /** Fetch events */
+  const {
+    data: events,
+    error: eventsError,
+    isLoading: eventsIsLoading,
+    mutate: eventsMutate,
+  } = useSWR("events", fetcher, { revalidateOnFocus: false });
+
+  /** Fetch tournaments */
+  const {
+    data: tournaments,
+    error: tournamentsError,
+    isLoading: tournamentsIsLoading,
+    mutate: tournamentsMutate,
+  } = useSWR("tournaments", fetcher);
+
+  // const { mutate } = useSWRConfig();
+  // mutate("events");
+  // mutate("tournaments");
+
+  // eventsMutate();
+  // tournamentsMutate();
+
+  // /** Fetch events and tournaments */
+  // useEffect(() => {
+  //   let ignore = false;
+  //   const controller = new AbortController();
+
+  //   const getEvents = async () =>
+  //     (await axiosPrivate.get("events", { signal: controller.signal })).data;
+
+  //   const getTournaments = async () =>
+  //     (await axiosPrivate.get("tournaments", { signal: controller.signal })).data;
+
+  //   Promise.all([getEvents(), getTournaments()])
+  //     .then(([ev, tou]) => {
+  //       if (!ignore) {
+  //         setEvents(ev);
+  //         setTournaments(tou);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //       if (controller.signal.aborted) {
+  //         console.log("The user aborted the request");
+  //       } else {
+  //         console.error("The request failed");
+  //       }
+  //     });
+
+  //   return () => {
+  //     ignore = true;
+  //     controller.abort();
+  //   };
+  // }, []);
 
   return (
     <main className="homepage user-space">
       <div className="events-block">
         <h2>Événements à venir</h2>
         <div className="events">
-          {events
-            .filter((event: IClubEvent) => {
-              const startDate = new Date(event.startDate);
-              const today = new Date();
-              return startDate > today;
-            })
-            .sort((a: IClubEvent, b: IClubEvent) => {
-              const firstDate = new Date(a.startDate);
-              const secondDate = new Date(b.startDate);
-              return Number(firstDate) - Number(secondDate);
-            })
-            .slice(0, 5)
-            .map((event: IClubEvent) => (
-              <Event
-                key={event.id}
-                event={event}
-                focusedEvent={focusedEvent}
-                isModalActive={isModalActive}
-                setIsModalActive={setIsModalActive}
-                setFocusedEvent={setFocusedEvent}
-              />
-            ))}
+          {!events ? (
+            <p>Chargment des événements</p>
+          ) : (
+            events
+              .filter((event: IClubEvent) => {
+                const startDate = new Date(event.startDate);
+                const today = new Date();
+                return startDate > today;
+              })
+              .sort((a: IClubEvent, b: IClubEvent) => {
+                const firstDate = new Date(a.startDate);
+                const secondDate = new Date(b.startDate);
+                return Number(firstDate) - Number(secondDate);
+              })
+              .slice(0, 5)
+              .map((event: IClubEvent) => (
+                <Event
+                  key={event.id}
+                  event={event}
+                  focusedEvent={focusedEvent}
+                  isModalActive={isModalActive}
+                  setIsModalActive={setIsModalActive}
+                  setFocusedEvent={setFocusedEvent}
+                />
+              ))
+          )}
         </div>
         {isModalActive && Object.keys(focusedEvent).length !== 0 && (
           <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
@@ -350,9 +388,13 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
           {deviceDisplay === "mobile" ? (
             /** MOBILE */
             <>
-              {filterTournaments(tournaments).map((tournament: ITournament) => (
-                <Tournament key={tournament.id} tournament={tournament} displayOnMobile />
-              ))}
+              {!tournaments ? (
+                <p>Chargement des tournois</p>
+              ) : (
+                filterTournaments(tournaments).map((tournament: ITournament) => (
+                  <Tournament key={tournament.id} tournament={tournament} displayOnMobile />
+                ))
+              )}
             </>
           ) : (
             /** DESKTOP */
@@ -413,9 +455,19 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
                 </tr>
               </thead>
               <tbody>
-                {sortTournaments(filterTournaments(tournaments)).map((tournament: ITournament) => (
-                  <Tournament key={tournament.id} tournament={tournament} displayOnMobile={false} />
-                ))}
+                {!tournaments ? (
+                  <tr>
+                    <td colSpan={7}>Chargement des tournois</td>
+                  </tr>
+                ) : (
+                  sortTournaments(filterTournaments(tournaments)).map((tournament: ITournament) => (
+                    <Tournament
+                      key={tournament.id}
+                      tournament={tournament}
+                      displayOnMobile={false}
+                    />
+                  ))
+                )}
               </tbody>
             </table>
           )}

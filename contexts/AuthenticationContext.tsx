@@ -1,9 +1,10 @@
 import { Dispatch, SetStateAction, createContext } from "react";
 
-interface authenticationContextType {
+interface IAuthenticationContext {
   auth: {
     accessToken?: string;
     isAuthenticated?: boolean;
+    roles?: Array<string>;
   };
   user: {
     id?: number;
@@ -36,4 +37,4 @@ interface authenticationContextType {
 }
 
 // Partial<> allow properties to be undefined
-export const AuthenticationContext = createContext<Partial<authenticationContextType>>({});
+export const AuthenticationContext = createContext<Partial<IAuthenticationContext>>({});

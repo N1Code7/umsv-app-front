@@ -1,3 +1,8 @@
+export interface IAuth {
+  accessToken: string;
+  isAuthenticated: boolean;
+}
+
 export interface IClubEvent {
   id: number;
   startDate: string;
@@ -78,7 +83,7 @@ export interface IUser {
   email: string;
   roles: Array<string>;
   gender?: string;
-  FFBadStats: Array<{
+  FFBadStats?: Array<{
     rankingsDate: string;
     license: string;
     birthDate: string;

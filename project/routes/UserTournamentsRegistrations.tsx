@@ -50,11 +50,12 @@ const UserTournamentsRegistrations = ({
 
   const getFetcher = async (url: string) => await axiosPrivate.get(url).then((res) => res.data);
   const { data: tournaments, error: tournamentsError } = useSWR("tournaments", getFetcher);
-  const { data: tournamentsRegistrations, error: tournamentsRegistrationsError } = useSWR(
-    "tournament-registrations",
-    getFetcher
-  );
-  const { mutate: tournamentsRegistrationsMutate } = useSWRConfig();
+  const {
+    data: tournamentsRegistrations,
+    error: tournamentsRegistrationsError,
+    mutate: tournamentsRegistrationsMutate,
+  } = useSWR("tournament-registrations", getFetcher);
+  tournamentsRegistrationsMutate();
 
   /** Sort registrations depending on the selected sort button */
   const sortRegistrations = (tournamentsRegistrations: Array<ITournamentRegistration>) => {
@@ -166,10 +167,6 @@ const UserTournamentsRegistrations = ({
       })
       .catch((err) => console.error(err));
   };
-
-  useEffect(() => {
-    tournamentsRegistrationsMutate("tournament-registrations");
-  }, [focusedRegistration, tournamentsRegistrationsMutate]);
 
   /** Fetch events and tournaments */
   // useEffect(() => {

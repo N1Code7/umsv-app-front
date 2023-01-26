@@ -2,17 +2,16 @@ import { FormEvent, useCallback, useContext, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import { fetchLogin, getRefreshTokenFromCookie } from "../../config/fetchFunctions";
 import Header from "../components/Header";
 import useRefreshToken from "../../hooks/useRefreshToken";
-import axios from "../../config/axios";
+import axios, { axiosPrivate } from "../../config/axios";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const refresh = useRefreshToken();
-  const { user, setAuth } = useContext(AuthenticationContext);
+  const { user, setUser, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState(user?.email || "");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -26,37 +25,49 @@ const Login = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      !email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/)
-        ? setEmailError("L'adresse email renseignée n'est pas conforme 🚨")
-        : setEmailError("");
-      password.length < 6
-        ? setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨")
-        : setPasswordError("");
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const controller = new AbortController();
+    !email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/)
+      ? setEmailError("L'adresse email renseignée n'est pas conforme 🚨")
+      : setEmailError("");
+    password.length < 6
+      ? setPasswordError("Le mot de passe doit contenir au minimum 6 caractères 🚨")
+      : setPasswordError("");
 
-      if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
-        await axios
-          .post("login", { email, password })
-          .then(({ data }) => {
-            setPassword("");
-            setHasErrorOccurred(false);
-            setAuth?.({ accessToken: data.token, isAuthenticated: true });
-            document.cookie = `refreshToken=${data.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-            navigate(from, { replace: true });
-          })
-          .catch((err) => {
-            console.error(err);
-            setHasErrorOccurred(true);
-            setTimeout(() => {
-              setHasErrorOccurred(false);
-            }, 5000);
-          });
+    if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
+      // create two functions to fetch login and user
+      // set the context auth with azccessToken, isAuthenticated and roles
+      // set the user context
+
+      const loginResponse = await axios.post("login", { email, password });
+
+      const userResponse = await axiosPrivate.get("user", {
+        signal: controller.signal,
+        headers: { Authorization: `Bearer ${loginResponse.data.token}` },
+      });
+
+      try {
+        setPassword("");
+        setHasErrorOccurred(false);
+        setAuth?.({
+          accessToken: loginResponse.data.token,
+          isAuthenticated: true,
+          roles: userResponse.data.roles,
+        });
+        document.cookie = `refreshToken=${loginResponse.data.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
+        setUser?.(userResponse.data);
+        navigate(from, { replace: true });
+      } catch (err) {
+        console.error(err);
+        setHasErrorOccurred(true);
+        setTimeout(() => {
+          setHasErrorOccurred(false);
+        }, 5000);
+        controller.abort();
       }
-    },
-    [email, from, password, setAuth, navigate]
-  );
+    }
+  };
 
   // useEffect(() => {
   //   if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
@@ -87,8 +98,8 @@ const Login = () => {
             <input
               type="email"
               id="email"
-              value={user?.email ? user?.email : email}
-              onChange={(e) => setEmail(user?.email || e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               autoFocus
             />

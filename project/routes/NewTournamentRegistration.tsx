@@ -33,8 +33,6 @@ const NewTournamentRegistration = () => {
     const controller = new AbortController();
     console.log(registrationSelectTournament.current?.value);
 
-    // return;
-
     await axiosPrivate
       .post(
         "tournament-registration",
