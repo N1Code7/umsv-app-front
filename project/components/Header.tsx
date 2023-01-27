@@ -1,33 +1,13 @@
 import Image from "next/image";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { NavigationContext } from "../../contexts/NavigationContext";
-import AdminSwitch from "./AdminSwitch";
 import Logout from "./Logout";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Switch from "./Switch";
-import useSWR from "swr";
-import { axiosPrivate } from "../../config/axios";
-import { IUser } from "../../config/interfaces";
 
 const Header = () => {
   const { toggleDisplay } = useContext(NavigationContext);
-  const { user, auth, setUser } = useContext(AuthenticationContext);
-  // const controller = new AbortController();
-  // const fetcher = async (url: string) =>
-  //   axiosPrivate
-  //     .get(url, { signal: controller.signal })
-  //     .then((res) => res.data)
-  //     .then((res) => setUser?.(res))
-  //     .catch((err) => {
-  //       console.error(err);
-  //       controller.abort();
-  //     });
-  // const { data: userData, isLoading, error: errorData } = useSWR("user", fetcher);
-
-  // useEffect(() => {
-  //   console.log(user);
-  //   console.log(userData);
-  // }, []);
+  const { user, auth } = useContext(AuthenticationContext);
 
   return (
     <header className="header">

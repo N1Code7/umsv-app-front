@@ -10,18 +10,14 @@ const Persist = () => {
   const refresh = useRefreshToken();
   const [isLoading, setIsLoading] = useState(true);
 
-  const security = useCallback(() => {
+  useEffect(() => {
     if (!getRefreshTokenFromCookie() || getRefreshTokenFromCookie() === "undefined") {
       setAuth?.({});
       setUser?.({});
       document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
       return navigate("/se_connecter", { replace: true });
     }
-  }, [navigate, setAuth, setUser]);
-
-  useEffect(() => {
-    security();
-  }, [security]);
+  }, []);
 
   useEffect(() => {
     let ignore = false;

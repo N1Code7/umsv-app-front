@@ -2,8 +2,8 @@ import { FormEvent, useRef, useState } from "react";
 import { formatDate } from "../../config/dateFunctions";
 import { ITournament } from "../../config/interfaces";
 import useSWR from "swr";
-import { axiosPrivate } from "../../config/axios";
 import Switch from "../components/Switch";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const NewTournamentRegistration = () => {
   const checkboxSingle = useRef<HTMLInputElement>(null);
@@ -23,10 +23,15 @@ const NewTournamentRegistration = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmMessage, setConfirmMessage] = useState("");
 
-  const { data: tournaments, error: tournamentsError } = useSWR(
-    "tournaments",
-    async (url: string) => await axiosPrivate.get(url).then((res) => res.data)
-  );
+  /** Fetch tournaments */
+  const axiosPrivate = useAxiosPrivate();
+  const fetcher = async (url: string) =>
+    await axiosPrivate
+      .get(url)
+      .then((res) => res.data)
+      .catch((err) => console.error(err));
+  const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
+  /**  */
 
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

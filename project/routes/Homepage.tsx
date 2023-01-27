@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Event from "../components/Event";
 import { IClubEvent, ITournament } from "../../config/interfaces";
 import Tournament from "../components/Tournament";
@@ -9,7 +8,7 @@ import { formatDate, getDayOfWeek, getMonthOfYear } from "../../config/dateFunct
 import Modal from "../components/Modal";
 import Image from "next/image";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR, { mutate, preload } from "swr";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -218,71 +217,21 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
     });
   };
 
-  const controller = new AbortController();
-  const fetcher = async (url: string) =>
-    await axiosPrivate
-      .get(url, { signal: controller.signal })
+  const fetcher = async (url: string) => {
+    return await axiosPrivate
+      .get(url)
       .then((res) => res.data)
-      .catch((err) => {
-        console.error(err);
-        controller.abort();
-      });
+      .catch((err) => console.error(err));
+  };
+  const { data: events, mutate: eventsMutate } = useSWR("events", fetcher);
+  const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
 
-  /** Fetch events */
-  const {
-    data: events,
-    error: eventsError,
-    isLoading: eventsIsLoading,
-    mutate: eventsMutate,
-  } = useSWR("events", fetcher, { revalidateOnFocus: false });
-
-  /** Fetch tournaments */
-  const {
-    data: tournaments,
-    error: tournamentsError,
-    isLoading: tournamentsIsLoading,
-    mutate: tournamentsMutate,
-  } = useSWR("tournaments", fetcher);
-
-  // const { mutate } = useSWRConfig();
-  // mutate("events");
-  // mutate("tournaments");
-
-  // eventsMutate();
-  // tournamentsMutate();
-
-  // /** Fetch events and tournaments */
-  // useEffect(() => {
-  //   let ignore = false;
-  //   const controller = new AbortController();
-
-  //   const getEvents = async () =>
-  //     (await axiosPrivate.get("events", { signal: controller.signal })).data;
-
-  //   const getTournaments = async () =>
-  //     (await axiosPrivate.get("tournaments", { signal: controller.signal })).data;
-
-  //   Promise.all([getEvents(), getTournaments()])
-  //     .then(([ev, tou]) => {
-  //       if (!ignore) {
-  //         setEvents(ev);
-  //         setTournaments(tou);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       if (controller.signal.aborted) {
-  //         console.log("The user aborted the request");
-  //       } else {
-  //         console.error("The request failed");
-  //       }
-  //     });
-
-  //   return () => {
-  //     ignore = true;
-  //     controller.abort();
-  //   };
-  // }, []);
+  useEffect(() => {
+    if (!events || !tournaments) {
+      eventsMutate();
+      tournamentsMutate();
+    }
+  }, []);
 
   return (
     <main className="homepage user-space">
@@ -290,7 +239,7 @@ const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
         <h2>Événements à venir</h2>
         <div className="events">
           {!events ? (
-            <p>Chargment des événements</p>
+            <p>Chargement des événements</p>
           ) : (
             events
               .filter((event: IClubEvent) => {

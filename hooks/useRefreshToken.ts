@@ -5,17 +5,13 @@ import { useContext } from "react";
 
 const useRefreshToken = () => {
   const { setAuth, user, setUser } = useContext(AuthenticationContext);
-  const controller = new AbortController();
 
   const refresh = async () => {
-    const refreshResponse = await axios.post(
-      "token/refresh",
-      { refreshToken: getRefreshTokenFromCookie() },
-      { signal: controller.signal }
-    );
+    const refreshResponse = await axios.post("token/refresh", {
+      refreshToken: getRefreshTokenFromCookie(),
+    });
 
     const userResponse = await axiosPrivate.get("user", {
-      signal: controller.signal,
       headers: { Authorization: `Bearer ${refreshResponse.data.token}` },
     });
 

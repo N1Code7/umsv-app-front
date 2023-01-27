@@ -11,7 +11,7 @@ import Results from "./routes/Results";
 import Settings from "./routes/Settings";
 import { useEffect, useState } from "react";
 import Persist from "./routes/Persist";
-import AdminHomepage from "./routes/Admin/AdminHomepage";
+import AdminHomepage from "./routes/admin/AdminHomepage";
 import Unauthorized from "./routes/Unauthorized";
 
 export default function MyApp() {

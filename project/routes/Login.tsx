@@ -4,13 +4,14 @@ import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Header from "../components/Header";
 import useRefreshToken from "../../hooks/useRefreshToken";
-import axios, { axiosPrivate } from "../../config/axios";
+import axios, { delay } from "../../config/axios";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const refresh = useRefreshToken();
+  const axiosPrivate = useAxiosPrivate();
   const { user, setUser, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState(user?.email || "");
   const [emailError, setEmailError] = useState("");
@@ -36,18 +37,17 @@ const Login = () => {
       : setPasswordError("");
 
     if (email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6) {
-      // create two functions to fetch login and user
-      // set the context auth with azccessToken, isAuthenticated and roles
-      // set the user context
-
-      const loginResponse = await axios.post("login", { email, password });
-
-      const userResponse = await axiosPrivate.get("user", {
-        signal: controller.signal,
-        headers: { Authorization: `Bearer ${loginResponse.data.token}` },
-      });
-
       try {
+        const loginResponse = await axios.post("login", { email, password });
+        const userResponse = await axios.get("user", {
+          signal: controller.signal,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${loginResponse.data.token}`,
+          },
+        });
+
         setPassword("");
         setHasErrorOccurred(false);
         setAuth?.({

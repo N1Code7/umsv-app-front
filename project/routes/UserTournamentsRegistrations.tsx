@@ -1,21 +1,11 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  MouseEvent,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
 import { ITournament, ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
 import Modal from "../components/Modal";
 import { formatDate } from "../../config/dateFunctions";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useSWR, { useSWRConfig } from "swr";
-import { AxiosResponse } from "axios";
+import useSWR from "swr";
 import Switch from "../components/Switch";
 
 interface IUserTournamentsProps {
@@ -50,12 +40,14 @@ const UserTournamentsRegistrations = ({
 
   const getFetcher = async (url: string) => await axiosPrivate.get(url).then((res) => res.data);
   const { data: tournaments, error: tournamentsError } = useSWR("tournaments", getFetcher);
-  const {
-    data: tournamentsRegistrations,
-    error: tournamentsRegistrationsError,
-    mutate: tournamentsRegistrationsMutate,
-  } = useSWR("tournament-registrations", getFetcher);
-  tournamentsRegistrationsMutate();
+  const { data: tournamentsRegistrations, mutate: tournamentsRegistrationsMutate } = useSWR(
+    "tournament-registrations",
+    getFetcher
+  );
+
+  useEffect(() => {
+    !tournamentsRegistrations && tournamentsRegistrationsMutate();
+  }, []);
 
   /** Sort registrations depending on the selected sort button */
   const sortRegistrations = (tournamentsRegistrations: Array<ITournamentRegistration>) => {
@@ -129,7 +121,7 @@ const UserTournamentsRegistrations = ({
     );
   };
 
-  const handleModalSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const updateRegistration = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const controller = new AbortController();
     setIsModalActive(false);
@@ -315,7 +307,7 @@ const UserTournamentsRegistrations = ({
               <div className="title">
                 <h2>Modification inscription :</h2>
               </div>
-              <form className="form" onSubmit={handleModalSubmit}>
+              <form className="form" onSubmit={updateRegistration}>
                 <div className="form-row choose-tournament-identifier">
                   <span
                     onClick={() => setChooseExistingTournament(true)}
