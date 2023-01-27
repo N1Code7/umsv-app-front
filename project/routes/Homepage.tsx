@@ -216,12 +216,11 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
     });
   };
 
-  const fetcher = async (url: string) => {
-    return await axiosPrivate
+  const fetcher = async (url: string) =>
+    await axiosPrivate
       .get(url)
       .then((res) => res.data)
       .catch((err) => console.error(err));
-  };
   const { data: events, mutate: eventsMutate } = useSWR("events", fetcher);
   const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
 
@@ -234,7 +233,7 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
 
   return (
     <main className="homepage user-space">
-      <div className="events-block">
+      <section className="events-container">
         <h2>Événements à venir</h2>
         <div className="events">
           {!events ? (
@@ -317,9 +316,9 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
             </div>
           </Modal>
         )}
-      </div>
+      </section>
 
-      <div className="tournaments-block">
+      <section className="tournaments-block">
         <h2>Tournois référencés par le club</h2>
         <TournamentsSearch
           searchByText={searchByText}
@@ -420,7 +419,7 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
             </table>
           )}
         </div>
-      </div>
+      </section>
     </main>
   );
 };

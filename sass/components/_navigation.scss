@@ -53,12 +53,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    justify-self: center;
     border-left: 1px solid rgba(0, 0, 0, 0.194);
     font-size: clamp(0.6rem, 3vmin, 0.7rem);
     font-weight: 500;
     min-width: calc(100vw / 5);
 
     @include ptt {
+      justify-self: auto;
       font-size: clamp(0.8rem, 1.5vw, 1rem);
       min-width: auto;
 

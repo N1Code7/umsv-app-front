@@ -6,8 +6,8 @@ import Switch from "./Switch";
 
 interface IHeaderProps {
   toggleDisplayNavigation?: () => void;
-  isAdminConnected: boolean;
-  setIsAdminConnected: Dispatch<SetStateAction<boolean>>;
+  isAdminConnected?: boolean;
+  setIsAdminConnected?: Dispatch<SetStateAction<boolean>>;
 }
 
 const Header = ({

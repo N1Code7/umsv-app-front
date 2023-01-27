@@ -18,8 +18,7 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
   const [displayNavigation, setDisplayNavigation] = useState(false);
 
   const toggleDisplayNavigation = () => {
-    setDisplayNavigation(!displayNavigation);
-    // setDisplayNavigation((prev) => !prev);
+    setDisplayNavigation((prev) => !prev);
   };
 
   const toggleIsAdminConnected = () => {
@@ -33,7 +32,7 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
         isAdminConnected={isAdminConnected}
         setIsAdminConnected={setIsAdminConnected}
       />
-      <MemberHeader />
+      {!isAdminConnected && <MemberHeader />}
       <Navigation displayNavigation={displayNavigation} isAdminConnected={isAdminConnected} />
       <Outlet />
     </>

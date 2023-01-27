@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 interface INavigationProps {
   displayNavigation: boolean;
@@ -6,6 +7,15 @@ interface INavigationProps {
 }
 
 const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INavigationProps) => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAdminConnected) {
+      navigate("/admin/");
+    } else {
+      navigate("/");
+    }
+  }, [isAdminConnected]);
+
   return isAdminConnected ? (
     <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
       <ul>
@@ -15,7 +25,7 @@ const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INa
             <span>Accueil</span>
           </NavLink>
         </li>
-        {/* <li>
+        <li>
           <NavLink
             to="/admin/demandes_inscriptions"
             className={(nav) => (nav.isActive ? "link-active" : "")}
@@ -59,7 +69,7 @@ const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INa
             <span>👤</span>
             <span>Gestions utilisateurs</span>
           </NavLink>
-        </li> */}
+        </li>
       </ul>
     </nav>
   ) : (
