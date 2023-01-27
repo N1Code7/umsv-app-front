@@ -121,7 +121,7 @@ const NewTournamentRegistration = () => {
 
       <form className="form" onSubmit={handleSubmitForm}>
         <div className="form-row choose-tournament-identifier">
-          <span onClick={() => setChooseExistingTournament(true)} style={{ cursor: "pointer" }}>
+          <span onClick={() => setChooseExistingTournament(false)} style={{ cursor: "pointer" }}>
             Tournoi existant
           </span>
           <Switch
@@ -129,12 +129,12 @@ const NewTournamentRegistration = () => {
             isActive={chooseExistingTournament}
             setIsActive={setChooseExistingTournament}
           />
-          <span onClick={() => setChooseExistingTournament(false)} style={{ cursor: "pointer" }}>
+          <span onClick={() => setChooseExistingTournament(true)} style={{ cursor: "pointer" }}>
             Nouveau tournoi
           </span>
         </div>
 
-        {chooseExistingTournament ? (
+        {!chooseExistingTournament ? (
           <div className="form-row">
             <label htmlFor="selectTournament">Sélectionner un tournoi existant</label>
             <select id="selectTournament" ref={registrationSelectTournament} autoFocus>

@@ -45,6 +45,13 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
     !tournamentsRegistrations && tournamentsRegistrationsMutate();
   }, []);
 
+  useEffect(() => {
+    isModalActive &&
+      (focusedRegistration.tournament
+        ? setChooseExistingTournament(false)
+        : setChooseExistingTournament(true));
+  }, [focusedRegistration, isModalActive]);
+
   /** Sort registrations depending on the selected sort button */
   const sortRegistrations = (tournamentsRegistrations: Array<ITournamentRegistration>) => {
     return tournamentsRegistrations.sort(
@@ -306,7 +313,7 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
               <form className="form" onSubmit={updateRegistration}>
                 <div className="form-row choose-tournament-identifier">
                   <span
-                    onClick={() => setChooseExistingTournament(true)}
+                    onClick={() => setChooseExistingTournament(false)}
                     style={{ cursor: "pointer" }}
                   >
                     Tournoi existant
@@ -318,14 +325,14 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
                   />
 
                   <span
-                    onClick={() => setChooseExistingTournament(false)}
+                    onClick={() => setChooseExistingTournament(true)}
                     style={{ cursor: "pointer" }}
                   >
                     Nouveau tournoi
                   </span>
                 </div>
 
-                {chooseExistingTournament ? (
+                {!chooseExistingTournament ? (
                   <div className="form-row">
                     <label htmlFor="selectTournament">Sélectionner un tournoi existant</label>
                     <select
