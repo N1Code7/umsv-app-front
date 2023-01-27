@@ -3,18 +3,65 @@ import { NavLink } from "react-router-dom";
 interface INavigationProps {
   displayNavigation: boolean;
   isAdminConnected: boolean;
-  toggleIsAdminConnected: () => void;
 }
 
-const Navigation = ({
-  displayNavigation = false,
-  isAdminConnected = false,
-  toggleIsAdminConnected,
-}: INavigationProps) => {
-  // const { display, isAdminConnected } = useContext(NavigationContext);
-
+const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INavigationProps) => {
   return isAdminConnected ? (
-    <nav className={displayNavigation ? "nav nav-mobile" : "nav"}></nav>
+    <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
+      <ul>
+        <li>
+          <NavLink to="/admin/" className={(nav) => (nav.isActive ? "link-active" : "")}>
+            <span>🛎️</span>
+            <span>Accueil</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/demandes_inscriptions"
+            className={(nav) => (nav.isActive ? "link-active" : "")}
+          >
+            <span>📥</span>
+            <span>Demandes d&apos;inscription</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/gestion_tournois"
+            className={(nav) => (nav.isActive ? "link-active" : "")}
+          >
+            <span>🏟️</span>
+            <span>Gestion tournois</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/gestion_articles"
+            className={(nav) => (nav.isActive ? "link-active" : "")}
+          >
+            <span>📰</span>
+            <span>Gestion articles</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/gestion_evenements"
+            className={(nav) => (nav.isActive ? "link-active" : "")}
+          >
+            <span>🗓️</span>
+            <span>Gestions événements</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/gestion_utilisateurs"
+            className={(nav) => (nav.isActive ? "link-active" : "")}
+          >
+            <span>👤</span>
+            <span>Gestions utilisateurs</span>
+          </NavLink>
+        </li>
+      </ul>
+    </nav>
   ) : (
     <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
       <ul>

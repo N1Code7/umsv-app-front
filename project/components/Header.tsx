@@ -1,15 +1,20 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction, useContext } from "react";
-import { NavigationContext } from "../../contexts/NavigationContext";
 import Logout from "./Logout";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Switch from "./Switch";
 
 interface IHeaderProps {
   toggleDisplayNavigation?: () => void;
+  isAdminConnected: boolean;
+  setIsAdminConnected: Dispatch<SetStateAction<boolean>>;
 }
 
-const Header = ({ toggleDisplayNavigation }: IHeaderProps) => {
+const Header = ({
+  isAdminConnected,
+  setIsAdminConnected,
+  toggleDisplayNavigation,
+}: IHeaderProps) => {
   const { user, auth } = useContext(AuthenticationContext);
 
   return (
@@ -19,7 +24,11 @@ const Header = ({ toggleDisplayNavigation }: IHeaderProps) => {
           {user?.roles?.includes("ROLE_ADMIN") || user?.roles?.includes("ROLE_SUPERADMIN") ? (
             <div className="switch-container">
               <span>Admin</span>
-              <Switch customName="admin" />
+              <Switch
+                customName="admin"
+                isActive={isAdminConnected}
+                setIsActive={setIsAdminConnected}
+              />
               {/* <AdminSwitch /> */}
             </div>
           ) : (

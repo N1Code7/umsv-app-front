@@ -12,8 +12,8 @@
     &.active {
       .switch-circle-admin {
         transform: translate(calc(46px - 28px), -50%);
-        // background: $gradient-1;
-        background: $success-1;
+        background: $gradient-1;
+        // background: $success-1;
       }
     }
   }

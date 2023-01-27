@@ -28,13 +28,13 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
 
   return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
     <>
-      <Header toggleDisplayNavigation={toggleDisplayNavigation} />
-      <MemberHeader />
-      <Navigation
-        displayNavigation={displayNavigation}
+      <Header
+        toggleDisplayNavigation={toggleDisplayNavigation}
         isAdminConnected={isAdminConnected}
-        toggleIsAdminConnected={toggleIsAdminConnected}
+        setIsAdminConnected={setIsAdminConnected}
       />
+      <MemberHeader />
+      <Navigation displayNavigation={displayNavigation} isAdminConnected={isAdminConnected} />
       <Outlet />
     </>
   ) : auth?.accessToken ? (

@@ -18,7 +18,7 @@ const Switch = ({ customName, isActive, setIsActive }: ISwitchProps) => {
 
   return (
     <button
-      className={isActive ? `switch switch-${customName}` : `switch switch-${customName} active`}
+      className={isActive ? `switch switch-${customName} active` : `switch switch-${customName}`}
       onClick={handleClick}
     >
       <div className={`switch-circle switch-circle-${customName}`}></div>
