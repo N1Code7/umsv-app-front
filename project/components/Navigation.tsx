@@ -1,12 +1,22 @@
-import { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { NavigationContext } from "../../contexts/NavigationContext";
 
-const Navigation = () => {
-  const { display } = useContext(NavigationContext);
+interface INavigationProps {
+  displayNavigation: boolean;
+  isAdminConnected: boolean;
+  toggleIsAdminConnected: () => void;
+}
 
-  return (
-    <nav className={display === true ? "nav-mobile active" : "nav-mobile"}>
+const Navigation = ({
+  displayNavigation = false,
+  isAdminConnected = false,
+  toggleIsAdminConnected,
+}: INavigationProps) => {
+  // const { display, isAdminConnected } = useContext(NavigationContext);
+
+  return isAdminConnected ? (
+    <nav className={displayNavigation ? "nav nav-mobile" : "nav"}></nav>
+  ) : (
+    <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
       <ul>
         <li>
           <NavLink to="/" className={(nav) => (nav.isActive ? "link-active" : "")}>
@@ -21,7 +31,10 @@ const Navigation = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/inscription" className={(nav) => (nav.isActive ? "link-active" : "")}>
+          <NavLink
+            to="/nouvelle_inscription"
+            className={(nav) => (nav.isActive ? "link-active" : "")}
+          >
             <span>📝</span>
             <span>Inscription</span>
           </NavLink>

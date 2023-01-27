@@ -1,4 +1,4 @@
-nav.nav-mobile {
+.nav {
   position: fixed;
   left: 0;
   bottom: 0;
@@ -10,7 +10,7 @@ nav.nav-mobile {
   border-radius: 20px 20px 0 0;
   z-index: 11;
 
-  &.active {
+  &.nav-mobile {
     transform: translateY(0);
   }
 
@@ -22,7 +22,7 @@ nav.nav-mobile {
     transform: translateX(-50%);
     border-radius: 0;
 
-    &.active {
+    &.nav-mobile {
       transform: translate(-50%, 0);
     }
   }

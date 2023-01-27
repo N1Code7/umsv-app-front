@@ -1,12 +1,15 @@
 import Image from "next/image";
-import { useContext } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { NavigationContext } from "../../contexts/NavigationContext";
 import Logout from "./Logout";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Switch from "./Switch";
 
-const Header = () => {
-  const { toggleDisplay } = useContext(NavigationContext);
+interface IHeaderProps {
+  toggleDisplayNavigation?: () => void;
+}
+
+const Header = ({ toggleDisplayNavigation }: IHeaderProps) => {
   const { user, auth } = useContext(AuthenticationContext);
 
   return (
@@ -26,7 +29,11 @@ const Header = () => {
               <span>utilisateur</span> */}
             </div>
           )}
-          <button className="btn btn-primary btn-menu" id="menuBtn" onClick={toggleDisplay}>
+          <button
+            className="btn btn-primary btn-menu"
+            id="menuBtn"
+            onClick={toggleDisplayNavigation}
+          >
             Menu
           </button>
           <Logout />

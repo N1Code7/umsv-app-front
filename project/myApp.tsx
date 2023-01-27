@@ -47,22 +47,12 @@ export default function MyApp() {
                 <PrivateRoutes allowedRoles={["ROLE_MEMBER", "ROLE_ADMIN", "ROLE_SUPERADMIN"]} />
               }
             >
-              <Route
-                path="/"
-                element={
-                  <Homepage deviceDisplay={deviceDisplay} setDeviceDisplay={setDeviceDisplay} />
-                }
-              />
+              <Route path="/" element={<Homepage deviceDisplay={deviceDisplay} />} />
               <Route
                 path="/tournois"
-                element={
-                  <UserTournamentsRegistrations
-                    deviceDisplay={deviceDisplay}
-                    setDeviceDisplay={setDeviceDisplay}
-                  />
-                }
+                element={<UserTournamentsRegistrations deviceDisplay={deviceDisplay} />}
               />
-              <Route path="/inscription" element={<NewTournamentRegistration />} />
+              <Route path="/nouvelle_inscription" element={<NewTournamentRegistration />} />
               <Route path="/resultats" element={<Results />} />
               <Route path="/reglages" element={<Settings />} />
             </Route>

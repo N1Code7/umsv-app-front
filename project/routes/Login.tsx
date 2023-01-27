@@ -1,10 +1,9 @@
-import { FormEvent, useCallback, useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Header from "../components/Header";
-import useRefreshToken from "../../hooks/useRefreshToken";
-import axios, { delay } from "../../config/axios";
+import axios from "../../config/axios";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const Login = () => {

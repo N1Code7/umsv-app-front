@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import MemberHeader from "../components/MemberHeader";
 import Navigation from "../components/Navigation";
@@ -12,12 +12,29 @@ interface IPrivateRoutesProps {
 const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
   const location = useLocation();
   const { auth } = useContext(AuthenticationContext);
+  const [isAdminConnected, setIsAdminConnected] = useState(
+    auth?.roles?.includes("ROLE_ADMIN") || false
+  );
+  const [displayNavigation, setDisplayNavigation] = useState(false);
+
+  const toggleDisplayNavigation = () => {
+    setDisplayNavigation(!displayNavigation);
+    // setDisplayNavigation((prev) => !prev);
+  };
+
+  const toggleIsAdminConnected = () => {
+    setIsAdminConnected((prev) => !prev);
+  };
 
   return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
     <>
-      <Header />
+      <Header toggleDisplayNavigation={toggleDisplayNavigation} />
       <MemberHeader />
-      <Navigation />
+      <Navigation
+        displayNavigation={displayNavigation}
+        isAdminConnected={isAdminConnected}
+        toggleIsAdminConnected={toggleIsAdminConnected}
+      />
       <Outlet />
     </>
   ) : auth?.accessToken ? (

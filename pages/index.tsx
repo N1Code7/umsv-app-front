@@ -1,21 +1,14 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useState } from "react";
-import { NavigationContext } from "../contexts/NavigationContext";
 import Footer from "../project/components/Footer";
 import { AuthenticationContext } from "../contexts/AuthenticationContext";
-import { IAuth, IUser } from "../config/interfaces";
 
 const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 
 const Home = () => {
-  const [display, setDisplay] = useState(false);
   const [user, setUser] = useState({});
   const [auth, setAuth] = useState({});
-
-  const toggleDisplay = () => {
-    setDisplay(!display);
-  };
 
   return (
     <>
@@ -35,9 +28,7 @@ const Home = () => {
           setAuth,
         }}
       >
-        <NavigationContext.Provider value={{ display, toggleDisplay }}>
-          <LazyComponent />
-        </NavigationContext.Provider>
+        <LazyComponent />
       </AuthenticationContext.Provider>
       <Footer />
     </>

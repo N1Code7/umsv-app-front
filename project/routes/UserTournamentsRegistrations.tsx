@@ -10,13 +10,9 @@ import Switch from "../components/Switch";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;
-  setDeviceDisplay: Dispatch<SetStateAction<string>>;
 }
 
-const UserTournamentsRegistrations = ({
-  deviceDisplay,
-  setDeviceDisplay,
-}: IUserTournamentsProps) => {
+const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) => {
   const axiosPrivate = useAxiosPrivate();
   const [activeSort, setActiveSort] = useState("startDate-ascending");
   const [isModalActive, setIsModalActive] = useState(false);

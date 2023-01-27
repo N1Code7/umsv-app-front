@@ -12,10 +12,9 @@ import useSWR, { mutate, preload } from "swr";
 
 interface IHomepageProps {
   deviceDisplay: string;
-  setDeviceDisplay: Dispatch<SetStateAction<string>>;
 }
 
-const Homepage = ({ deviceDisplay, setDeviceDisplay }: IHomepageProps) => {
+const Homepage = ({ deviceDisplay }: IHomepageProps) => {
   const axiosPrivate = useAxiosPrivate();
   // const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
