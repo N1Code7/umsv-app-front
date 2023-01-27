@@ -397,6 +397,7 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
                         id="tournamentCity"
                         ref={registrationCity}
                         defaultValue={focusedRegistration?.tournamentCity || ""}
+                        required
                       />
                     </div>
                     <div className="form-row">
@@ -407,6 +408,7 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
                           id="startDate"
                           ref={registrationStartDate}
                           defaultValue={focusedRegistration?.tournamentStartDate || ""}
+                          required
                         />
                         <label htmlFor="endDate"> au </label>
                         <input

@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { useContext } from "react";
 import { fetchInvalidateRefreshToken } from "../../config/fetchFunctions";
+import { mutate } from "swr";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -9,13 +10,16 @@ const Logout = () => {
 
   const { setUser, setAuth } = useContext(AuthenticationContext);
 
-  const logout = () => {
-    fetchInvalidateRefreshToken().then(() => {
+  const clearCache = () => mutate(() => true, undefined, { revalidate: false });
+
+  const logout = async () => {
+    await fetchInvalidateRefreshToken().then(() => {
       setAuth?.({});
       setUser?.({});
       document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-      navigate("/se_connecter", { state: { from: location }, replace: true });
     });
+    clearCache();
+    navigate("/se_connecter", { state: { from: location }, replace: true });
   };
 
   return (
