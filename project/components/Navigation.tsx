@@ -15,7 +15,7 @@ const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INa
             <span>Accueil</span>
           </NavLink>
         </li>
-        <li>
+        {/* <li>
           <NavLink
             to="/admin/demandes_inscriptions"
             className={(nav) => (nav.isActive ? "link-active" : "")}
@@ -59,7 +59,7 @@ const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INa
             <span>👤</span>
             <span>Gestions utilisateurs</span>
           </NavLink>
-        </li>
+        </li> */}
       </ul>
     </nav>
   ) : (
