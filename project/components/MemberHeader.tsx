@@ -1,85 +1,111 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 
 const MemberHeader = () => {
   const { user } = useContext(AuthenticationContext);
+  const rankingsColor = {
+    red: "#fb6161",
+    blue: "#65aef4",
+    green: "#1bbe1b",
+    yellow: "#d7da1e",
+  };
+  const latestStats = user?.FFBadStats?.[user?.FFBadStats?.length - 1];
 
-  const [colorFeather, setColorFeather] = useState("");
-  const [rankingColor, setRankingColor] = useState("");
+  const adaptRankColor = (rank?: string) => {
+    if (rank?.includes("N")) {
+      return rankingsColor.red;
+    } else if (rank?.includes("R")) {
+      return rankingsColor.blue;
+    } else if (rank?.includes("D")) {
+      return rankingsColor.green;
+    } else if (rank?.includes("P")) {
+      return rankingsColor.yellow;
+    } else {
+      return "transparent";
+    }
+  };
 
-  useEffect(() => {
-    switch (user?.feather) {
+  const adaptFeatherColor = (feather?: string) => {
+    switch (feather) {
       case "Plume blanche":
-        setColorFeather("white");
-        break;
+        return "white";
       case "Plume jaune":
-        setColorFeather("yellow");
-        break;
+        return "yellow";
       case "Plume verte":
-        setColorFeather("green");
-        break;
+        return "green";
       case "Plume bleue":
-        setColorFeather("blue");
-        break;
+        return "blue";
       case "Plume rouge":
-        setColorFeather("#c23131");
-        break;
+        return "red";
 
       default:
         break;
     }
-
-    if (["N1", "N2", "N3"].includes(user?.rankings?.single?.rankName || "")) {
-      setRankingColor("#fb6161");
-    } else if (["R4", "R5", "R6"].includes(user?.rankings?.single?.rankName || "")) {
-      setRankingColor("#65aef4");
-    } else if (["R4", "R5", "R6"].includes(user?.rankings?.single?.rankName || "")) {
-      setRankingColor("#1bbe1b");
-    } else {
-      setRankingColor("#d7da1e");
-    }
-  }, [user]);
+  };
 
   return (
     <div className="member-header">
       <h1>Bonjour {user?.firstName}</h1>
       <div className="member-infos">
-        <div className="license">Licence : {user?.license}</div>
-        {user?.feather && (
+        <div className="license">Licence : {latestStats?.license}</div>
+        {latestStats?.feather && (
           <div className="feather">
-            Plume : <i className="fa-solid fa-feather-pointed" style={{ color: colorFeather }}></i>
+            Plume :{" "}
+            <i
+              className="fa-solid fa-feather-pointed"
+              style={{ color: adaptFeatherColor(latestStats.feather) }}
+            ></i>
           </div>
         )}
-        <div className="category">Catégorie : {user?.category?.long}</div>
-        {user?.isPlayerTransferred && <div className="transferred">Muté(e)</div>}
+        <div className="category">Catégorie : {latestStats?.categoryLong}</div>
+        {latestStats?.isPlayerTransferred &&
+          (user?.gender ? (
+            user?.gender === "male" ? (
+              <div className="transferred">Muté</div>
+            ) : (
+              <div className="transferred">Mutée</div>
+            )
+          ) : (
+            <div className="transferred">Muté(e)</div>
+          ))}
       </div>
       {/* Insert logic for gender when data will be set on Cookies */}
       <div className="classifications">
         <div className="classification classification-single">
-          <div className="classification-name" style={{ background: rankingColor }}>
-            {user?.rankings?.single?.rankName}
+          <div
+            className="classification-name"
+            style={{ background: adaptRankColor(latestStats?.singleRankName) }}
+          >
+            {latestStats?.singleRankName}
           </div>
-          <div className="classification-cpph">{user?.rankings?.single?.cpph}</div>
-          <div className="classification-rank">{user?.rankings?.single?.rankNumber}</div>
+          <div className="classification-cpph">{latestStats?.singleCPPH}</div>
+          <div className="classification-rank">{latestStats?.singleRankNumber}</div>
           <div className="classification-table">Simple</div>
         </div>
         <div className="classification classification-double">
-          <div className="classification-name" style={{ background: rankingColor }}>
-            {user?.rankings?.double?.rankName}
+          <div
+            className="classification-name"
+            style={{ background: adaptRankColor(latestStats?.doubleRankName) }}
+          >
+            {/* <div className="classification-name" style={{ background: rankingColor }}> */}
+            {latestStats?.doubleRankName}
           </div>
-          <div className="classification-cpph">{user?.rankings?.double?.cpph}</div>
-          <div className="classification-rank">{user?.rankings?.double?.rankNumber}</div>
+          <div className="classification-cpph">{latestStats?.doubleCPPH}</div>
+          <div className="classification-rank">{latestStats?.doubleRankNumber}</div>
           <div className="classification-table">Double</div>
         </div>
         <div className="classification classification-mixed">
-          <div className="classification-name" style={{ background: rankingColor }}>
-            {user?.rankings?.mixed?.rankName}
+          <div
+            className="classification-name"
+            style={{ background: adaptRankColor(latestStats?.mixedRankName) }}
+          >
+            {latestStats?.mixedRankName}
           </div>
-          <div className="classification-cpph">{user?.rankings?.mixed?.cpph}</div>
-          <div className="classification-rank">{user?.rankings?.mixed?.rankNumber}</div>
+          <div className="classification-cpph">{latestStats?.mixedCPPH}</div>
+          <div className="classification-rank">{latestStats?.mixedRankNumber}</div>
           <div className="classification-table">Mixte</div>
         </div>
-        <div className="classification-date">classements au {user?.rankings?.effectiveDate}</div>
+        <div className="classification-date">classements au {latestStats?.rankingsDate}</div>
       </div>
     </div>
   );

@@ -182,8 +182,8 @@ const TournamentRegistration = ({
             <span>Simple : oui</span>
           ))}
         {tournamentRegistration.participationDouble === true &&
-          (tournamentRegistration.user?.gender ? (
-            tournamentRegistration.user?.gender === "male" ? (
+          (tournamentRegistration.user.gender ? (
+            tournamentRegistration.user.gender === "male" ? (
               <span>DH : {tournamentRegistration.doublePartnerName}</span>
             ) : (
               <span>DD : {tournamentRegistration.doublePartnerName}</span>

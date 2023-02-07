@@ -46,6 +46,8 @@ const Login = () => {
             Authorization: `Bearer ${loginResponse.data.token}`,
           },
         });
+        controller.abort();
+        console.log(userResponse);
 
         setPassword("");
         setHasErrorOccurred(false);

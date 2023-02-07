@@ -15,7 +15,9 @@ const useRefreshToken = () => {
       headers: { Authorization: `Bearer ${refreshResponse.data.token}` },
     });
 
-    user && Object.keys(user).length === 0 && setUser?.(userResponse.data);
+    user &&
+      Object.keys(user).length === 0 &&
+      setUser?.((prev) => (Object.keys(prev).length !== 0 ? prev : userResponse.data));
     setAuth?.((prev) => ({
       ...prev,
       accessToken: refreshResponse.data.token,

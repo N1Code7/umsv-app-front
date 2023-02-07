@@ -54,7 +54,9 @@ const SignUp = () => {
       ? setEmailError("L'email renseigné n'est pas conforme")
       : setEmailError("");
     !password.match(/^[\w\-\*\/!?#&\$\^€%]{6,}/)
-      ? setPasswordError("Votre mot de passe comporte des caractères interdits")
+      ? setPasswordError(
+          "Votre mot de passe est trop court et/ou comporte des caractères interdits"
+        )
       : setPasswordError("");
     password !== confirmPassword.current?.value
       ? setConfirmPasswordError("Les deux mots de passe ne correspondent pas !")
