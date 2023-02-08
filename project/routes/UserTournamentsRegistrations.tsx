@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, SetStateAction, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
 import { ITournament, ITournamentRegistration } from "../../config/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
@@ -31,19 +31,17 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
   const registrationMixedPartnerName = useRef<HTMLInputElement>(null);
   const registrationMixedPartnerClub = useRef<HTMLInputElement>(null);
   const registrationComment = useRef<HTMLTextAreaElement>(null);
-  // const [tournamentsRegistrations, setTournamentsRegistrations] = useState([]);
-  // const [tournaments, setTournaments] = useState(Array<ITournament>);
 
   const getFetcher = async (url: string) => await axiosPrivate.get(url).then((res) => res.data);
-  const { data: tournaments, error: tournamentsError } = useSWR("tournaments", getFetcher);
+  const { data: tournaments } = useSWR("tournaments", getFetcher);
   const { data: tournamentsRegistrations, mutate: tournamentsRegistrationsMutate } = useSWR(
     "tournament-registrations",
     getFetcher
   );
 
-  useEffect(() => {
-    !tournamentsRegistrations && tournamentsRegistrationsMutate();
-  }, []);
+  // useEffect(() => {
+  //   !tournamentsRegistrations && tournamentsRegistrationsMutate();
+  // }, []);
 
   useEffect(() => {
     isModalActive &&
@@ -126,75 +124,63 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
 
   const updateRegistration = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const controller = new AbortController();
     setIsModalActive(false);
-    axiosPrivate
-      .patch(
-        "tournament-registration/" + focusedRegistration.id,
+
+    const updatedRegistration = {
+      tournamentName:
+        registrationName.current?.value || focusedRegistration.tournament?.name || null,
+      tournamentCity:
+        registrationCity.current?.value || focusedRegistration.tournament?.city || null,
+      tournamentStartDate: registrationStartDate.current
+        ? new Date(Number(registrationStartDate.current?.value)).toISOString()
+        : focusedRegistration.tournament
+        ? new Date(focusedRegistration.tournament?.startDate).toISOString()
+        : null,
+      tournamentEndDate: registrationEndDate.current
+        ? new Date(Number(registrationEndDate.current?.value)).toISOString()
+        : focusedRegistration.tournament
+        ? new Date(focusedRegistration?.tournament.endDate).toISOString()
+        : null,
+      participationSingle: checkboxSingle.current?.checked || false,
+      participationDouble: checkboxDouble,
+      participationMixed: checkboxMixed,
+      doublePartnerName: registrationDoublePartnerName.current?.value || null,
+      doublePartnerClub: registrationDoublePartnerClub.current?.value || null,
+      mixedPartnerName: registrationMixedPartnerName.current?.value || null,
+      mixedPartnerClub: registrationMixedPartnerClub.current?.value || null,
+      comment: registrationComment.current?.value || null,
+    };
+
+    try {
+      await tournamentsRegistrationsMutate(
+        await axiosPrivate
+          .patch("tournament-registration/" + focusedRegistration.id, updatedRegistration)
+          .then((res) => res.data)
+          .catch((err) => console.error(err)),
         {
-          tournamentName:
-            registrationName.current?.value || focusedRegistration.tournament?.name || null,
-          tournamentCity:
-            registrationCity.current?.value || focusedRegistration.tournament?.city || null,
-          tournamentStartDate: registrationStartDate.current
-            ? new Date(Number(registrationStartDate.current?.value)).toISOString()
-            : focusedRegistration.tournament
-            ? new Date(focusedRegistration.tournament?.startDate).toISOString()
-            : null,
-          tournamentEndDate: registrationEndDate.current
-            ? new Date(Number(registrationEndDate.current?.value)).toISOString()
-            : focusedRegistration.tournament
-            ? new Date(focusedRegistration?.tournament.endDate).toISOString()
-            : null,
-          participationSingle: checkboxSingle.current?.checked,
-          participationDouble: checkboxDouble,
-          participationMixed: checkboxMixed,
-          doublePartnerName: registrationDoublePartnerName.current?.value || null,
-          doublePartnerClub: registrationDoublePartnerClub.current?.value || null,
-          mixedPartnerName: registrationMixedPartnerName.current?.value || null,
-          mixedPartnerClub: registrationMixedPartnerClub.current?.value || null,
-          comment: registrationComment.current?.value || null,
-        },
-        { signal: controller.signal }
-      )
-      .then((res: unknown) => {
-        setFocusedRegistration(res as ITournamentRegistration);
-      })
-      .catch((err) => console.error(err));
+          optimisticData: (tournamentsRegistrations: Array<ITournamentRegistration>) => {
+            const prevRegistrations = tournamentsRegistrations.filter(
+              (registration: ITournamentRegistration) => registration.id !== focusedRegistration.id
+            );
+            return [...prevRegistrations, { ...focusedRegistration, ...updatedRegistration }];
+          },
+          rollbackOnError: true,
+          populateCache: (
+            updated: ITournamentRegistration,
+            tournamentsRegistrations: Array<ITournamentRegistration>
+          ) => {
+            const prevRegistrations = tournamentsRegistrations.filter(
+              (registration: ITournamentRegistration) => registration.id !== focusedRegistration.id
+            );
+            return [...prevRegistrations, updated];
+          },
+          revalidate: false,
+        }
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
-
-  /** Fetch events and tournaments */
-  // useEffect(() => {
-  //   let ignore = false;
-  //   const controller = new AbortController();
-
-  //   const getTournaments = async () =>
-  //     (await axiosPrivate.get("tournaments", { signal: controller.signal })).data;
-
-  //   const getRegistrations = async () =>
-  //     (await axiosPrivate.get("tournament-registrations", { signal: controller.signal })).data;
-
-  //   Promise.all([getTournaments(), getRegistrations()])
-  //     .then(([tour, reg]) => {
-  //       if (!ignore) {
-  //         setTournamentsRegistrations(reg);
-  //         setTournaments(tour);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       if (controller.signal.aborted) {
-  //         console.log("The user aborted the request");
-  //       } else {
-  //         console.error("The request failed");
-  //       }
-  //     });
-
-  //   return () => {
-  //     ignore = true;
-  //     controller.abort();
-  //   };
-  // }, [focusedRegistration]);
 
   return (
     <main className="user-tournaments-registrations user-space">

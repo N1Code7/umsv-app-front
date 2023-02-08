@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import useRefreshToken from "../../hooks/useRefreshToken";

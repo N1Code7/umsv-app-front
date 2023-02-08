@@ -1,8 +1,8 @@
 import { Dispatch, MouseEvent, SetStateAction, useContext } from "react";
 import { formatDate } from "../../config/dateFunctions";
 import { ITournamentRegistration } from "../../config/interfaces";
-import { fetchCancelUserRegistration, fetchRefreshToken } from "../../config/fetchFunctions";
-import { AuthenticationContext } from "../../contexts/AuthenticationContext";
+import { mutate } from "swr";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 interface ITournamentRegistrationProps {
   tournamentRegistration: ITournamentRegistration;
@@ -23,7 +23,7 @@ const TournamentRegistration = ({
   setCheckboxMixed,
   setChooseExistingTournament,
 }: ITournamentRegistrationProps) => {
-  const { setAuth } = useContext(AuthenticationContext);
+  const axiosPrivate = useAxiosPrivate();
 
   const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -38,15 +38,38 @@ const TournamentRegistration = ({
 
   const handleCancel = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    fetchRefreshToken()
-      .then((res) => {
-        setAuth?.((prev) => ({ ...prev, accessToken: res.token }));
-        document.cookie = `refreshToken=${res.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
-        return res.token;
-      })
-      .then((res) => fetchCancelUserRegistration(res, tournamentRegistration.id))
-      .then((res) => setFocusedRegistration(res))
-      .catch((err) => console.error(err));
+    try {
+      mutate(
+        "tournament-registrations",
+        await axiosPrivate
+          .patch(`tournament-registration/cancel/${tournamentRegistration.id}`)
+          .then((res) => res.data)
+          .catch((err) => console.error(err)),
+        {
+          optimisticData: (tournamentsRegistrations: Array<ITournamentRegistration>) => {
+            const prev = tournamentsRegistrations.filter(
+              (registration: ITournamentRegistration) =>
+                registration.id !== tournamentRegistration.id
+            );
+            return [...prev, { ...tournamentRegistration, requestState: "cancelled" }];
+          },
+          populateCache: (
+            tournamentRegistration: ITournamentRegistration,
+            tournamentsRegistrations: Array<ITournamentRegistration>
+          ) => {
+            const prev = tournamentsRegistrations.filter(
+              (registration: ITournamentRegistration) =>
+                registration.id !== tournamentRegistration.id
+            );
+            return [...prev, tournamentRegistration];
+          },
+          rollbackOnError: true,
+          revalidate: false,
+        }
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return displayOnMobile ? (
@@ -182,7 +205,7 @@ const TournamentRegistration = ({
             <span>Simple : oui</span>
           ))}
         {tournamentRegistration.participationDouble === true &&
-          (tournamentRegistration.user.gender ? (
+          (tournamentRegistration.user?.gender ? (
             tournamentRegistration.user.gender === "male" ? (
               <span>DH : {tournamentRegistration.doublePartnerName}</span>
             ) : (
