@@ -3,11 +3,12 @@ import Head from "next/head";
 import { useState } from "react";
 import Footer from "../project/components/Footer";
 import { AuthenticationContext } from "../contexts/AuthenticationContext";
+import { IUser } from "../config/interfaces";
 
 const LazyComponent = dynamic(() => import("../project/myApp"), { ssr: false });
 
 const Home = () => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({} as IUser);
   const [auth, setAuth] = useState({});
 
   return (

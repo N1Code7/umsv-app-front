@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Event from "../components/Event";
 import { IClubEvent, ITournament } from "../../config/interfaces";
 import Tournament from "../components/Tournament";
@@ -8,7 +8,7 @@ import { formatDate, getDayOfWeek, getMonthOfYear } from "../../config/dateFunct
 import Modal from "../components/Modal";
 import Image from "next/image";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useSWR, { mutate, preload } from "swr";
+import useSWR from "swr";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -16,10 +16,8 @@ interface IHomepageProps {
 
 const Homepage = ({ deviceDisplay }: IHomepageProps) => {
   const axiosPrivate = useAxiosPrivate();
-  // const [events, setEvents] = useState([]);
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedEvent, setFocusedEvent] = useState({} as IClubEvent);
-  // const [tournaments, setTournaments] = useState([]);
   const [searchByText, setSearchByText] = useState("");
   const [searchByDay, setSearchByDay] = useState("default");
   const [searchByMonth, setSearchByMonth] = useState("default");
@@ -263,6 +261,7 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
               ))
           )}
         </div>
+        {/* Event Modal */}
         {isModalActive && Object.keys(focusedEvent).length !== 0 && (
           <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
             <div

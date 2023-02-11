@@ -34,7 +34,7 @@ interface IAuthenticationContext {
   //   };
   // };
   user: IUser;
-  setUser: Dispatch<SetStateAction<object>>;
+  setUser: Dispatch<SetStateAction<IUser>>;
   setAuth: Dispatch<SetStateAction<object>>;
 }
 

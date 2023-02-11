@@ -1,15 +1,19 @@
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useContext, useRef, useState } from "react";
 import { formatDate } from "../../config/dateFunctions";
 import { ITournament } from "../../config/interfaces";
 import useSWR from "swr";
 import Switch from "../components/Switch";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { SelectedTournamentContext } from "../../contexts/SelectedTournamentContext";
 
 const NewTournamentRegistration = () => {
+  const { selectedTournament } = useContext(SelectedTournamentContext);
   const checkboxSingle = useRef<HTMLInputElement>(null);
   const [checkboxDouble, setCheckboxDouble] = useState(false);
   const [checkboxMixed, setCheckboxMixed] = useState(false);
-  const [chooseExistingTournament, setChooseExistingTournament] = useState(true);
+  const [chooseExistingTournament, setChooseExistingTournament] = useState(
+    selectedTournament && Object.keys(selectedTournament).length !== 0 ? false : true
+  );
   const registrationSelectTournament = useRef<HTMLSelectElement>(null);
   const registrationName = useRef<HTMLInputElement>(null);
   const registrationCity = useRef<HTMLInputElement>(null);
@@ -31,7 +35,6 @@ const NewTournamentRegistration = () => {
       .then((res) => res.data)
       .catch((err) => console.error(err));
   const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
-  /**  */
 
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -137,14 +140,33 @@ const NewTournamentRegistration = () => {
         {!chooseExistingTournament ? (
           <div className="form-row">
             <label htmlFor="selectTournament">Sélectionner un tournoi existant</label>
-            <select id="selectTournament" ref={registrationSelectTournament} autoFocus>
+            <select
+              id="selectTournament"
+              ref={registrationSelectTournament}
+              defaultValue={selectedTournament?.id || "null"}
+              autoFocus
+            >
               <option value="null">---</option>
+              {/* {selectedTournament && Object.keys(selectedTournament).length !== 0 && (
+                <option value={selectedTournament.id} selected>
+                  {selectedTournament.name?.slice(0, 20) + "..." || "ℹ️"} -{" "}
+                  {selectedTournament.city} -{" "}
+                  {selectedTournament.endDate
+                    ? formatDate(
+                        selectedTournament.startDate,
+                        selectedTournament.endDate,
+                        "XX & XX xxx XXXX"
+                      )
+                    : formatDate(selectedTournament.startDate, undefined, "XX xxx XXXX")}
+                </option>
+              )} */}
               {!tournaments
                 ? "Chargement..."
                 : tournaments
                     .filter(
                       (tournament: ITournament) =>
-                        new Date(tournament.registrationClosingDate) > new Date()
+                        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10
+                      // new Date(tournament.registrationClosingDate) > new Date()
                     )
                     .sort(
                       (a: ITournament, b: ITournament) =>

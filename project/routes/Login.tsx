@@ -5,11 +5,12 @@ import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Header from "../components/Header";
 import axios from "../../config/axios";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { log } from "console";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname;
   const axiosPrivate = useAxiosPrivate();
   const { user, setUser, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState(user?.email || "");
@@ -58,6 +59,8 @@ const Login = () => {
         });
         document.cookie = `refreshToken=${loginResponse.data.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
         setUser?.(userResponse.data);
+        console.log(from);
+
         navigate(from, { replace: true });
       } catch (err) {
         console.error(err);
@@ -82,6 +85,10 @@ const Login = () => {
       ? setSubmitEnabled(true)
       : setSubmitEnabled(false);
   }, [email, password]);
+
+  useEffect(() => {
+    console.log(location);
+  }, []);
 
   return (
     <>

@@ -4,6 +4,8 @@ import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import MemberHeader from "../components/MemberHeader";
 import Navigation from "../components/Navigation";
 import Header from "../components/Header";
+import { ITournament } from "../../config/interfaces";
+import { SelectedTournamentContext } from "../../contexts/SelectedTournamentContext";
 
 interface IPrivateRoutesProps {
   allowedRoles?: Array<string>;
@@ -16,6 +18,7 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
     auth?.roles?.includes("ROLE_ADMIN") || false
   );
   const [displayNavigation, setDisplayNavigation] = useState(false);
+  const [selectedTournament, setSelectedTournament] = useState({} as ITournament);
 
   const toggleDisplayNavigation = () => {
     setDisplayNavigation((prev) => !prev);
@@ -34,7 +37,10 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
       />
       {!isAdminConnected && <MemberHeader />}
       <Navigation displayNavigation={displayNavigation} isAdminConnected={isAdminConnected} />
-      <Outlet />
+
+      <SelectedTournamentContext.Provider value={{ selectedTournament, setSelectedTournament }}>
+        <Outlet />
+      </SelectedTournamentContext.Provider>
     </>
   ) : auth?.accessToken ? (
     <Navigate to="/acces_refuse" state={{ from: location }} replace />

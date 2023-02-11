@@ -1,5 +1,8 @@
+import { EventHandler, MouseEvent, useContext } from "react";
 import { formatDate } from "../../config/dateFunctions";
 import { ITournament, ITournamentRegistration } from "../../config/interfaces";
+import { useNavigate } from "react-router-dom";
+import { SelectedTournamentContext } from "../../contexts/SelectedTournamentContext";
 
 interface ITournamentProps {
   tournament: ITournament;
@@ -7,6 +10,15 @@ interface ITournamentProps {
 }
 
 const Tournament = ({ tournament, displayOnMobile }: ITournamentProps) => {
+  const navigate = useNavigate();
+  const { setSelectedTournament } = useContext(SelectedTournamentContext);
+
+  const handleRegister = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSelectedTournament?.(tournament);
+    navigate("/nouvelle_inscription", { replace: true });
+  };
+
   return displayOnMobile ? (
     <div className="tournament card">
       <div className="name">{tournament.name}</div>
@@ -24,7 +36,9 @@ const Tournament = ({ tournament, displayOnMobile }: ITournamentProps) => {
         >
           📄
         </a>
-        <button className="btn register">➕</button>
+        <button className="btn register" onClick={handleRegister}>
+          ➕
+        </button>
       </div>
     </div>
   ) : (
@@ -62,7 +76,9 @@ const Tournament = ({ tournament, displayOnMobile }: ITournamentProps) => {
           >
             📄
           </a>
-          <button className="btn register">➕</button>
+          <button className="btn register" onClick={handleRegister}>
+            ➕
+          </button>
         </div>
       </td>
     </tr>
