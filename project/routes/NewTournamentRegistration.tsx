@@ -147,19 +147,6 @@ const NewTournamentRegistration = () => {
               autoFocus
             >
               <option value="null">---</option>
-              {/* {selectedTournament && Object.keys(selectedTournament).length !== 0 && (
-                <option value={selectedTournament.id} selected>
-                  {selectedTournament.name?.slice(0, 20) + "..." || "ℹ️"} -{" "}
-                  {selectedTournament.city} -{" "}
-                  {selectedTournament.endDate
-                    ? formatDate(
-                        selectedTournament.startDate,
-                        selectedTournament.endDate,
-                        "XX & XX xxx XXXX"
-                      )
-                    : formatDate(selectedTournament.startDate, undefined, "XX xxx XXXX")}
-                </option>
-              )} */}
               {!tournaments
                 ? "Chargement..."
                 : tournaments

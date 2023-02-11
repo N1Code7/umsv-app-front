@@ -7,6 +7,7 @@ import {
 } from "../../config/fetchFunctions";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { IUser } from "../../config/interfaces";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Logout = () => {
         .post("token/refresh/invalidate", { refreshToken: getRefreshTokenFromCookie() })
         .then(() => {
           setAuth?.({});
-          setUser?.({});
+          setUser?.({} as IUser);
           document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
         });
       clearCache();
