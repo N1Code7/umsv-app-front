@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import useRefreshToken from "../../hooks/useRefreshToken";
-import { getRefreshTokenFromCookie } from "../../config/fetchFunctions";
+import { getRefreshTokenFromCookie } from "../../config/cookies";
+import { IUser } from "../../config/interfaces";
 
 const Persist = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { auth, setAuth, user, setUser } = useContext(AuthenticationContext);
   const refresh = useRefreshToken();
   const [isLoading, setIsLoading] = useState(true);
@@ -13,9 +15,9 @@ const Persist = () => {
   useEffect(() => {
     if (!getRefreshTokenFromCookie() || getRefreshTokenFromCookie() === "undefined") {
       setAuth?.({});
-      setUser?.({});
+      setUser?.({} as IUser);
       document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-      return navigate("/se_connecter", { replace: true });
+      return navigate("/se_connecter", { replace: true, state: { from: location } });
     }
   }, []);
 
@@ -31,7 +33,8 @@ const Persist = () => {
       }
     };
 
-    !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false);
+    !auth?.isAuthenticated ? verifyRefreshToken() : setIsLoading(false);
+    // !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false);
 
     return () => {
       ignore = true;

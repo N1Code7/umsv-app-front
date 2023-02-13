@@ -24,10 +24,6 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
     setDisplayNavigation((prev) => !prev);
   };
 
-  const toggleIsAdminConnected = () => {
-    setIsAdminConnected((prev) => !prev);
-  };
-
   return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
     <>
       <Header
@@ -42,7 +38,8 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
         <Outlet />
       </SelectedTournamentContext.Provider>
     </>
-  ) : auth?.accessToken ? (
+  ) : auth?.isAuthenticated ? (
+    // ) : auth?.accessToken ? (
     <Navigate to="/acces_refuse" state={{ from: location }} replace />
   ) : (
     <Navigate to="/se_connecter" state={{ from: location }} replace />

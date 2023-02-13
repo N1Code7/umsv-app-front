@@ -1,18 +1,5 @@
 import axios from "./axios";
-
-/**
- * Extract the value of cookie which includes the name refreshToken
- */
-export const getRefreshTokenFromCookie = () => {
-  const cookies = document.cookie.split(";");
-  let refreshToken = "";
-  cookies.forEach((cookie) => {
-    if (cookie.split("=")[0].includes("refreshToken")) {
-      refreshToken = cookie.split("=")[1];
-    }
-  });
-  return refreshToken;
-};
+import { getRefreshTokenFromCookie } from "./cookies";
 
 /**
  * Connect the user to the service

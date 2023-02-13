@@ -1,5 +1,5 @@
 import axios, { axiosPrivate } from "../config/axios";
-import { getRefreshTokenFromCookie } from "../config/fetchFunctions";
+import { getRefreshTokenFromCookie } from "../config/cookies";
 import { AuthenticationContext } from "../contexts/AuthenticationContext";
 import { useContext } from "react";
 

@@ -18,7 +18,6 @@ const AdminHomepage = () => {
 
   useEffect(() => {
     if (!registrations) mutate();
-    console.log(registrations);
   }, []);
 
   return (

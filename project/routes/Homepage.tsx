@@ -214,11 +214,8 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
     });
   };
 
-  const fetcher = async (url: string) =>
-    await axiosPrivate
-      .get(url)
-      .then((res) => res.data)
-      .catch((err) => console.error(err));
+  const fetcher = async (url: string) => await axiosPrivate.get(url).then((res) => res.data);
+  // .catch((err) => console.log(err));
   const { data: events, mutate: eventsMutate } = useSWR("events", fetcher);
   const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
 

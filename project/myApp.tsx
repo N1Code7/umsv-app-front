@@ -36,33 +36,33 @@ export default function MyApp() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Outlet />}>
-          <Route path="/se_connecter" element={<Login />} />
-          <Route path="/creer_un_compte" element={<SignUp />} />
-          <Route path="/reinitialiser_mot_de_passe/*" element={<ResetPassword />} />
+          <Route path="se_connecter" element={<Login />} />
+          <Route path="creer_un_compte" element={<SignUp />} />
+          <Route path="reinitialiser_mot_de_passe/*" element={<ResetPassword />} />
 
           <Route element={<Persist />}>
-            {/* Create role */}
             <Route
+              path="/"
               element={
                 <PrivateRoutes allowedRoles={["ROLE_MEMBER", "ROLE_ADMIN", "ROLE_SUPERADMIN"]} />
               }
             >
               <Route path="/" element={<Homepage deviceDisplay={deviceDisplay} />} />
               <Route
-                path="/tournois"
+                path="tournois"
                 element={<UserTournamentsRegistrations deviceDisplay={deviceDisplay} />}
               />
-              <Route path="/nouvelle_inscription" element={<NewTournamentRegistration />} />
-              <Route path="/resultats" element={<Results />} />
-              <Route path="/reglages" element={<Settings />} />
+              <Route path="nouvelle_inscription" element={<NewTournamentRegistration />} />
+              <Route path="resultats" element={<Results />} />
+              <Route path="reglages" element={<Settings />} />
             </Route>
             <Route element={<PrivateRoutes allowedRoles={["ROLE_ADMIN", "ROLE_SUPERADMIN"]} />}>
-              <Route path="/admin/" element={<AdminHomepage />} />
+              <Route path="admin/" element={<AdminHomepage />} />
             </Route>
           </Route>
 
-          <Route path="/page_introuvable" element={<PageNotFound />} />
-          <Route path="/acces_refuse" element={<Unauthorized />} />
+          <Route path="page_introuvable" element={<PageNotFound />} />
+          <Route path="acces_refuse" element={<Unauthorized />} />
           <Route path="*" element={<Navigate to="/page_introuvable" replace />} />
         </Route>
       </Routes>

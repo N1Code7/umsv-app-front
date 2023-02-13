@@ -1,13 +1,10 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import { useContext } from "react";
-import {
-  fetchInvalidateRefreshToken,
-  getRefreshTokenFromCookie,
-} from "../../config/fetchFunctions";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { IUser } from "../../config/interfaces";
+import { getRefreshTokenFromCookie } from "../../config/cookies";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -20,18 +17,17 @@ const Logout = () => {
 
   const logout = async () => {
     try {
-      await axiosPrivate
-        .post("token/refresh/invalidate", { refreshToken: getRefreshTokenFromCookie() })
-        .then(() => {
-          setAuth?.({});
-          setUser?.({} as IUser);
-          document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
-        });
-      clearCache();
-      navigate("/se_connecter", { state: { from: location }, replace: true });
+      await axiosPrivate.post("token/refresh/invalidate", {
+        refreshToken: getRefreshTokenFromCookie(),
+      });
     } catch (err) {
       console.error(err);
     }
+    setAuth?.({});
+    setUser?.({} as IUser);
+    document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+    clearCache();
+    navigate("/se_connecter", { replace: true });
   };
 
   return (

@@ -4,14 +4,11 @@ import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Header from "../components/Header";
 import axios from "../../config/axios";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { log } from "console";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname;
-  const axiosPrivate = useAxiosPrivate();
+  const from = location.state?.from?.pathname || "/";
   const { user, setUser, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState(user?.email || "");
   const [emailError, setEmailError] = useState("");
@@ -28,7 +25,6 @@ const Login = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const controller = new AbortController();
     !email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/)
       ? setEmailError("L'adresse email renseignée n'est pas conforme 🚨")
       : setEmailError("");
@@ -40,15 +36,12 @@ const Login = () => {
       try {
         const loginResponse = await axios.post("login", { email, password });
         const userResponse = await axios.get("user", {
-          signal: controller.signal,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `Bearer ${loginResponse.data.token}`,
           },
         });
-        controller.abort();
-        console.log(userResponse);
 
         setPassword("");
         setHasErrorOccurred(false);
@@ -59,8 +52,6 @@ const Login = () => {
         });
         document.cookie = `refreshToken=${loginResponse.data.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
         setUser?.(userResponse.data);
-        console.log(from);
-
         navigate(from, { replace: true });
       } catch (err) {
         console.error(err);
@@ -68,27 +59,15 @@ const Login = () => {
         setTimeout(() => {
           setHasErrorOccurred(false);
         }, 5000);
-        controller.abort();
       }
     }
   };
-
-  // useEffect(() => {
-  //   if (getRefreshTokenFromCookie() && getRefreshTokenFromCookie() !== "") {
-  //     refresh();
-  //     navigate(from, { replace: true });
-  //   }
-  // }, []);
 
   useEffect(() => {
     email.match(/^[a-z0-9-\-]+@[a-z0-9-]+\.[a-z0-9]{2,5}$/) && password.length >= 6
       ? setSubmitEnabled(true)
       : setSubmitEnabled(false);
   }, [email, password]);
-
-  useEffect(() => {
-    console.log(location);
-  }, []);
 
   return (
     <>

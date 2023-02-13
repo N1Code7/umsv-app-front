@@ -8,13 +8,13 @@ interface INavigationProps {
 
 const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INavigationProps) => {
   const navigate = useNavigate();
-  useEffect(() => {
-    if (isAdminConnected) {
-      navigate("/admin/");
-    } else {
-      navigate("/");
-    }
-  }, [isAdminConnected]);
+  // useEffect(() => {
+  //   if (isAdminConnected) {
+  //     navigate("/admin/");
+  //   } else {
+  //     navigate("/");
+  //   }
+  // }, [isAdminConnected]);
 
   return isAdminConnected ? (
     <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
