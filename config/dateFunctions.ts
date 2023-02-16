@@ -12,7 +12,7 @@ export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat
   if (outputFormat === "XX/XX/XX") {
     return `${formattedDate[2]}/${formattedDate[1]}/${formattedDate[0][2]}${formattedDate[0][3]}`;
   } else if (outputFormat === "XXXX-XX-XX") {
-    return `${formattedDate[0]}-${formattedDate[1]}-${formattedDate[1]}`;
+    return `${formattedDate[0]}-${formattedDate[1]}-${formattedDate[2]}`;
   } else if (outputFormat === "XX xxx XXXX") {
     return `${formattedDate[2]} ${getMonthOfYear(entryDate1)} ${formattedDate[0]}`;
   } else if (outputFormat === "XX & XX xxx XXXX" && entryDate2 !== undefined) {

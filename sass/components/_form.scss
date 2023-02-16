@@ -1,3 +1,42 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-width: 37rem;
+  margin: 0 auto;
+
+  &-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    .password-evaluation {
+      height: 5px;
+      width: 0;
+      background: $danger-1;
+      border-radius: 50px;
+      transition: width 0.3s ease-out;
+
+      &-33 {
+        width: 33%;
+        background: $danger-1;
+      }
+      &-66 {
+        width: 66%;
+        background: $warning;
+      }
+      &-100 {
+        width: 100%;
+        background: $success-3;
+      }
+    }
+
+    .forgotten-password {
+      text-align: right;
+    }
+  }
+}
+
 input {
   display: flex;
   justify-content: center;
@@ -26,6 +65,7 @@ input {
     width: 100%;
     min-height: 3rem;
     border-radius: 3px;
+    appearance: none;
     -webkit-appearance: none;
     font-weight: 500;
     cursor: pointer;
@@ -107,4 +147,14 @@ textarea {
   padding: 0.6rem;
   background: $danger-2;
   border-radius: 5px;
+}
+
+.form-error {
+  background: rgba($danger-2, 0.5) !important;
+
+  &-detail {
+    color: $danger-1;
+    padding: 0.3rem 0;
+    text-align: justify;
+  }
 }

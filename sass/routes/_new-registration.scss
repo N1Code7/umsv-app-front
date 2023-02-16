@@ -38,60 +38,63 @@
   }
 
   .checkboxes-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
+    .checkboxes {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.6rem;
 
-    @include ptt {
-      // gap: clamp(2rem, 5vw, 5rem);
-      justify-content: space-around;
-    }
-
-    input[type="checkbox"] {
-      display: none;
-
-      &:checked + label {
-        background-image: linear-gradient($primary-1 0 0);
-        background-size: 100% 100%;
-        color: $content-light;
-        font-weight: 500;
-      }
-    }
-
-    label {
-      position: relative;
-      min-width: clamp(4rem, 20vmin, 7rem);
-      padding: 0.6rem 0.3rem;
-      border: 2px solid $primary-1;
-      border-radius: 3px;
-      background-image: linear-gradient($primary-1 0 0);
-      background-origin: border-box;
-      background-position: 0 100%;
-      background-size: 0 100%;
-      background-repeat: no-repeat;
-      transition: 0.4s;
-      text-align: center;
-      font-size: 0.9rem;
-
-      @include coarse {
-        box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
+      @include ptt {
+        // gap: clamp(2rem, 5vw, 5rem);
+        justify-content: space-around;
       }
 
-      @include fine {
-        &:hover {
-          box-shadow: 2px 2px 13px 2px rgba($primary-1, 0.6);
+      input[type="checkbox"] {
+        display: none;
+
+        &:checked + label {
+          background-image: linear-gradient($primary-1 0 0);
+          background-size: 100% 100%;
+          color: $content-light;
+          font-weight: 500;
         }
       }
 
-      @include from(1000) {
-        font-size: 1.1rem;
-      }
-    }
+      label {
+        position: relative;
+        min-width: clamp(4rem, 20vmin, 7rem);
+        padding: 0.6rem 0.3rem;
+        border: 2px solid $primary-1;
+        border-radius: 3px;
+        background-image: linear-gradient($primary-1 0 0);
+        background-origin: border-box;
+        background-position: 0 100%;
+        background-size: 0 100%;
+        background-repeat: no-repeat;
+        transition: 0.4s;
+        text-align: center;
+        font-size: 0.9rem;
 
-    .form-row {
-      flex-direction: row;
+        @include coarse {
+          box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
+        }
+
+        @include fine {
+          &:hover {
+            box-shadow: 2px 2px 13px 2px rgba($primary-1, 0.6);
+          }
+        }
+
+        @include from(1000) {
+          font-size: 1.1rem;
+        }
+      }
+
+      .form-row {
+        flex-direction: row;
+      }
     }
   }
 

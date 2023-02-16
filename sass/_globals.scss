@@ -76,45 +76,6 @@ a {
   user-select: none;
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  max-width: 37rem;
-  margin: 0 auto;
-
-  &-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-
-    .password-evaluation {
-      height: 5px;
-      width: 0;
-      background: $danger-1;
-      border-radius: 50px;
-      transition: width 0.3s ease-out;
-
-      &-33 {
-        width: 33%;
-        background: $danger-1;
-      }
-      &-66 {
-        width: 66%;
-        background: $warning;
-      }
-      &-100 {
-        width: 100%;
-        background: $success-3;
-      }
-    }
-
-    .forgotten-password {
-      text-align: right;
-    }
-  }
-}
-
 .user-space {
   margin-top: 2rem;
 
@@ -198,53 +159,5 @@ a {
     .city {
       font-style: italic;
     }
-  }
-}
-
-.notification-message {
-  width: 100%;
-  margin: 1rem 0 1.5rem;
-
-  p {
-    padding: 0.3rem 0;
-    text-align: center;
-    line-height: 1.5rem;
-  }
-
-  .error,
-  .success {
-    padding: 0.8rem 0.6rem;
-    border-radius: 3px;
-  }
-
-  .error {
-    background: $danger-2;
-  }
-
-  .success {
-    background: $success-2;
-  }
-}
-
-.flash {
-  display: block;
-  padding: 1.2rem;
-  margin: 2rem 0;
-  border-radius: 5px;
-
-  &-success {
-    background: rgba($success-1, 0.4);
-  }
-
-  &-danger {
-    background: rgba($danger-1, 0.4);
-  }
-
-  &-warning {
-    background: rgba($warning, 0.4);
-  }
-
-  &-infos {
-    background: rgba($infos, 0.4);
   }
 }
