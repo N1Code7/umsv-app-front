@@ -1,6 +1,6 @@
 import { EventHandler, MouseEvent, useContext } from "react";
-import { formatDate } from "../../config/dateFunctions";
-import { ITournament, ITournamentRegistration } from "../../config/interfaces";
+import { formatDate } from "../../utils/functions/dateFunctions";
+import { ITournament, ITournamentRegistration } from "../../interfaces/interfaces";
 import { useNavigate } from "react-router-dom";
 import { SelectedTournamentContext } from "../../contexts/SelectedTournamentContext";
 

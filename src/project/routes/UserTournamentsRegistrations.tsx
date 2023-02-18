@@ -1,9 +1,9 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
-import { ITournament, ITournamentRegistration } from "../../config/interfaces";
+import { ITournament, ITournamentRegistration } from "../../interfaces/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
 import Modal from "../components/Modal";
-import { formatDate } from "../../config/dateFunctions";
+import { formatDate } from "../../utils/functions/dateFunctions";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import Switch from "../components/Switch";

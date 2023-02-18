@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
 import useSWR from "swr";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { ITournamentRegistration } from "../../../config/interfaces";
+import { ITournamentRegistration } from "../../../interfaces/interfaces";
 
 const AdminHomepage = () => {
   const { user } = useContext(AuthenticationContext);

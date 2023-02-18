@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Header from "../components/Header";
-import axios from "../../config/axios";
+import axios from "../../utils/functions/axios";
 
 const Login = () => {
   const navigate = useNavigate();

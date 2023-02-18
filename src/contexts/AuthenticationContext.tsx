@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext } from "react";
-import { IUser } from "../config/interfaces";
+import { IUser } from "../interfaces/interfaces";
 
 interface IAuthenticationContext {
   auth: {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import Event from "../components/Event";
-import { IClubEvent, ITournament } from "../../config/interfaces";
+import { IClubEvent, ITournament } from "../../interfaces/interfaces";
 import Tournament from "../components/Tournament";
 import TournamentsSearch from "../components/TournamentsSearch";
 import SortTournamentsBtn from "../components/SortTournamentsBtn";
-import { formatDate, getDayOfWeek, getMonthOfYear } from "../../config/dateFunctions";
+import { formatDate, getDayOfWeek, getMonthOfYear } from "../../utils/functions/dateFunctions";
 import Modal from "../components/Modal";
 import Image from "next/image";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";

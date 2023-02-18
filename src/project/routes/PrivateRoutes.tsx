@@ -4,7 +4,7 @@ import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import MemberHeader from "../components/MemberHeader";
 import Navigation from "../components/Navigation";
 import Header from "../components/Header";
-import { ITournament } from "../../config/interfaces";
+import { ITournament } from "../../interfaces/interfaces";
 import { SelectedTournamentContext } from "../../contexts/SelectedTournamentContext";
 
 interface IPrivateRoutesProps {

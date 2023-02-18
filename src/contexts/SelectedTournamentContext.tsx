@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext } from "react";
-import { ITournament } from "../config/interfaces";
+import { ITournament } from "../interfaces/interfaces";
 
 interface ISelectedTournamentContext {
   selectedTournament: ITournament;
