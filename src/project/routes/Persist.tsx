@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import useRefreshToken from "../../hooks/useRefreshToken";
-import { getRefreshTokenFromCookie } from "../../utils/functions/cookies";
+import { getRefreshTokenFromCookie } from "../../utils/cookies";
 import { IUser } from "../../interfaces/interfaces";
 
 const Persist = () => {

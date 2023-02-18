@@ -3,7 +3,7 @@ import SortTournamentsBtn from "../components/SortTournamentsBtn";
 import { ITournament, ITournamentRegistration } from "../../interfaces/interfaces";
 import TournamentRegistration from "../components/TournamentRegistration";
 import Modal from "../components/Modal";
-import { formatDate } from "../../utils/functions/dateFunctions";
+import { formatDate } from "../../utils/dateFunctions";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import Switch from "../components/Switch";

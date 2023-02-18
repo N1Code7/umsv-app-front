@@ -1,7 +1,7 @@
-import axios, { axiosPrivate } from "../utils/functions/axios";
-import { getRefreshTokenFromCookie } from "../utils/functions/cookies";
 import { AuthenticationContext } from "../contexts/AuthenticationContext";
 import { useContext } from "react";
+import axios, { axiosPrivate } from "../utils/axios";
+import { getRefreshTokenFromCookie } from "../utils/cookies";
 
 const useRefreshToken = () => {
   const { setAuth, user, setUser } = useContext(AuthenticationContext);

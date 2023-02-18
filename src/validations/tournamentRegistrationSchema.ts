@@ -1,6 +1,4 @@
-// import { boolean, object, string } from "yup";
 import * as yup from "yup";
-import { ITournament } from "../interfaces/interfaces";
 
 export const newTournamentRegistrationSchema = yup.object({
   chooseNewTournament: yup.boolean().required(),

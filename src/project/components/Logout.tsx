@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { IUser } from "../../interfaces/interfaces";
-import { getRefreshTokenFromCookie } from "../../utils/functions/cookies";
+import { getRefreshTokenFromCookie } from "../../utils/cookies";
 
 const Logout = () => {
   const navigate = useNavigate();

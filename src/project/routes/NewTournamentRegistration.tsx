@@ -1,11 +1,11 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import { formatDate } from "../../utils/functions/dateFunctions";
 import { ITournament } from "../../interfaces/interfaces";
 import useSWR from "swr";
 import Switch from "../components/Switch";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { SelectedTournamentContext } from "../../contexts/SelectedTournamentContext";
 import { newTournamentRegistrationSchema } from "../../validations/tournamentRegistrationSchema";
+import { formatDate } from "../../utils/dateFunctions";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 interface IFormErrors {
   registrationSelectTournament: string;

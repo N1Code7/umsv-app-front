@@ -1,5 +1,5 @@
 import { Dispatch, MouseEvent, SetStateAction, useContext } from "react";
-import { formatDate } from "../../utils/functions/dateFunctions";
+import { formatDate } from "../../utils/dateFunctions";
 import { ITournamentRegistration } from "../../interfaces/interfaces";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
