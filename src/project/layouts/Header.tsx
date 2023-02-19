@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { Dispatch, SetStateAction, useContext } from "react";
-import Logout from "./Logout";
+import Logout from "../components/Logout";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import Switch from "./Switch";
+import Switch from "../components/Switch";
 
 interface IHeaderProps {
   toggleDisplayNavigation?: () => void;

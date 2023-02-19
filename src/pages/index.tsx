@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useState } from "react";
-import Footer from "../project/components/Footer";
+import Footer from "../project/layouts/Footer";
 import { AuthenticationContext } from "../contexts/AuthenticationContext";
 import { IUser } from "../interfaces/interfaces";
 

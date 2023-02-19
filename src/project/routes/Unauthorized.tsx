@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import Header from "../components/Header";
+import Header from "../layouts/Header";
 
 const Unauthorized = () => {
   return (

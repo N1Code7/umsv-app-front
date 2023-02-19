@@ -1,5 +1,5 @@
 import { use, useEffect, useRef, useState } from "react";
-import Header from "../components/Header";
+import Header from "../layouts/Header";
 import Input from "../components/Input";
 import { fetchInitResetPassword, fetchValidNewPassword } from "../../utils/fetchFunctions";
 import { NavLink, Route, Routes, useParams } from "react-router-dom";

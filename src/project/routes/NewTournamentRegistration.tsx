@@ -6,6 +6,7 @@ import { SelectedTournamentContext } from "../../contexts/SelectedTournamentCont
 import { newTournamentRegistrationSchema } from "../../validations/tournamentRegistrationSchema";
 import { formatDate } from "../../utils/dateFunctions";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { ValidationError } from "yup";
 
 interface IFormErrors {
   registrationSelectTournament: string;
@@ -48,74 +49,67 @@ const NewTournamentRegistration = () => {
     await axiosPrivate
       .get(url)
       .then((res) => res.data)
-      .catch((err) => console.error(err));
+      .catch((err) => {});
+  //  console.error(err));
   const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
+
+  const request = {
+    tournamentName: registrationSelectTournament.current?.value
+      ? tournaments
+          .filter(
+            (tournament: ITournament) =>
+              tournament.id == Number(registrationSelectTournament.current?.value)
+          )
+          .map((tournament: ITournament) => tournament.name)[0]
+      : registrationName.current
+      ? registrationName.current?.value
+      : null,
+    tournamentCity: registrationSelectTournament.current?.value
+      ? tournaments
+
+          .filter(
+            (tournament: ITournament) =>
+              tournament.id == Number(registrationSelectTournament.current?.value)
+          )
+          .map((tournament: ITournament) => tournament.city)[0]
+      : registrationCity.current
+      ? registrationCity.current?.value
+      : null,
+    tournamentStartDate: registrationSelectTournament.current?.value
+      ? tournaments
+          .filter(
+            (tournament: ITournament) =>
+              tournament.id == Number(registrationSelectTournament.current?.value)
+          )
+          .map((tournament: ITournament) => tournament.startDate)[0]
+      : registrationStartDate.current?.value
+      ? new Date(registrationStartDate.current?.value).toISOString()
+      : null,
+    tournamentEndDate: registrationSelectTournament.current?.value
+      ? tournaments
+          .filter(
+            (tournament: ITournament) =>
+              tournament.id == Number(registrationSelectTournament.current?.value)
+          )
+          .map((tournament: ITournament) => tournament.endDate)[0]
+      : registrationEndDate.current?.value && registrationEndDate.current.value !== ""
+      ? new Date(registrationEndDate.current?.value).toISOString()
+      : null,
+
+    participationSingle: checkboxSingle.current?.checked,
+    participationDouble: checkboxDouble,
+    participationMixed: checkboxMixed,
+    doublePartnerName: registrationDoublePartnerName.current?.value || null,
+    doublePartnerClub: registrationDoublePartnerClub.current?.value || null,
+    mixedPartnerName: registrationMixedPartnerName.current?.value || null,
+    mixedPartnerClub: registrationMixedPartnerClub.current?.value || null,
+    comment: registrationComment.current?.value || null,
+  };
 
   /** Validation of form fields before fetch the post route */
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    let errors = { ...formErrors };
-
-    // if (!chooseNewTournament) {
-    //   registrationSelectTournament.current?.value === "null"
-    //     ? (errors.registrationSelectTournament =
-    //         'Vous devez sélectionner un tournoi parmi la liste proposée (sinon utilisez le formulaire détaillé en cliquant sur "Nouveau tournoi"')
-    //     : (errors.registrationSelectTournament = "");
-    // } else {
-    //   !registrationName.current?.value.match(/^[\w\-]*$/)
-    //     ? (errors.registrationName =
-    //         "Le nom du tournoi ne doit pas contenir de caractères spéciaux.")
-    //     : (errors.registrationName = "");
-
-    //   !registrationCity.current?.value.match(/^[\w\-]{3,}$/)
-    //     ? (errors.registrationCity =
-    //         "La ville du tournoi doit posséder 3 caractères minimum et ne doit pas contenir de caractères spéciaux.")
-    //     : (errors.registrationCity = "");
-
-    //   !registrationStartDate.current?.value
-    //     ? (errors.registrationStartDate = "Un tournoi doit avoir une date de début.")
-    //     : (Number(new Date()) - Number(new Date(registrationStartDate.current?.value))) /
-    //         (1000 * 3600 * 24) >
-    //       1
-    //     ? (errors.registrationStartDate =
-    //         "La date de début du tournoi ne peut être antérieure à aujourd'hui.")
-    //     : (errors.registrationStartDate = "");
-
-    //   registrationEndDate.current?.value &&
-    //   new Date(registrationEndDate.current?.value) < new Date(registrationStartDate.current?.value!)
-    //     ? (errors.registrationEndDate =
-    //         "La date de fin du tournoi ne peut être antérieure à celle de la date du début.")
-    //     : (errors.registrationEndDate = "");
-    // }
-
-    // !checkboxSingle.current?.checked && !checkboxDouble && !checkboxMixed
-    //   ? (errors.checkboxes = "Un tableau doit être au minimum sélectionné.")
-    //   : (errors.checkboxes = "");
-
-    // registrationDoublePartnerName.current?.value &&
-    // !registrationDoublePartnerName.current?.value.match(/^[\w\-éùà]*$/)
-    //   ? (errors.registrationDoublePartnerName =
-    //       "Le nom du partenaire de double ne peut pas contenir de caractères spéciaux")
-    //   : (errors.registrationDoublePartnerName = "");
-
-    // registrationMixedPartnerName.current?.value &&
-    // !registrationMixedPartnerName.current?.value.match(/^[\w\-]*$/)
-    //   ? (errors.registrationMixedPartnerName =
-    //       "Le nom du partenaire de mixte ne peut pas contenir de caractères spéciaux")
-    //   : (errors.registrationMixedPartnerName = "");
-
-    // registrationDoublePartnerClub.current?.value &&
-    // !registrationDoublePartnerClub.current?.value.match(/^[\w\-]*$/)
-    //   ? (errors.registrationDoublePartnerName =
-    //       "Le club du partenaire de double ne peut pas contenir de caractères spéciaux")
-    //   : (errors.registrationDoublePartnerName = "");
-
-    // registrationMixedPartnerClub.current?.value &&
-    // !registrationMixedPartnerClub.current?.value.match(/^[\w\-]*$/)
-    //   ? (errors.registrationMixedPartnerName =
-    //       "Le club du partenaire de mixte ne peut pas contenir de caractères spéciaux")
-    //   : (errors.registrationMixedPartnerName = "");
+    let errors = {} as IFormErrors;
 
     await newTournamentRegistrationSchema
       .validate(
@@ -124,97 +118,48 @@ const NewTournamentRegistration = () => {
           registrationSelectTournament: registrationSelectTournament.current?.value,
           registrationName: registrationName.current?.value,
           registrationCity: registrationCity.current?.value,
-          registrationStartDate: registrationStartDate.current?.value!,
+          registrationStartDate: registrationStartDate.current?.value,
           registrationEndDate: registrationEndDate.current?.value
             ? new Date(registrationEndDate.current?.value)
             : undefined,
+          checkboxes: [checkboxSingle.current?.checked, checkboxDouble, checkboxMixed],
+          registrationDoublePartnerName: registrationDoublePartnerName.current?.value,
+          registrationDoublePartnerClub: registrationDoublePartnerClub.current?.value,
+          registrationMixedPartnerName: registrationMixedPartnerName.current?.value,
+          registrationMixedPartnerClub: registrationMixedPartnerClub.current?.value,
         },
         { abortEarly: false }
       )
-      .then(() => console.log("axios"))
-      .catch((err) => console.dir(err.errors));
+      .then(async () => {
+        await axiosPrivate
+          .post("tournament-registration", request)
+          .then(() =>
+            setRequestMessage({
+              error: "",
+              success: "Votre demande d'inscription a bien été créée ! 👌",
+            })
+          )
+          .catch(() =>
+            // console.error(err);
+            setRequestMessage({
+              error:
+                "Une erreur est survenue lors de l'envoi de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur. ",
+              success: "",
+            })
+          );
+
+        setTimeout(() => {
+          setRequestMessage({ success: "", error: "" });
+        }, 10000);
+      })
+      .catch((err) => {
+        err.inner.forEach(
+          (err: ValidationError) => (errors = { ...errors, [err.path as string]: err.message })
+        );
+      });
+
+    setFormErrors(errors);
   };
-
-  // if (
-  //   Object.values(errors).length === 0 ||
-  //   Object.values(errors).every((error) => error === "")
-  // ) {
-  //   console.log("axios");
-  // }
-
-  // await axiosPrivate
-  //   .post("tournament-registration", {
-  //     tournamentName: registrationSelectTournament.current?.value
-  //       ? tournaments
-  //           .filter(
-  //             (tournament: ITournament) =>
-  //               tournament.id == Number(registrationSelectTournament.current?.value)
-  //           )
-  //           .map((tournament: ITournament) => tournament.name)[0]
-  //       : registrationName.current
-  //       ? registrationName.current?.value
-  //       : null,
-  //     tournamentCity: registrationSelectTournament.current?.value
-  //       ? tournaments
-
-  //           .filter(
-  //             (tournament: ITournament) =>
-  //               tournament.id == Number(registrationSelectTournament.current?.value)
-  //           )
-  //           .map((tournament: ITournament) => tournament.city)[0]
-  //       : registrationCity.current
-  //       ? registrationCity.current?.value
-  //       : null,
-  //     tournamentStartDate: registrationSelectTournament.current?.value
-  //       ? tournaments
-  //           .filter(
-  //             (tournament: ITournament) =>
-  //               tournament.id == Number(registrationSelectTournament.current?.value)
-  //           )
-  //           .map((tournament: ITournament) => tournament.startDate)[0]
-  //       : registrationStartDate.current
-  //       ? new Date(registrationStartDate.current?.value).toISOString()
-  //       : null,
-  //     tournamentEndDate: registrationSelectTournament.current?.value
-  //       ? tournaments
-  //           .filter(
-  //             (tournament: ITournament) =>
-  //               tournament.id == Number(registrationSelectTournament.current?.value)
-  //           )
-  //           .map((tournament: ITournament) => tournament.endDate)[0]
-  //       : registrationEndDate.current && registrationEndDate.current.value !== ""
-  //       ? new Date(registrationEndDate.current?.value).toISOString()
-  //       : null,
-
-  //     participationSingle: checkboxSingle.current?.checked,
-  //     participationDouble: checkboxDouble,
-  //     participationMixed: checkboxMixed,
-  //     doublePartnerName: registrationDoublePartnerName.current?.value || null,
-  //     doublePartnerClub: registrationDoublePartnerClub.current?.value || null,
-  //     mixedPartnerName: registrationMixedPartnerName.current?.value || null,
-  //     mixedPartnerClub: registrationMixedPartnerClub.current?.value || null,
-  //     comment: registrationComment.current?.value || null,
-  //   })
-  //   .then((res: unknown) =>
-  //     setRequestMessage({
-  //       error: "",
-  //       success: "Votre demande d'inscription a bien été créée ! 👌",
-  //     })
-  //   )
-  //   .catch((err: unknown) => {
-  //     console.error(err);
-  //     setRequestMessage({
-  //       error:
-  //         "Une erreur est survenue lors de l'envoi de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur. ",
-  //       success: "",
-  //     });
-  //   });
-  // } else {
-  //   setRequestMessage({ error: "", success: "" });
-  // }
-
-  // setFormErrors((prev) => ({ ...prev, ...errors }));
-  // };
 
   useEffect(() => {
     setFormErrors({} as IFormErrors);
@@ -326,8 +271,8 @@ const NewTournamentRegistration = () => {
                   type="date"
                   id="startDate"
                   ref={registrationStartDate}
-                  // min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
-                  // required
+                  min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
+                  required
                 />
                 <label htmlFor="endDate"> au </label>
                 <input
@@ -370,7 +315,6 @@ const NewTournamentRegistration = () => {
                 id="double"
                 onChange={() => setCheckboxDouble((prev) => !prev)}
               />
-
               <label htmlFor="double">Double</label>
             </div>
             <div className="form-row">
@@ -384,6 +328,7 @@ const NewTournamentRegistration = () => {
             </div>
           </div>
         </div>
+
         {checkboxDouble && (
           <div className="form-row">
             <label htmlFor="doublePartner">Partenaire de Double</label>
@@ -398,6 +343,7 @@ const NewTournamentRegistration = () => {
             </div>
           </div>
         )}
+
         {checkboxMixed && (
           <div className="form-row">
             <label htmlFor="mixedPartner">Partenaire de mixte</label>
@@ -412,6 +358,7 @@ const NewTournamentRegistration = () => {
             </div>
           </div>
         )}
+
         <div className="form-row">
           <label htmlFor="comments">Commentaires</label>
           {formErrors.comment && <div className="form-error-detail">{formErrors.comment}</div>}

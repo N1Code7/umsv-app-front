@@ -1,6 +1,6 @@
-import Header from "../components/Header";
-import MemberHeader from "../components/MemberHeader";
-import Navigation from "../components/Navigation";
+import Header from "../layouts/Header";
+import MemberHeader from "../layouts/MemberHeader";
+import Navigation from "../layouts/Navigation";
 
 const Results = () => {
   return (

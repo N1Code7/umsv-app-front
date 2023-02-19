@@ -15,8 +15,7 @@ export const newTournamentRegistrationSchema = yup.object({
     .test(
       "isContainingSpecialChar",
       "Le nom du tournoi ne doit pas contenir de caractères spéciaux.",
-      (value, context) =>
-        context.parent.chooseNewTournament ? !value?.match(/^[<>*+€$§]+$/) : true
+      (value, context) => (context.parent.chooseNewTournament ? !value?.match(/[<>*+€$§%]+/) : true)
     ),
   registrationCity: yup
     .string()
@@ -54,5 +53,42 @@ export const newTournamentRegistrationSchema = yup.object({
         context.parent.chooseNewTournament && value
           ? new Date(value) > new Date(context.parent.registrationStartDate)
           : true
+    ),
+  checkboxes: yup
+    .array(yup.boolean().nullable())
+    .test("isOneTableSelecting", "Un tableau doit être au minimum sélectionné.", (value, context) =>
+      value?.every((elt) => !elt) ? false : true
+    ),
+  registrationDoublePartnerName: yup
+    .string()
+    .notRequired()
+    .test(
+      "isContainingSpecialChar",
+      "Le nom du partenaire de double ne doit pas contenir de caractères spéciaux.",
+      (value, context) => !value?.match(/[<>*+€$§%]+/)
+    ),
+  registrationDoublePartnerClub: yup
+    .string()
+    .notRequired()
+    .test(
+      "isContainingSpecialChar",
+      "Le club du partenaire de double ne doit pas contenir de caractères spéciaux.",
+      (value, context) => !value?.match(/[<>*+€$§%]+/)
+    ),
+  registrationMixedPartnerName: yup
+    .string()
+    .notRequired()
+    .test(
+      "isContainingSpecialChar",
+      "Le nom du partenaire de mixte ne doit pas contenir de caractères spéciaux.",
+      (value, context) => !value?.match(/[<>*+€$§%]+/)
+    ),
+  registrationMixedPartnerClub: yup
+    .string()
+    .notRequired()
+    .test(
+      "isContainingSpecialChar",
+      "Le club du partenaire de mixte ne doit pas contenir de caractères spéciaux.",
+      (value, context) => !value?.match(/[<>*+€$§%]+/)
     ),
 });
