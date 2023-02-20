@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import useRefreshToken from "../../hooks/useRefreshToken";
-import { getRefreshTokenFromCookie } from "../../utils/cookies";
-import { IUser } from "../../interfaces/interfaces";
+import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
+import useRefreshToken from "../../../hooks/useRefreshToken";
+import { getRefreshTokenFromCookie } from "../../../utils/cookies";
+import { IUser } from "../../../interfaces/interfaces";
 
 const Persist = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Persist = () => {
       try {
         await refresh();
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       } finally {
         !ignore && setIsLoading(false);
       }

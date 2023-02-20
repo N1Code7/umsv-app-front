@@ -1,6 +1,6 @@
-import Header from "../layouts/Header";
-import MemberHeader from "../layouts/MemberHeader";
-import Navigation from "../layouts/Navigation";
+import Header from "../../../layouts/Header";
+import MemberHeader from "../../../layouts/MemberHeader";
+import Navigation from "../../../layouts/Navigation";
 
 const Settings = () => {
   return (

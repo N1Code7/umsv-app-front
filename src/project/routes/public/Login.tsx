@@ -1,9 +1,9 @@
 import { FormEvent, useContext, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import Input from "../components/Input";
-import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import Header from "../layouts/Header";
-import axios from "../../utils/axios";
+import Input from "../../components/Input";
+import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
+import Header from "../../layouts/Header";
+import axios from "../../../utils/axios";
 
 const Login = () => {
   const navigate = useNavigate();

@@ -1,18 +1,18 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
-import SignUp from "./routes/SignUp";
-import PrivateRoutes from "./routes/PrivateRoutes";
-import PageNotFound from "./routes/PageNotFound";
-import Login from "./routes/Login";
-import ResetPassword from "./routes/ResetPassword";
-import Homepage from "./routes/Homepage";
-import UserTournamentsRegistrations from "./routes/UserTournamentsRegistrations";
-import NewTournamentRegistration from "./routes/NewTournamentRegistration";
-import Results from "./routes/Results";
-import Settings from "./routes/Settings";
+import SignUp from "./routes/public/SignUp";
+import PrivateRoutes from "./routes/private/PrivateRoutes";
+import PageNotFound from "./routes/public/PageNotFound";
+import Login from "./routes/public/Login";
+import ResetPassword from "./routes/public/ResetPassword";
+import Homepage from "./routes/private/member/Homepage";
+import UserTournamentsRegistrations from "./routes/private/member/UserTournamentsRegistrations";
+import NewTournamentRegistration from "./routes/private/member/NewTournamentRegistration";
+import Results from "./routes/private/member/Results";
+import Settings from "./routes/private/member/Settings";
 import { useEffect, useState } from "react";
-import Persist from "./routes/Persist";
-import AdminHomepage from "./routes/admin/AdminHomepage";
-import Unauthorized from "./routes/Unauthorized";
+import Persist from "./routes/private/Persist";
+import AdminHomepage from "./routes/private/admin/AdminHomepage";
+import Unauthorized from "./routes/public/Unauthorized";
 
 export default function MyApp() {
   const [deviceDisplay, setDeviceDisplay] = useState("");

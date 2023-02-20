@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
-import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
+import { AuthenticationContext } from "../../../../contexts/AuthenticationContext";
 import useSWR from "swr";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { ITournamentRegistration } from "../../../interfaces/interfaces";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 
 const AdminHomepage = () => {
   const { user } = useContext(AuthenticationContext);
@@ -12,7 +12,10 @@ const AdminHomepage = () => {
     await axiosPrivate
       .get(url)
       .then((res) => res.data)
-      .catch((err) => console.error(err));
+      .catch(
+        (err) => {}
+        // console.error(err)
+      );
 
   const { data: registrations, mutate } = useSWR("admin/tournament-registrations", fetcher);
 

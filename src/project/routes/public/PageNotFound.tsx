@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import Header from "../layouts/Header";
+import Header from "../../layouts/Header";
 
 const PageNotFound = () => {
   return (

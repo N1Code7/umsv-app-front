@@ -1,17 +1,16 @@
 import { Dispatch, MouseEvent, SetStateAction, useContext } from "react";
-import { formatDate } from "../../utils/dateFunctions";
-import { ITournamentRegistration } from "../../interfaces/interfaces";
+import { formatDate } from "../../../utils/dateFunctions";
+import { ITournamentRegistration } from "../../../interfaces/interfaces";
 import { mutate } from "swr";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
 
 interface ITournamentRegistrationProps {
   tournamentRegistration: ITournamentRegistration;
   displayOnMobile: boolean;
   setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
-  setCheckboxDouble: Dispatch<SetStateAction<boolean>>;
-  setCheckboxMixed: Dispatch<SetStateAction<boolean>>;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
-  setChooseExistingTournament: Dispatch<SetStateAction<boolean>>;
+  setRequestMessage: Dispatch<SetStateAction<{ success: string; error: string }>>;
 }
 
 const TournamentRegistration = ({
@@ -19,57 +18,62 @@ const TournamentRegistration = ({
   displayOnMobile,
   setIsModalActive,
   setFocusedRegistration,
-  setCheckboxDouble,
-  setCheckboxMixed,
-  setChooseExistingTournament,
+  setRequestMessage,
 }: ITournamentRegistrationProps) => {
   const axiosPrivate = useAxiosPrivate();
+  const { user } = useContext(AuthenticationContext);
 
   const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    tournamentRegistration.tournament === null
-      ? setChooseExistingTournament(false)
-      : setChooseExistingTournament(true);
     setFocusedRegistration(tournamentRegistration);
-    setCheckboxDouble(tournamentRegistration.participationDouble);
-    setCheckboxMixed(tournamentRegistration.participationMixed);
     setIsModalActive(true);
   };
 
   const handleCancel = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    try {
-      mutate(
-        "tournament-registrations",
-        await axiosPrivate
-          .patch(`tournament-registration/cancel/${tournamentRegistration.id}`)
-          .then((res) => res.data)
-          .catch((err) => console.error(err)),
-        {
-          optimisticData: (tournamentsRegistrations: Array<ITournamentRegistration>) => {
-            const prev = tournamentsRegistrations.filter(
-              (registration: ITournamentRegistration) =>
-                registration.id !== tournamentRegistration.id
-            );
-            return [...prev, { ...tournamentRegistration, requestState: "cancelled" }];
-          },
-          populateCache: (
-            tournamentRegistration: ITournamentRegistration,
-            tournamentsRegistrations: Array<ITournamentRegistration>
-          ) => {
-            const prev = tournamentsRegistrations.filter(
-              (registration: ITournamentRegistration) =>
-                registration.id !== tournamentRegistration.id
-            );
-            return [...prev, tournamentRegistration];
-          },
-          rollbackOnError: true,
-          revalidate: false,
-        }
-      );
-    } catch (err) {
-      console.error(err);
-    }
+    await mutate(
+      "tournament-registrations",
+      await axiosPrivate
+        .patch(`tournament-registration/cancel/${tournamentRegistration.id}`)
+        .then((res) => {
+          setRequestMessage({
+            error: "",
+            success: "Votre demande d'inscription a bien été annulée ! 👌",
+          });
+          return res.data;
+        })
+        .catch((err) => {
+          // console.error(err)
+          setRequestMessage({
+            error:
+              "Une erreur est survenue lors de l'annulation de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur.",
+            success: "",
+          });
+        }),
+      {
+        optimisticData: (tournamentsRegistrations: Array<ITournamentRegistration>) => {
+          const prev = tournamentsRegistrations.filter(
+            (registration: ITournamentRegistration) => registration.id !== tournamentRegistration.id
+          );
+          return [...prev, { ...tournamentRegistration, requestState: "cancelled" }];
+        },
+        populateCache: (
+          tournamentRegistration: ITournamentRegistration,
+          tournamentsRegistrations: Array<ITournamentRegistration>
+        ) => {
+          const prev = tournamentsRegistrations.filter(
+            (registration: ITournamentRegistration) => registration.id !== tournamentRegistration.id
+          );
+          return [...prev, tournamentRegistration];
+        },
+        rollbackOnError: true,
+        revalidate: false,
+      }
+    );
+
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
   };
 
   return displayOnMobile ? (
@@ -195,30 +199,24 @@ const TournamentRegistration = ({
         }
       >
         {tournamentRegistration.participationSingle === true &&
-          (tournamentRegistration.user?.gender ? (
-            tournamentRegistration.user?.gender === "male" ? (
-              <span>SH : oui</span>
-            ) : (
-              <span>SD : oui</span>
-            )
-          ) : (
+          ((user?.gender === "male" ? <span>SH : oui</span> : <span>SD : oui</span>) || (
             <span>Simple : oui</span>
           ))}
+
         {tournamentRegistration.participationDouble === true &&
-          (tournamentRegistration.user?.gender ? (
-            tournamentRegistration.user.gender === "male" ? (
-              <span>DH : {tournamentRegistration.doublePartnerName}</span>
-            ) : (
-              <span>DD : {tournamentRegistration.doublePartnerName}</span>
+          (user?.gender === "male" ? (
+            <span>DH : {tournamentRegistration.doublePartnerName || "❓"}</span>
+          ) : (
+            <span>DD : {tournamentRegistration.doublePartnerName || "XXX"}</span> || (
+              <span>Double : {tournamentRegistration.doublePartnerName || "XXX"}</span>
             )
-          ) : (
-            <span>Double : {tournamentRegistration.doublePartnerName}</span>
           ))}
+
         {tournamentRegistration.participationMixed === true &&
-          (tournamentRegistration.user?.gender ? (
-            <span>DX : {tournamentRegistration.mixedPartnerName}</span>
+          (user?.gender === "male" || "female" ? (
+            <span>DX : {tournamentRegistration.mixedPartnerName || "XXX"}</span>
           ) : (
-            <span>Mixte : {tournamentRegistration.mixedPartnerName}</span>
+            <span>Mixte : {tournamentRegistration.mixedPartnerName || "XXX"}</span>
           ))}
       </td>
       {/* Request state */}
@@ -234,10 +232,28 @@ const TournamentRegistration = ({
       {/* Action buttons */}
       <td>
         <div className="cta-container">
-          <button className="btn modify" onClick={handleModify}>
+          <button
+            className="btn modify"
+            onClick={handleModify}
+            disabled={
+              new Date(
+                tournamentRegistration.tournament?.startDate ||
+                  tournamentRegistration.tournamentStartDate
+              ) <= new Date()
+            }
+          >
             ✏️
           </button>
-          <button className="btn cancel" onClick={handleCancel}>
+          <button
+            className="btn cancel"
+            onClick={handleCancel}
+            disabled={
+              new Date(
+                tournamentRegistration.tournament?.startDate ||
+                  tournamentRegistration.tournamentStartDate
+              ) <= new Date()
+            }
+          >
             🗑️
           </button>
           <a

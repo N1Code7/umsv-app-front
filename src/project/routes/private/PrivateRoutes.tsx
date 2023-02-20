@@ -1,11 +1,11 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
-import { AuthenticationContext } from "../../contexts/AuthenticationContext";
-import MemberHeader from "../layouts/MemberHeader";
-import Navigation from "../layouts/Navigation";
-import Header from "../layouts/Header";
-import { ITournament } from "../../interfaces/interfaces";
-import { SelectedTournamentContext } from "../../contexts/SelectedTournamentContext";
+import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
+import MemberHeader from "../../layouts/MemberHeader";
+import Navigation from "../../layouts/Navigation";
+import Header from "../../layouts/Header";
+import { ITournament } from "../../../interfaces/interfaces";
+import { SelectedTournamentContext } from "../../../contexts/SelectedTournamentContext";
 
 interface IPrivateRoutesProps {
   allowedRoles?: Array<string>;
