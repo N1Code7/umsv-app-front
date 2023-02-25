@@ -1,11 +1,11 @@
 import { useState } from "react";
 import SortTournamentsBtn from "../../../components/SortTournamentsBtn";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import TournamentRegistration from "../../../features/TournamentRegistration/TournamentRegistration";
+import TournamentRegistration from "../../../features/displayTournamentsRegistrations/TournamentRegistration";
 import Modal from "../../../components/Modal";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
-import RegistrationForm from "../../../features/TournamentRegistration/components/RegistrationForm";
+import RegistrationForm from "../../../features/displayTournamentsRegistrations/components/RegistrationForm";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;
@@ -73,7 +73,6 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
       }
     );
   };
-  console.log(focusedRegistration);
 
   return (
     <main className="user-tournaments-registrations user-space">

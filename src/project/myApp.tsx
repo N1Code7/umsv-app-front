@@ -53,7 +53,7 @@ export default function MyApp() {
                 element={<UserTournamentsRegistrations deviceDisplay={deviceDisplay} />}
               />
               <Route path="nouvelle_inscription" element={<NewTournamentRegistration />} />
-              <Route path="resultats" element={<Results />} />
+              <Route path="resultats" element={<Results deviceDisplay={deviceDisplay} />} />
               <Route path="reglages" element={<Settings />} />
             </Route>
             <Route element={<PrivateRoutes allowedRoles={["ROLE_ADMIN", "ROLE_SUPERADMIN"]} />}>

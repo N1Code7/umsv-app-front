@@ -1,8 +1,7 @@
-import { Dispatch, MouseEvent, SetStateAction, useContext } from "react";
+import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { ITournamentRegistration } from "../../../interfaces/interfaces";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
 import RegistrationMobileDisplay from "./components/RegistrationMobileDisplay";
 import RegistrationDesktopDisplay from "./components/RegistrationDesktopDisplay";
 
@@ -22,7 +21,6 @@ const TournamentRegistration = ({
   setRequestMessage,
 }: ITournamentRegistrationProps) => {
   const axiosPrivate = useAxiosPrivate();
-  const { user } = useContext(AuthenticationContext);
 
   const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
