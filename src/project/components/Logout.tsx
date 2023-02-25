@@ -21,7 +21,7 @@ const Logout = () => {
         refreshToken: getRefreshTokenFromCookie(),
       });
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     }
     setAuth?.({});
     setUser?.({} as IUser);

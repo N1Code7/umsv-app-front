@@ -54,7 +54,7 @@ const Login = () => {
         setUser?.(userResponse.data);
         navigate(from, { replace: true });
       } catch (err) {
-        console.error(err);
+        // console.error(err);
         setHasErrorOccurred(true);
         setTimeout(() => {
           setHasErrorOccurred(false);

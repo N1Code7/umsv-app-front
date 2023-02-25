@@ -73,6 +73,7 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
       }
     );
   };
+  console.log(focusedRegistration);
 
   return (
     <main className="user-tournaments-registrations user-space">
