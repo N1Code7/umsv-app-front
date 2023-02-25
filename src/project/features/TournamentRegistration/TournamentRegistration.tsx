@@ -126,10 +126,28 @@ const TournamentRegistration = ({
           : formatDate(tournamentRegistration.tournamentStartDate, undefined, "XX xxx XXXX")}
       </div>
       <div className="cta-container">
-        <button className="btn modify" onClick={handleModify}>
+        <button
+          className="btn modify"
+          onClick={handleModify}
+          disabled={
+            new Date(
+              tournamentRegistration.tournament?.startDate ||
+                tournamentRegistration.tournamentStartDate
+            ) <= new Date()
+          }
+        >
           ✏️
         </button>
-        <button className="btn cancel" onClick={handleCancel}>
+        <button
+          className="btn cancel"
+          onClick={handleCancel}
+          disabled={
+            new Date(
+              tournamentRegistration.tournament?.startDate ||
+                tournamentRegistration.tournamentStartDate
+            ) <= new Date() || tournamentRegistration.requestState === "cancelled"
+          }
+        >
           🗑️
         </button>
         <a
@@ -251,7 +269,7 @@ const TournamentRegistration = ({
               new Date(
                 tournamentRegistration.tournament?.startDate ||
                   tournamentRegistration.tournamentStartDate
-              ) <= new Date()
+              ) <= new Date() || tournamentRegistration.requestState === "cancelled"
             }
           >
             🗑️
