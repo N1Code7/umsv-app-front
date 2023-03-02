@@ -15,6 +15,23 @@ export interface IClubEvent {
   updatedAt: Date;
 }
 
+export interface IUser {
+  id: number;
+  lastName: string;
+  firstName: string;
+  email: string;
+  roles: Array<string>;
+  gender?: string;
+  avatarFileName?: string;
+  avatarFileUrl?: string;
+  birthDate?: string;
+  state?: string;
+  validatedAccount?: boolean;
+  FFBadStats?: Array<IFFBadStats>;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface ITournament {
   id: number;
   name: string;
@@ -68,29 +85,18 @@ export interface ITournamentRegistration {
   doublePartnerClub: string;
   mixedPartnerName: string;
   mixedPartnerClub: string;
-  singleStageReached: string;
-  doubleStageReached: string;
-  mixedStageReached: string;
+  result: IResult;
   comment: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface IUser {
-  id: number;
-  lastName: string;
-  firstName: string;
-  email: string;
-  roles: Array<string>;
-  gender?: string;
-  avatarFileName?: string;
-  avatarFileUrl?: string;
-  birthDate?: string;
-  state?: string;
-  validatedAccount?: boolean;
-  FFBadStats?: Array<IFFBadStats>;
-  createdAt?: string;
-  updatedAt?: string;
+export interface IResult {
+  areResultsValidated: boolean;
+  singleStageReached: string;
+  doubleStageReached: string;
+  mixedStageReached: string;
+  comment: string;
 }
 
 export interface IFFBadStats {

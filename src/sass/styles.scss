@@ -1,13 +1,14 @@
 @import "./settings";
 @import "./globals.scss";
-@import "./components/header.scss";
-@import "./components/footer";
+@import "./user-space";
+@import "./layouts/header.scss";
+@import "./layouts/footer";
 @import "./components/buttons";
 @import "./components/form";
 @import "./components/navigation.scss";
 @import "./components/alerts";
 @import "./components/switch.scss";
-@import "./components/member-header";
+@import "./layouts/member-header";
 @import "./components/event";
 @import "./components/modal";
 @import "./components/tournament-search";
@@ -16,3 +17,4 @@
 @import "./routes/homepage";
 @import "./routes/user-tournaments-registrations";
 @import "./routes/new-registration";
+@import "./routes/user-results";

@@ -1,0 +1,140 @@
+.user-space {
+  margin-top: 2rem;
+
+  table {
+    width: 100%;
+    text-align: center;
+    background: $bg-3;
+    border-collapse: collapse;
+
+    thead {
+      height: 4rem;
+      font-size: clamp(0.9rem, 1vw, 1.1rem);
+
+      th {
+        font-weight: 600;
+      }
+
+      tr {
+        &:first-of-type {
+          th {
+            padding: 1.2rem 0.6rem 0.6rem;
+          }
+        }
+
+        &:nth-of-type(2) {
+          border-bottom: 3px solid black;
+
+          th {
+            padding: 0 0.6rem 1.2rem;
+          }
+        }
+      }
+    }
+
+    tbody {
+      font-size: clamp(0.8rem, 1vw, 1rem);
+
+      td {
+        height: 4rem;
+        border-bottom: 1px solid black;
+        padding: 0.6rem;
+      }
+    }
+  }
+
+  .sort-btn-container {
+    display: flex;
+    // flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+
+    i {
+      font-size: 0.7rem;
+    }
+
+    button.active {
+      background: $primary-1;
+      color: $content-light;
+    }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    width: min(100%, 15rem);
+    padding: 0.6rem;
+    padding-bottom: 0.8rem;
+    background: $bg-3;
+    border-radius: 5px;
+    font-size: clamp(0.8rem, 3vmin, 1rem);
+    text-align: center;
+
+    .name {
+      font-weight: 500;
+    }
+
+    .city {
+      font-style: italic;
+    }
+  }
+
+  .band {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    // gap: 0.6rem;
+    width: min(100%, 22rem);
+    padding: 0.5rem;
+    background: $bg-3;
+    border: 1px solid $bg-2;
+    border-radius: 5px;
+    font-size: clamp(0.8rem, 3vmin, 1rem);
+    text-align: center;
+
+    & > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      // padding: 0 clamp(0.6rem, 0.3vmin, 0.9rem);
+    }
+
+    .name {
+      font-weight: 500;
+      max-height: 3rem;
+    }
+
+    .city {
+      font-style: italic;
+    }
+
+    .middle {
+      min-width: 6rem;
+    }
+
+    .checked {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0.3rem;
+      border-radius: 1px 5px 1px 10px;
+      background-color: $success-2;
+      color: $success-1;
+    }
+
+    .validation {
+      .fa-check {
+        color: $success-1;
+      }
+      .fa-ellipsis {
+        color: $warning-2;
+      }
+    }
+  }
+}

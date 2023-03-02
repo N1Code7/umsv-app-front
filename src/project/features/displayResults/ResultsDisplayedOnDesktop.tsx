@@ -1,15 +1,15 @@
 import { MouseEvent, useContext } from "react";
-import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import { AuthenticationContext } from "../../../../contexts/AuthenticationContext";
-import { formatDate } from "../../../../utils/dateFunctions";
-import ActionsCTA from "./ActionCTA";
+import { ITournamentRegistration } from "../../../interfaces/interfaces";
+import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
+import { formatDate } from "../../../utils/dateFunctions";
+import ActionsCTA from "./components/ActionCTA";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;
   handleModify: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const DisplayOnDesktop = ({ tournamentRegistration, handleModify }: IProps) => {
+const ResultsDisplayedOnDesktop = ({ tournamentRegistration, handleModify }: IProps) => {
   const { user } = useContext(AuthenticationContext);
   return (
     <tr>
@@ -104,4 +104,4 @@ const DisplayOnDesktop = ({ tournamentRegistration, handleModify }: IProps) => {
   );
 };
 
-export default DisplayOnDesktop;
+export default ResultsDisplayedOnDesktop;

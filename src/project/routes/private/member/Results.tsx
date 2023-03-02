@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import TournamentResults from "../../../features/displayResults/TournamentResults";
 import SortTournamentsBtn from "../../../components/SortTournamentsBtn";
+import ResultsDisplayedOnMobile from "../../../features/displayResults/ResultsDisplayedOnMobile";
+import ResultsDisplayedOnDesktop from "../../../features/displayResults/ResultsDisplayedOnDesktop";
+import Modal from "../../../components/Modal";
+import UpdateResultForm from "../../../features/displayResults/components/UpdateResultForm";
 
 interface IProps {
   deviceDisplay: string;
@@ -69,148 +72,132 @@ const Results = ({ deviceDisplay }: IProps) => {
     );
   };
 
+  const handleModify = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+
   return (
-    <>
-      <main className="user-space">
-        {requestMessage.success !== "" && (
-          <div className="notification-message">
-            <p className="success">{requestMessage.success}</p>
-          </div>
-        )}
-        {requestMessage.error !== "" && (
-          <div className="notification-message">
-            <p className="error">{requestMessage.error}</p>
-          </div>
-        )}
+    <main className="user-results user-space">
+      {requestMessage.success !== "" && (
+        <div className="notification-message">
+          <p className="success">{requestMessage.success}</p>
+        </div>
+      )}
+      {requestMessage.error !== "" && (
+        <div className="notification-message">
+          <p className="error">{requestMessage.error}</p>
+        </div>
+      )}
 
-        <h2>Mes résultats</h2>
+      <h2>Mes résultats</h2>
 
-        <div className="registrations results">
-          {deviceDisplay === "mobile" ? (
-            /** MOBILE */
-            <>
+      <div className="results">
+        {deviceDisplay === "mobile" ? (
+          /** MOBILE */
+          <>
+            {!tournamentsRegistrations ? (
+              <div>Chargement ...</div>
+            ) : (
+              tournamentsRegistrations
+                .filter(
+                  (registration: ITournamentRegistration) =>
+                    registration.tournament?.endDate &&
+                    new Date() > new Date(registration.tournament.endDate) &&
+                    registration.requestState === "validated"
+                )
+                .sort(
+                  (a: ITournamentRegistration, b: ITournamentRegistration) =>
+                    Number(new Date(a.tournament?.startDate || a.tournamentStartDate)) -
+                    Number(new Date(b.tournament?.startDate || b.tournamentStartDate))
+                )
+                .map((tournamentRegistration: ITournamentRegistration) => (
+                  <ResultsDisplayedOnMobile
+                    key={tournamentRegistration.id}
+                    tournamentRegistration={tournamentRegistration}
+                    handleModify={handleModify}
+                    setIsModalActive={setIsModalActive}
+                    setFocusedRegistration={setFocusedRegistration}
+                  />
+                ))
+            )}
+          </>
+        ) : (
+          /** DESKTOP */
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Nom du tournoi</th>
+                <th>Ville</th>
+                <th>Simple</th>
+                <th>Double</th>
+                <th>Mixte</th>
+                <th>Validation</th>
+                <th>Action</th>
+              </tr>
+              <tr>
+                <th>
+                  <SortTournamentsBtn
+                    activeSort={activeSort}
+                    property="startDate"
+                    setActiveSort={setActiveSort}
+                  />
+                </th>
+                <th>
+                  <SortTournamentsBtn
+                    activeSort={activeSort}
+                    property="name"
+                    setActiveSort={setActiveSort}
+                  />
+                </th>
+                <th>
+                  <SortTournamentsBtn
+                    activeSort={activeSort}
+                    property="city"
+                    setActiveSort={setActiveSort}
+                  />
+                </th>
+              </tr>
+            </thead>
+            <tbody>
               {!tournamentsRegistrations ? (
-                <div>Chargement ...</div>
+                <tr>
+                  <td>Chargement ...</td>
+                </tr>
               ) : (
-                tournamentsRegistrations
-                  .filter(
+                sortRegistrations(
+                  tournamentsRegistrations.filter(
                     (registration: ITournamentRegistration) =>
+                      registration.tournament?.endDate &&
                       new Date() > new Date(registration.tournament.endDate) &&
                       registration.requestState === "validated"
                   )
-                  .sort(
-                    (a: ITournamentRegistration, b: ITournamentRegistration) =>
-                      Number(new Date(a.tournament?.startDate || a.tournamentStartDate)) -
-                      Number(new Date(b.tournament?.startDate || b.tournamentStartDate))
-                  )
-                  .map((tournamentRegistration: ITournamentRegistration) => (
-                    <TournamentResults
-                      key={tournamentRegistration.id}
-                      tournamentRegistration={tournamentRegistration}
-                      deviceDisplay="mobile"
-                      setIsModalActive={setIsModalActive}
-                      setFocusedRegistration={setFocusedRegistration}
-                      setRequestMessage={setRequestMessage}
-                    />
-                  ))
+                ).map((tournamentRegistration: ITournamentRegistration) => (
+                  <ResultsDisplayedOnDesktop
+                    key={tournamentRegistration.id}
+                    tournamentRegistration={tournamentRegistration}
+                    handleModify={handleModify}
+                  />
+                ))
               )}
-            </>
-          ) : (
-            /** DESKTOP */
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Nom du tournoi</th>
-                  <th>Ville</th>
-                  <th>Simple</th>
-                  <th>Double</th>
-                  <th>Mixte</th>
-                  <th>Validation</th>
-                  <th>Action</th>
-                </tr>
-                <tr>
-                  <th>
-                    <SortTournamentsBtn
-                      activeSort={activeSort}
-                      property="startDate"
-                      setActiveSort={setActiveSort}
-                    />
-                  </th>
-                  <th>
-                    <SortTournamentsBtn
-                      activeSort={activeSort}
-                      property="name"
-                      setActiveSort={setActiveSort}
-                    />
-                  </th>
-                  <th>
-                    <SortTournamentsBtn
-                      activeSort={activeSort}
-                      property="city"
-                      setActiveSort={setActiveSort}
-                    />
-                  </th>
-                  {/* <th>
-                    <SortTournamentsBtn
-                      activeSort={activeSort}
-                      property="single"
-                      setActiveSort={setActiveSort}
-                    />
-                  </th>
-                  <th>
-                    <SortTournamentsBtn
-                      activeSort={activeSort}
-                      property="double"
-                      setActiveSort={setActiveSort}
-                    />
-                  </th>
-                  <th>
-                    <SortTournamentsBtn
-                      activeSort={activeSort}
-                      property="double"
-                      setActiveSort={setActiveSort}
-                    />
-                  </th>
-                  <th>
-                    <SortTournamentsBtn
-                      activeSort={activeSort}
-                      property="validation"
-                      setActiveSort={setActiveSort}
-                    />
-                  </th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {!tournamentsRegistrations ? (
-                  <tr>
-                    <td>Chargement ...</td>
-                  </tr>
-                ) : (
-                  sortRegistrations(
-                    tournamentsRegistrations.filter(
-                      (registration: ITournamentRegistration) =>
-                        registration.tournament?.endDate &&
-                        new Date() > new Date(registration.tournament.endDate) &&
-                        registration.requestState === "validated"
-                    )
-                  ).map((tournamentRegistration: ITournamentRegistration) => (
-                    <TournamentResults
-                      key={tournamentsRegistrations.id}
-                      tournamentRegistration={tournamentRegistration}
-                      setFocusedRegistration={setFocusedRegistration}
-                      deviceDisplay="desktop"
-                      setIsModalActive={setIsModalActive}
-                      setRequestMessage={setRequestMessage}
-                    />
-                  ))
-                )}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </main>
-    </>
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* {isModalActive && Object.keys(focusedRegistration).length !== 0 && ( */}
+      {isModalActive && (
+        <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
+          <div className="modal-content modal-results">
+            <div className="title">
+              <h2>Modifier un résultat</h2>
+            </div>
+
+            <UpdateResultForm focusedRegistration={focusedRegistration} />
+          </div>
+        </Modal>
+      )}
+    </main>
   );
 };
 

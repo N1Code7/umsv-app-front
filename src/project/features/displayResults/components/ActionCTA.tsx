@@ -9,7 +9,7 @@ interface IProps {
 const ActionsCTA = ({ tournamentRegistration, handleModify }: IProps) => {
   return (
     <>
-      <div className="cta-container">
+      <div className="cta-container registrations-actions">
         <button className="btn modify" onClick={handleModify}>
           ✏️
         </button>

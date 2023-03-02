@@ -183,7 +183,7 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
 
         {isModalActive && Object.keys(focusedRegistration).length !== 0 && (
           <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
-            <div className="modal-container modal-registration">
+            <div className="modal-content modal-registration">
               <div className="title">
                 <h2>Modification inscription :</h2>
               </div>

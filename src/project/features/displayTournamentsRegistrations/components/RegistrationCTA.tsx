@@ -9,9 +9,9 @@ interface IProps {
 
 const RegistrationCTA = ({ tournamentRegistration, handleCancel, handleModify }: IProps) => {
   return (
-    <div className="cta-container">
+    <div className="cta-container registrations-actions">
       <button
-        className="btn modify"
+        className="btn  modify"
         onClick={handleModify}
         disabled={
           new Date(
