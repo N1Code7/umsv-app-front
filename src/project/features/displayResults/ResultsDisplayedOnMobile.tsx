@@ -1,7 +1,6 @@
 import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { ITournamentRegistration } from "../../../interfaces/interfaces";
 import { formatDate } from "../../../utils/dateFunctions";
-import ActionsCTA from "./components/ActionCTA";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;
@@ -17,6 +16,22 @@ const ResultsDisplayedOnMobile = ({
   setFocusedRegistration,
 }: IProps) => {
   //
+  const adaptEmojiToRank = (rank: string | undefined) => {
+    if (rank === undefined) return undefined;
+    if (!rank) return " ❓";
+    switch (rank) {
+      case "vainqueur":
+        return " 🥇";
+      case "finaliste":
+        return " 🥈";
+      case "demi-finaliste":
+        return " 🥉";
+
+      default:
+        return " 👏";
+    }
+  };
+
   const handleClickButton = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsModalActive(true);
@@ -58,10 +73,13 @@ const ResultsDisplayedOnMobile = ({
             Simple :{" "}
             <span
               style={
-                !tournamentRegistration.result.areResultsValidated ? { opacity: 0.3 } : undefined
+                tournamentRegistration.result?.singleStageReached &&
+                !tournamentRegistration.result.areResultsValidated
+                  ? { opacity: 0.5, fontSize: "1.1rem" }
+                  : undefined
               }
             >
-              {tournamentRegistration.result.singleStageReached || " ❓"}
+              {adaptEmojiToRank(tournamentRegistration.result?.singleStageReached)}
             </span>
           </div>
         )}
@@ -70,10 +88,13 @@ const ResultsDisplayedOnMobile = ({
             Double :
             <span
               style={
-                !tournamentRegistration.result.areResultsValidated ? { opacity: 0.3 } : undefined
+                tournamentRegistration.result.doubleStageReached &&
+                !tournamentRegistration.result.areResultsValidated
+                  ? { opacity: 0.5, fontSize: "1.1rem" }
+                  : undefined
               }
             >
-              {tournamentRegistration.result.doubleStageReached || " ❓"}
+              {adaptEmojiToRank(tournamentRegistration.result.doubleStageReached)}
             </span>
           </div>
         )}
@@ -82,10 +103,13 @@ const ResultsDisplayedOnMobile = ({
             Mixte :
             <span
               style={
-                !tournamentRegistration.result.areResultsValidated ? { opacity: 0.3 } : undefined
+                tournamentRegistration.result?.mixedStageReached &&
+                !tournamentRegistration.result.areResultsValidated
+                  ? { opacity: 0.5, fontSize: "1.1rem" }
+                  : undefined
               }
             >
-              {tournamentRegistration.result.mixedStageReached || " ❓"}
+              {adaptEmojiToRank(tournamentRegistration.result?.mixedStageReached) || " ❓"}
             </span>
           </div>
         )}
@@ -101,7 +125,7 @@ const ResultsDisplayedOnMobile = ({
           )}
         </div>
       </div> */}
-      {tournamentRegistration.result.areResultsValidated && (
+      {tournamentRegistration.result?.areResultsValidated && (
         <div className="checked">
           <i className="fa-solid fa-check"></i>
         </div>

@@ -92,6 +92,7 @@ export interface ITournamentRegistration {
 }
 
 export interface IResult {
+  id: number;
   areResultsValidated: boolean;
   singleStageReached: string;
   doubleStageReached: string;

@@ -101,7 +101,7 @@ const Results = ({ deviceDisplay }: IProps) => {
               tournamentsRegistrations
                 .filter(
                   (registration: ITournamentRegistration) =>
-                    registration.tournament?.endDate &&
+                    registration?.tournament?.endDate &&
                     new Date() > new Date(registration.tournament.endDate) &&
                     registration.requestState === "validated"
                 )
@@ -193,7 +193,11 @@ const Results = ({ deviceDisplay }: IProps) => {
               <h2>Modifier un résultat</h2>
             </div>
 
-            <UpdateResultForm focusedRegistration={focusedRegistration} />
+            <UpdateResultForm
+              focusedRegistration={focusedRegistration}
+              setRequestMessage={setRequestMessage}
+              setIsModalActive={setIsModalActive}
+            />
           </div>
         </Modal>
       )}
