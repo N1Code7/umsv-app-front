@@ -4,14 +4,12 @@ import { formatDate } from "../../../utils/dateFunctions";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;
-  handleModify: (e: MouseEvent<HTMLButtonElement>) => void;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
   setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
 }
 
 const ResultsDisplayedOnMobile = ({
   tournamentRegistration,
-  handleModify,
   setIsModalActive,
   setFocusedRegistration,
 }: IProps) => {

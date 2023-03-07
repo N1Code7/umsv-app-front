@@ -28,6 +28,9 @@
 }
 
 .registrations-actions {
+  display: flex;
+  justify-content: center;
+
   .see-file {
     background: rgba($infos, 0.35);
     border: 1px solid darken($infos, 0.2);

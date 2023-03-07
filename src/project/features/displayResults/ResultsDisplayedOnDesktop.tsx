@@ -1,16 +1,26 @@
-import { MouseEvent, useContext } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useContext } from "react";
 import { ITournamentRegistration } from "../../../interfaces/interfaces";
 import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
 import { formatDate } from "../../../utils/dateFunctions";
-import ActionsCTA from "./components/ActionCTA";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;
-  handleModify: (e: MouseEvent<HTMLButtonElement>) => void;
+  setIsModalActive: Dispatch<SetStateAction<boolean>>;
+  setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
 }
 
-const ResultsDisplayedOnDesktop = ({ tournamentRegistration, handleModify }: IProps) => {
+const ResultsDisplayedOnDesktop = ({
+  tournamentRegistration,
+  setIsModalActive,
+  setFocusedRegistration,
+}: IProps) => {
   const { user } = useContext(AuthenticationContext);
+  const handleClickButton = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsModalActive(true);
+    setFocusedRegistration(tournamentRegistration);
+  };
+
   return (
     <tr>
       {/* Tournament date */}
@@ -65,40 +75,36 @@ const ResultsDisplayedOnDesktop = ({ tournamentRegistration, handleModify }: IPr
             : {}
         }
       >
-        {tournamentRegistration.participationSingle === true &&
-          ((user?.gender === "male" ? <span>SH : oui</span> : <span>SD : oui</span>) || (
-            <span>Simple : oui</span>
-          ))}
-
-        {tournamentRegistration.participationDouble === true &&
-          (user?.gender === "male" ? (
-            <span>DH : {tournamentRegistration.doublePartnerName || "❓"}</span>
-          ) : (
-            <span>DD : {tournamentRegistration.doublePartnerName || "XXX"}</span> || (
-              <span>Double : {tournamentRegistration.doublePartnerName || "XXX"}</span>
-            )
-          ))}
-
-        {tournamentRegistration.participationMixed === true &&
-          (user?.gender === "male" || "female" ? (
-            <span>DX : {tournamentRegistration.mixedPartnerName || "XXX"}</span>
-          ) : (
-            <span>Mixte : {tournamentRegistration.mixedPartnerName || "XXX"}</span>
-          ))}
+        {tournamentRegistration?.participationSingle &&
+          (tournamentRegistration?.result?.singleStageReached || "❓")}
       </td>
-      {/* Request state */}
-      <td>
-        {tournamentRegistration.requestState === "pending" ? (
-          <span className="status-tag status-tag-warning">En attente</span>
-        ) : tournamentRegistration.requestState === "validated" ? (
-          <span className="status-tag status-tag-success">Validée</span>
-        ) : (
-          <span className="status-tag status-tag-cancelled">Annulée</span>
-        )}
+      <td
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
+        {tournamentRegistration?.participationDouble &&
+          (tournamentRegistration?.result?.doubleStageReached || "❓")}
       </td>
-      {/* Action buttons */}
+      <td
+        style={
+          tournamentRegistration.requestState === "cancelled"
+            ? { textDecoration: "line-through", textDecorationThickness: 2 }
+            : {}
+        }
+      >
+        {tournamentRegistration?.participationMixed &&
+          (tournamentRegistration?.result?.mixedStageReached || "❓")}
+      </td>
+      <td>{tournamentRegistration?.result?.areResultsValidated ? "✅" : "🚫"}</td>
       <td>
-        <ActionsCTA tournamentRegistration={tournamentRegistration} handleModify={handleModify} />
+        <div className="cta-container registrations-actions">
+          <button className="btn modify" onClick={handleClickButton}>
+            ✏️
+          </button>
+        </div>
       </td>
     </tr>
   );

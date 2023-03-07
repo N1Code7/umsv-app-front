@@ -35,6 +35,10 @@
     tbody {
       font-size: clamp(0.8rem, 1vw, 1rem);
 
+      tr:hover {
+        background: $bg-4;
+      }
+
       td {
         height: 4rem;
         border-bottom: 1px solid black;

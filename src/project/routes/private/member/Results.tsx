@@ -72,10 +72,6 @@ const Results = ({ deviceDisplay }: IProps) => {
     );
   };
 
-  const handleModify = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  };
-
   return (
     <main className="user-results user-space">
       {requestMessage.success !== "" && (
@@ -114,7 +110,6 @@ const Results = ({ deviceDisplay }: IProps) => {
                   <ResultsDisplayedOnMobile
                     key={tournamentRegistration.id}
                     tournamentRegistration={tournamentRegistration}
-                    handleModify={handleModify}
                     setIsModalActive={setIsModalActive}
                     setFocusedRegistration={setFocusedRegistration}
                   />
@@ -176,7 +171,8 @@ const Results = ({ deviceDisplay }: IProps) => {
                   <ResultsDisplayedOnDesktop
                     key={tournamentRegistration.id}
                     tournamentRegistration={tournamentRegistration}
-                    handleModify={handleModify}
+                    setFocusedRegistration={setFocusedRegistration}
+                    setIsModalActive={setIsModalActive}
                   />
                 ))
               )}
