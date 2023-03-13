@@ -73,10 +73,12 @@ const UpdateResultForm = ({ focusedRegistration, setRequestMessage, setIsModalAc
               ...focusedRegistration,
               result: {
                 ...focusedRegistration.result,
+                areResultsValidated: false,
                 singleStageReached: singleRef.current?.value || "",
                 doubleStageReached: doubleRef.current?.value || "",
                 mixedStageReached: mixedRef.current?.value || "",
-                comment: commentRef.current?.value || "",
+                comment: "HELLLLOOOO",
+                // comment: commentRef.current?.value || "",
               },
             },
           ];

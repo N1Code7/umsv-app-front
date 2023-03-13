@@ -227,6 +227,7 @@ const RegistrationForm = ({
         setTimeout(() => {
           setRequestMessage({ success: "", error: "" });
         }, 10000);
+        window.scrollTo(0, 0);
       })
       .catch((err) => {
         err.inner.forEach(

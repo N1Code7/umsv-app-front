@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
@@ -7,6 +7,7 @@ import ResultsDisplayedOnMobile from "../../../features/displayResults/ResultsDi
 import ResultsDisplayedOnDesktop from "../../../features/displayResults/ResultsDisplayedOnDesktop";
 import Modal from "../../../components/Modal";
 import UpdateResultForm from "../../../features/displayResults/components/UpdateResultForm";
+import { sleep } from "../../../../utils/globals";
 
 interface IProps {
   deviceDisplay: string;
@@ -21,7 +22,10 @@ const Results = ({ deviceDisplay }: IProps) => {
 
   const { data: tournamentsRegistrations, mutate: registrationsMutate } = useSWR(
     "tournament-registrations",
-    async (url: string) => await axiosPrivate.get(url).then((res) => res.data)
+    async (url: string) =>
+      await sleep(2000)
+        .then(() => axiosPrivate.get(url))
+        .then((res) => res.data)
   );
 
   /** Sort registrations depending on the selected sort button */
@@ -71,6 +75,12 @@ const Results = ({ deviceDisplay }: IProps) => {
       }
     );
   };
+
+  // useEffect(() => {
+  //   if (!tournamentsRegistrations) {
+  //     registrationsMutate();
+  //   }
+  // }, []);
 
   return (
     <main className="user-results user-space">

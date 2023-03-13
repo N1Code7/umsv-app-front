@@ -9,6 +9,7 @@ import Modal from "../../../components/Modal";
 import Image from "next/image";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
+import { sleep } from "../../../../utils/globals";
 
 interface IHomepageProps {
   deviceDisplay: string;
@@ -214,17 +215,13 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
     });
   };
 
-  const fetcher = async (url: string) => await axiosPrivate.get(url).then((res) => res.data);
+  const fetcher = async (url: string) =>
+    sleep(2000)
+      .then(() => axiosPrivate.get(url))
+      .then((res) => res.data);
   // .catch((err) => console.log(err));
   const { data: events, mutate: eventsMutate } = useSWR("events", fetcher);
   const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
-
-  useEffect(() => {
-    if (!events || !tournaments) {
-      eventsMutate();
-      tournamentsMutate();
-    }
-  }, []);
 
   return (
     <main className="homepage user-space">

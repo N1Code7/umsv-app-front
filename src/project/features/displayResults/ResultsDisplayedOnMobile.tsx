@@ -123,7 +123,7 @@ const ResultsDisplayedOnMobile = ({
           )}
         </div>
       </div> */}
-      {tournamentRegistration.result?.areResultsValidated && (
+      {tournamentRegistration?.result?.areResultsValidated && (
         <div className="checked">
           <i className="fa-solid fa-check"></i>
         </div>

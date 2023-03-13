@@ -6,6 +6,7 @@ import Modal from "../../../components/Modal";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import RegistrationForm from "../../../features/displayTournamentsRegistrations/components/RegistrationForm";
+import { sleep } from "../../../../utils/globals";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;
@@ -18,8 +19,13 @@ const UserTournamentsRegistrations = ({ deviceDisplay }: IUserTournamentsProps) 
   const [focusedRegistration, setFocusedRegistration] = useState({} as ITournamentRegistration);
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });
 
-  const getFetcher = async (url: string) => await axiosPrivate.get(url).then((res) => res.data);
-  const { data: tournamentsRegistrations } = useSWR("tournament-registrations", getFetcher);
+  const { data: tournamentsRegistrations } = useSWR(
+    "tournament-registrations",
+    async (url: string) =>
+      sleep(2000)
+        .then(() => axiosPrivate.get(url))
+        .then((res) => res.data)
+  );
 
   /** Sort registrations depending on the selected sort button */
   const sortRegistrations = (tournamentsRegistrations: Array<ITournamentRegistration>) => {
