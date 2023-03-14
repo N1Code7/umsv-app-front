@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
@@ -75,12 +75,6 @@ const Results = ({ deviceDisplay }: IProps) => {
       }
     );
   };
-
-  // useEffect(() => {
-  //   if (!tournamentsRegistrations) {
-  //     registrationsMutate();
-  //   }
-  // }, []);
 
   return (
     <main className="user-results user-space">
@@ -191,7 +185,6 @@ const Results = ({ deviceDisplay }: IProps) => {
         )}
       </div>
 
-      {/* {isModalActive && Object.keys(focusedRegistration).length !== 0 && ( */}
       {isModalActive && (
         <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
           <div className="modal-content modal-results">

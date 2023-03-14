@@ -1,5 +1,5 @@
 import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
-import { IResult, ITournamentRegistration } from "../../../../interfaces/interfaces";
+import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
@@ -32,7 +32,6 @@ const UpdateResultForm = ({ focusedRegistration, setRequestMessage, setIsModalAc
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsModalActive?.(false);
-    console.dir(doubleRef.current?.value || "");
 
     await mutate(
       "tournament-registrations",
@@ -77,8 +76,7 @@ const UpdateResultForm = ({ focusedRegistration, setRequestMessage, setIsModalAc
                 singleStageReached: singleRef.current?.value || "",
                 doubleStageReached: doubleRef.current?.value || "",
                 mixedStageReached: mixedRef.current?.value || "",
-                comment: "HELLLLOOOO",
-                // comment: commentRef.current?.value || "",
+                comment: commentRef.current?.value || "",
               },
             },
           ];
@@ -157,35 +155,6 @@ const UpdateResultForm = ({ focusedRegistration, setRequestMessage, setIsModalAc
           ))}
         </select>
       </div>
-      {/* <div className="form-row select-ranks-container">
-        <div className="select-rank">
-          <label htmlFor="singleSelect">Simple</label>
-          <select name="singleSelect" id="singleSelect">
-            <option value="null">---</option>
-            {resultRanks.map((rank: string, index: number) => (
-              <option key={index}>{rank}</option>
-            ))}
-          </select>
-        </div>
-        <div className="select-rank">
-          <label htmlFor="doubleSelect">Double</label>
-          <select name="doubleSelect" id="doubleSelect">
-            <option value="null">---</option>
-            {resultRanks.map((rank: string, index: number) => (
-              <option key={index}>{rank}</option>
-            ))}
-          </select>
-        </div>
-        <div className="select-rank">
-          <label htmlFor="mixedSelect">Mixte</label>
-          <select name="mixedSelect" id="mixedSelect">
-            <option value="null">---</option>
-            {resultRanks.map((rank: string, index: number) => (
-              <option key={index}>{rank}</option>
-            ))}
-          </select>
-        </div>
-      </div> */}
       <div className="form-row">
         <label htmlFor="comment">Commentaire(s)</label>
         <textarea
