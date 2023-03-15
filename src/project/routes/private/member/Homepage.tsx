@@ -220,8 +220,9 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       .then(() => axiosPrivate.get(url))
       .then((res) => res.data);
   // .catch((err) => console.log(err));
+
   const { data: events, mutate: eventsMutate } = useSWR("events", fetcher);
-  const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
+  const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments/season", fetcher);
 
   return (
     <main className="homepage user-space">
