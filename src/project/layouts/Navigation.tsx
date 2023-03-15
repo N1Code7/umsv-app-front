@@ -1,71 +1,46 @@
-import { useEffect, useRef } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 interface INavigationProps {
   displayNavigation: boolean;
-  isAdminConnected: boolean;
+  isAdminViewActive: boolean;
 }
 
-const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INavigationProps) => {
-  const navigate = useNavigate();
-  // useEffect(() => {
-  //   if (isAdminConnected) {
-  //     navigate("/admin/");
-  //   } else {
-  //     navigate("/");
-  //   }
-  // }, [isAdminConnected]);
-
-  return isAdminConnected ? (
+const Navigation = ({ displayNavigation = false, isAdminViewActive }: INavigationProps) => {
+  return isAdminViewActive ? (
     <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
       <ul>
         <li>
-          <NavLink to="/admin/" className={(nav) => (nav.isActive ? "link-active" : "")}>
+          <NavLink to="/admin">
             <span>🛎️</span>
             <span>Accueil</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/admin/demandes_inscriptions"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/admin/demandes_inscriptions">
             <span>📥</span>
             <span>Demandes d&apos;inscription</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/admin/gestion_tournois"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/admin/gestion_tournois">
             <span>🏟️</span>
             <span>Gestion tournois</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/admin/gestion_articles"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/admin/gestion_articles">
             <span>📰</span>
             <span>Gestion articles</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/admin/gestion_evenements"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/admin/gestion_evenements">
             <span>🗓️</span>
             <span>Gestions événements</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/admin/gestion_utilisateurs"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/admin/gestion_utilisateurs">
             <span>👤</span>
             <span>Gestions utilisateurs</span>
           </NavLink>
@@ -76,34 +51,31 @@ const Navigation = ({ displayNavigation = false, isAdminConnected = false }: INa
     <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
       <ul>
         <li>
-          <NavLink to="/" className={(nav) => (nav.isActive ? "link-active" : "")}>
+          <NavLink to="/">
             <span>🛎️</span>
             <span>Accueil</span>
           </NavLink>
         </li>
         <li>
-          <NavLink to="/tournois" className={(nav) => (nav.isActive ? "link-active" : "")}>
+          <NavLink to="/tournois">
             <span>🏟️</span>
             <span>Mes Tournois</span>
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/nouvelle_inscription"
-            className={(nav) => (nav.isActive ? "link-active" : "")}
-          >
+          <NavLink to="/nouvelle_inscription">
             <span>📝</span>
             <span>Inscription</span>
           </NavLink>
         </li>
         <li>
-          <NavLink to="/resultats" className={(nav) => (nav.isActive ? "link-active" : "")}>
+          <NavLink to="/resultats">
             <span>🏅</span>
             <span>Mes Résultats</span>
           </NavLink>
         </li>
         <li>
-          <NavLink to="/reglages" className={(nav) => (nav.isActive ? "link-active" : "")}>
+          <NavLink to="/reglages">
             <span>🧑</span>
             <span>Mon Profil</span>
           </NavLink>

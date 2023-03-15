@@ -1,21 +1,30 @@
 import Image from "next/image";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useContext } from "react";
 import Logout from "../components/Logout";
 import { AuthenticationContext } from "../../contexts/AuthenticationContext";
 import Switch from "../components/Switch";
+import { useNavigate } from "react-router-dom";
 
 interface IHeaderProps {
   toggleDisplayNavigation?: () => void;
-  isAdminConnected?: boolean;
-  setIsAdminConnected?: Dispatch<SetStateAction<boolean>>;
+  isAdminViewActive?: boolean;
+  setIsAdminViewActive?: Dispatch<SetStateAction<boolean>>;
 }
 
 const Header = ({
-  isAdminConnected,
-  setIsAdminConnected,
+  isAdminViewActive,
+  setIsAdminViewActive,
   toggleDisplayNavigation,
 }: IHeaderProps) => {
   const { user, auth } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
+
+  const switchClickAction = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    isAdminViewActive ? navigate("/") : navigate("/admin");
+    setIsAdminViewActive?.((prev) => !prev);
+    localStorage.setItem("isAdminViewActive", isAdminViewActive ? "false" : "true");
+  };
 
   return (
     <header className="header">
@@ -26,10 +35,9 @@ const Header = ({
               <span>Admin</span>
               <Switch
                 customName="admin"
-                isActive={isAdminConnected}
-                setIsActive={setIsAdminConnected}
+                isActive={isAdminViewActive}
+                clickAction={switchClickAction}
               />
-              {/* <AdminSwitch /> */}
             </div>
           ) : (
             <div className="member-role">

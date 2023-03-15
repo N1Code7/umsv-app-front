@@ -8,7 +8,8 @@ import axios from "../../../utils/axios";
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const previousView = localStorage.getItem("isAdminViewActive") === "true" ? "admin" : "member";
+  const from = location.state?.from?.pathname || (previousView === "admin" && "/admin") || "/";
   const { user, setUser, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState(user?.email || "");
   const [emailError, setEmailError] = useState("");

@@ -14,9 +14,12 @@ interface IPrivateRoutesProps {
 const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
   const location = useLocation();
   const { auth } = useContext(AuthenticationContext);
-  const [isAdminConnected, setIsAdminConnected] = useState(
-    auth?.roles?.includes("ROLE_ADMIN") || false
+  const [isAdminViewActive, setIsAdminViewActive] = useState(
+    localStorage.getItem("isAdminViewActive") === "true" || false
   );
+  // const [isAdminViewActive, setIsAdminViewActive] = useState(
+  //   auth?.roles?.includes("ROLE_SUPERADMIN" || "ROLE_ADMIN") || false
+  // );
   const [displayNavigation, setDisplayNavigation] = useState(false);
   const [selectedTournament, setSelectedTournament] = useState({} as ITournament);
 
@@ -24,18 +27,21 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
     setDisplayNavigation((prev) => !prev);
   };
 
+  console.log(localStorage.getItem("isAdminViewActive"));
+
   return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
     <>
       <Header
         toggleDisplayNavigation={toggleDisplayNavigation}
-        isAdminConnected={isAdminConnected}
-        setIsAdminConnected={setIsAdminConnected}
+        isAdminViewActive={isAdminViewActive}
+        setIsAdminViewActive={setIsAdminViewActive}
       />
-      {!isAdminConnected && <MemberHeader />}
-      <Navigation displayNavigation={displayNavigation} isAdminConnected={isAdminConnected} />
+      {!isAdminViewActive && <MemberHeader />}
+      <Navigation displayNavigation={displayNavigation} isAdminViewActive={isAdminViewActive} />
 
       <SelectedTournamentContext.Provider value={{ selectedTournament, setSelectedTournament }}>
         <Outlet />
+        {/* {isAdminViewActive ? <Navigate to={"/admin"} /> : <Navigate to={"/"} />} */}
       </SelectedTournamentContext.Provider>
     </>
   ) : auth?.isAuthenticated ? (
