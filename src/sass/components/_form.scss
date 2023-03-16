@@ -1,0 +1,294 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 37rem;
+  margin: 0 auto;
+
+  &-bloc {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    button {
+      margin: 0 auto;
+    }
+  }
+
+  &-separator {
+    width: 80%;
+    height: 2px;
+    margin: 0.5rem auto;
+    background-color: grey;
+  }
+
+  &-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    .password-evaluation {
+      height: 5px;
+      width: 0;
+      background: $danger-1;
+      border-radius: 50px;
+      transition: width 0.3s ease-out;
+
+      &-33 {
+        width: 33%;
+        background: $danger-1;
+      }
+      &-66 {
+        width: 66%;
+        background: $warning;
+      }
+      &-100 {
+        width: 100%;
+        background: $success-3;
+      }
+    }
+
+    .forgotten-password {
+      text-align: right;
+    }
+  }
+}
+
+input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  &[type="text"],
+  &[type="email"],
+  &[type="password"],
+  &[type="date"] {
+    height: 3rem;
+    border: 1.5px solid grey;
+    border-radius: 3px;
+    background: #fff;
+    font-size: clamp(0.8rem, 4vmin, 1.2rem);
+    font-family: inherit;
+    transition: border-radius 0.3s ease-out;
+
+    &:focus {
+      border: 2px solid $primary-1;
+      border-radius: 10px;
+    }
+  }
+
+  &[type="submit"] {
+    width: 100%;
+    min-height: 3rem;
+    border-radius: 3px;
+    appearance: none;
+    -webkit-appearance: none;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 0.6rem;
+  }
+
+  &[disabled] {
+    background: rgb(236, 230, 230);
+  }
+}
+
+select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 3rem;
+  border: 1.5px solid grey;
+  border-radius: 3px;
+  background: #fff;
+  font-size: clamp(0.9rem, 3.2vmin, 1.2rem);
+  font-family: inherit;
+  transition: border-radius 0.3s ease-out;
+
+  &:focus {
+    border: 2px solid $primary-1;
+    border-radius: 10px;
+  }
+}
+
+textarea {
+  resize: vertical;
+  padding: 0.8rem;
+  background: #fff;
+  border: 1.5px solid grey;
+  border-radius: 3px;
+  font-size: clamp(1rem, 5vmin, 1.2rem);
+  font-family: inherit;
+  transition: border-radius 0.3s ease-out;
+
+  &:focus {
+    // outline: 2px solid $primary-1;
+    // outline-offset: 2px;
+    border: 2px solid $primary-1;
+    border-radius: 10px;
+  }
+}
+
+.password-input {
+  position: relative;
+  display: flex;
+
+  input[type="password"],
+  input[type="text"] {
+    flex-basis: 100%;
+  }
+  button {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    padding: 0.6rem;
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+
+    &.display {
+      color: $success-3;
+    }
+    &.hide {
+      color: $danger-1;
+    }
+  }
+}
+
+.errorMessage-input {
+  display: flex;
+  justify-content: center;
+  padding: 0.6rem;
+  background: $danger-2;
+  border-radius: 5px;
+}
+
+.form-error {
+  background: rgba($danger-2, 0.5) !important;
+
+  &-detail {
+    color: $danger-1;
+    padding: 0.3rem 0;
+    text-align: justify;
+  }
+}
+
+.registration-form {
+  .choose-tournament-identifier {
+    align-self: center;
+    flex-direction: row;
+    align-items: center;
+
+    gap: clamp(0.6rem, 3vmin, 1rem);
+
+    span {
+      width: min-content;
+      text-align: center;
+
+      @include from(500) {
+        width: auto;
+      }
+    }
+  }
+
+  .dates {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.3rem, 2vmin, 1.2rem);
+
+    span {
+      font-weight: 500;
+    }
+
+    input {
+      font-size: clamp(0.8rem, 3vmin, 1.2rem);
+    }
+  }
+
+  .checkboxes-container {
+    .checkboxes {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.6rem;
+
+      @include ptt {
+        // gap: clamp(2rem, 5vw, 5rem);
+        justify-content: space-around;
+      }
+
+      input[type="checkbox"] {
+        display: none;
+
+        &:checked + label {
+          background-image: linear-gradient($primary-1 0 0);
+          background-size: 100% 100%;
+          color: $content-light;
+          font-weight: 500;
+        }
+      }
+
+      label {
+        position: relative;
+        min-width: clamp(4rem, 20vmin, 7rem);
+        padding: 0.6rem 0.3rem;
+        border: 2px solid $primary-1;
+        border-radius: 3px;
+        background-image: linear-gradient($primary-1 0 0);
+        background-origin: border-box;
+        background-position: 0 100%;
+        background-size: 0 100%;
+        background-repeat: no-repeat;
+        transition: 0.4s;
+        text-align: center;
+        font-size: 0.9rem;
+
+        @include coarse {
+          box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
+        }
+
+        @include fine {
+          &:hover {
+            box-shadow: 2px 2px 13px 2px rgba($primary-1, 0.6);
+          }
+        }
+
+        @include from(1000) {
+          font-size: 1.1rem;
+        }
+      }
+
+      .form-row {
+        flex-direction: row;
+      }
+    }
+  }
+
+  .partner-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+
+    @include ptt {
+      flex-direction: row;
+      gap: 1.2rem;
+
+      input:first-of-type {
+        flex-grow: 2;
+      }
+
+      input:last-of-type {
+        width: 25%;
+      }
+    }
+  }
+
+  input[type="submit"] {
+    font-size: clamp(0.8rem, 4vmin, 1rem);
+  }
+}

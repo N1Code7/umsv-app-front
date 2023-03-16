@@ -1,0 +1,55 @@
+.switch {
+  position: relative;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+
+  &-admin {
+    width: 46px;
+    height: 28px;
+    background: $content-light;
+    outline: none;
+
+    &.active {
+      .switch-circle-admin {
+        transform: translate(calc(46px - 28px), -50%);
+        background: $gradient-1;
+        // background: $success-1;
+      }
+    }
+  }
+
+  &-toggle-form {
+    width: 52px;
+    height: 32px;
+    background: $primary-1;
+
+    &.active {
+      .switch-circle-toggle-form {
+        transform: translate(calc(52px - 28px - 6px), -50%);
+      }
+    }
+  }
+}
+
+/** Set the circle inside the switch */
+.switch-circle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  transition: transform 0.3s ease-out;
+
+  &-admin {
+    left: 1px;
+    width: 26px;
+    background: $bg-2;
+  }
+
+  &-toggle-form {
+    left: 3px;
+    width: 28px;
+    background: $content-light;
+  }
+}

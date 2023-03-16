@@ -1,0 +1,77 @@
+@import "./settings";
+
+*,
+::before,
+::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+html,
+body {
+  font-family: $font-body;
+  background: $bg-4;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+main {
+  flex-grow: 2;
+  width: 90vw;
+  margin: 7rem auto 5rem;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: $font-title;
+}
+
+h1 {
+  text-align: center;
+  margin: 2rem auto;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 9vmin, 2.1rem);
+
+  @media (min-width: 600px) {
+    margin: 0 auto 1.6rem;
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+}
+
+h2 {
+  font-family: $font-body;
+  font-size: clamp(1.2rem, 5vmin, 1.8rem);
+  font-weight: 500;
+  margin-bottom: clamp(1rem, 5vmin, 1.2rem);
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+p {
+  text-align: justify;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: $link;
+  user-select: none;
+}

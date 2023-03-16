@@ -1,0 +1,89 @@
+.user-tournaments-registrations {
+  .registrations {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+
+    @include from(1000) {
+      display: block;
+      background: $bg-3;
+      padding: 0.6rem;
+      border-radius: 5px;
+    }
+
+    thead {
+      th {
+        &:first-of-type {
+          width: 17%;
+        }
+
+        &:nth-of-type(2) {
+          width: 28%;
+        }
+
+        &:nth-of-type(3) {
+          width: 17%;
+        }
+
+        &:nth-of-type(4) {
+          width: 28%;
+        }
+
+        &:nth-of-type(5) {
+          min-width: 6.5rem;
+          width: min-content;
+          // width: 12%;
+        }
+
+        &:last-of-type {
+          width: 10%;
+        }
+      }
+    }
+
+    td {
+      text-align: center;
+      line-height: 22px;
+
+      span {
+        display: block;
+      }
+    }
+
+    .status-tag {
+      display: inline-block;
+      padding: 0.1rem 0.3rem;
+      border-radius: 5px;
+
+      &-success {
+        background: $success-2;
+      }
+      &-warning {
+        background: $warning-2;
+      }
+      &-cancelled {
+        background: $cancelled-2;
+      }
+    }
+  }
+
+  .cta-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.6rem;
+    box-sizing: content-box;
+
+    @include from(1000) {
+      gap: 0.6rem;
+    }
+  }
+
+  .modal-registration {
+    form {
+      gap: 2rem;
+    }
+  }
+}

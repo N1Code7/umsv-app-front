@@ -1,0 +1,74 @@
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+
+  &-primary {
+    background: $primary-1;
+    color: $content-light;
+  }
+
+  &-warning {
+    background: $warning;
+    color: $content-light;
+  }
+
+  &-small {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+.registrations-actions {
+  display: flex;
+  justify-content: center;
+
+  .see-file {
+    background: rgba($infos, 0.35);
+    border: 1px solid darken($infos, 0.2);
+  }
+
+  .modify {
+    background: rgba($warning, 0.35);
+    border: 1px solid darken($warning, 0.05);
+    // box-shadow: 2px 2px 6px 1px darken(rgba($warning, 0.35), 20%);
+  }
+
+  .cancel {
+    background: rgba($cancelled, 0.35);
+    border: 1px solid darken($cancelled, 0.05);
+  }
+
+  button,
+  a {
+    width: 2.7rem;
+    padding: 0;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    transition: transform 0.2s ease-out;
+
+    @include from(1000) {
+      width: 2rem;
+      font-size: 1rem;
+    }
+
+    &:active {
+      transform: scale(0.85);
+    }
+
+    &:disabled {
+      background: rgb(203, 203, 203);
+      border: 1px solid transparent;
+      transform: scale(1);
+    }
+  }
+}
