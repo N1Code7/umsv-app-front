@@ -10,7 +10,7 @@ const Navigation = ({ displayNavigation = false, isAdminViewActive }: INavigatio
     <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
       <ul>
         <li>
-          <NavLink to="/admin">
+          <NavLink to="/admin/">
             <span>🛎️</span>
             <span>Accueil</span>
           </NavLink>

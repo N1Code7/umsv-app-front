@@ -13,6 +13,11 @@ import { useEffect, useState } from "react";
 import Persist from "./routes/private/Persist";
 import AdminHomepage from "./routes/private/admin/AdminHomepage";
 import Unauthorized from "./routes/public/Unauthorized";
+import AdminRegistrationsDemands from "./routes/private/admin/AdminRegistrationsDemands";
+import AdminTournamentsHandle from "./routes/private/admin/AdminTournamentsHandle";
+import AdminArticlesHandle from "./routes/private/admin/AdminArticlesHandle";
+import AdminEventsHandle from "./routes/private/admin/AdminEventsHandle";
+import AdminUsersHandle from "./routes/private/admin/AdminUsersHandle";
 
 export default function MyApp() {
   const [deviceDisplay, setDeviceDisplay] = useState("");
@@ -57,7 +62,12 @@ export default function MyApp() {
               <Route path="reglages" element={<Settings />} />
             </Route>
             <Route element={<PrivateRoutes allowedRoles={["ROLE_ADMIN", "ROLE_SUPERADMIN"]} />}>
-              <Route path="admin/" element={<AdminHomepage />} />
+              <Route path="admin" element={<AdminHomepage />} />
+              <Route path="admin/demandes_inscriptions" element={<AdminRegistrationsDemands />} />
+              <Route path="admin/gestion_tournois" element={<AdminTournamentsHandle />} />
+              <Route path="admin/gestion_articles" element={<AdminArticlesHandle />} />
+              <Route path="admin/gestion_evenements" element={<AdminEventsHandle />} />
+              <Route path="admin/gestion_utilisateurs" element={<AdminUsersHandle />} />
             </Route>
           </Route>
 
