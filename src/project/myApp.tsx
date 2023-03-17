@@ -63,7 +63,7 @@ export default function MyApp() {
             </Route>
             <Route element={<PrivateRoutes allowedRoles={["ROLE_ADMIN", "ROLE_SUPERADMIN"]} />}>
               <Route path="admin" element={<AdminHomepage />} />
-              <Route path="admin/demandes_inscriptions" element={<AdminRegistrationsDemands />} />
+              <Route path="admin/demandes_inscription" element={<AdminRegistrationsDemands />} />
               <Route path="admin/gestion_tournois" element={<AdminTournamentsHandle />} />
               <Route path="admin/gestion_articles" element={<AdminArticlesHandle />} />
               <Route path="admin/gestion_evenements" element={<AdminEventsHandle />} />

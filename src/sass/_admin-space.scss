@@ -1,0 +1,51 @@
+.admin-space {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .sections-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+
+    @include ptt {
+      gap: 5rem;
+    }
+  }
+
+  .registrations-container,
+  .results-container,
+  .users-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    grid-template-rows: repeat(3, minmax(2rem, auto));
+    min-height: 6rem;
+
+    @include from(450) {
+      min-height: 10rem;
+    }
+  }
+
+  button.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: $primary-1;
+    color: $content-light;
+    font-weight: 500;
+    // border: 2px solid darken($primary-1, 6);
+  }
+}

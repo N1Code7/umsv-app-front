@@ -1,0 +1,53 @@
+.band {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  // gap: 0.6rem;
+  width: min(100%, 22rem);
+  padding: 1rem 0.5rem;
+  background: $bg-3;
+  border: 1px solid $bg-2;
+  border-radius: 5px;
+  font-size: clamp(0.8rem, 3vmin, 1rem);
+  text-align: center;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .name {
+    font-weight: 500;
+    max-height: 3rem;
+  }
+
+  .city {
+    font-style: italic;
+  }
+
+  .middle {
+    min-width: 6rem;
+  }
+
+  .checked {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem;
+    border-radius: 1px 5px 1px 10px;
+    background-color: $success-2;
+    color: $success-1;
+  }
+
+  .validation {
+    .fa-check {
+      color: $success-1;
+    }
+    .fa-ellipsis {
+      color: $warning-2;
+    }
+  }
+}
