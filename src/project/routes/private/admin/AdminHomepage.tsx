@@ -93,11 +93,21 @@ const AdminHomepage = () => {
                 .filter(
                   (registration: ITournamentRegistration) =>
                     registration.requestState === "validated" &&
+                    Number(
+                      new Date(registration.tournament.endDate || registration.tournamentEndDate)
+                    ) < Number(new Date()) &&
                     !registration.result?.areResultsValidated
                 )
                 .map((registration: ITournamentRegistration) => (
                   <div key={registration.id} className="card">
-                    {registration.tournament?.city || registration.tournamentCity}
+                    <i className="fa-solid fa-user"></i>
+                    <div className="identity">
+                      {registration.user?.firstName} {registration.user?.lastName}
+                    </div>
+                    <i className="fa-solid fa-city"></i>
+                    <div className="tournament-city">
+                      {registration.tournament?.city || registration.tournamentCity}
+                    </div>
                   </div>
                 ))
             )}
@@ -120,7 +130,10 @@ const AdminHomepage = () => {
                 .filter((user: IUser) => !user.validatedAccount)
                 .map((user: IUser) => (
                   <div key={user.id} className="card">
-                    {user.firstName}
+                    <i className="fa-solid fa-user"></i>
+                    <div className="identity">{user.firstName}</div>
+                    <i className="fa-solid fa-envelope"></i>
+                    <div className="user-email">{user.email}</div>
                   </div>
                 ))
             )}
