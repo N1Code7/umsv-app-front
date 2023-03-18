@@ -3,10 +3,10 @@ import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 import SortTournamentsBtn from "../../../components/SortTournamentsBtn";
-import ResultsDisplayedOnMobile from "../../../features/displayResults/ResultsDisplayedOnMobile";
-import ResultsDisplayedOnDesktop from "../../../features/displayResults/ResultsDisplayedOnDesktop";
+import ResultsDisplayedOnMobile from "../../../features/member/displayResults/ResultsDisplayedOnMobile";
+import ResultsDisplayedOnDesktop from "../../../features/member/displayResults/ResultsDisplayedOnDesktop";
 import Modal from "../../../components/Modal";
-import UpdateResultForm from "../../../features/displayResults/components/UpdateResultForm";
+import UpdateResultForm from "../../../features/member/displayResults/components/UpdateResultForm";
 import { sleep } from "../../../../utils/globals";
 
 interface IProps {

@@ -1,6 +1,6 @@
 import { Dispatch, MouseEvent, SetStateAction } from "react";
-import { ITournamentRegistration } from "../../../interfaces/interfaces";
-import { formatDate } from "../../../utils/dateFunctions";
+import { ITournamentRegistration } from "../../../../interfaces/interfaces";
+import { formatDate } from "../../../../utils/dateFunctions";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;

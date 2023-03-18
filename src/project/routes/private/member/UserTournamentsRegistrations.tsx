@@ -1,12 +1,12 @@
 import { useState } from "react";
 import SortTournamentsBtn from "../../../components/SortTournamentsBtn";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import TournamentRegistration from "../../../features/displayTournamentsRegistrations/TournamentRegistration";
 import Modal from "../../../components/Modal";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
-import RegistrationForm from "../../../features/displayTournamentsRegistrations/components/RegistrationForm";
 import { sleep } from "../../../../utils/globals";
+import TournamentRegistration from "../../../features/member/displayTournamentsRegistrations/TournamentRegistration";
+import RegistrationForm from "../../../features/member/displayTournamentsRegistrations/components/RegistrationForm";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;

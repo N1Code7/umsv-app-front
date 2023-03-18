@@ -1,8 +1,8 @@
 import { MouseEvent, useContext } from "react";
-import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import { formatDate } from "../../../../utils/dateFunctions";
-import { AuthenticationContext } from "../../../../contexts/AuthenticationContext";
 import RegistrationCTA from "./RegistrationCTA";
+import { ITournamentRegistration } from "../../../../../interfaces/interfaces";
+import { AuthenticationContext } from "../../../../../contexts/AuthenticationContext";
+import { formatDate } from "../../../../../utils/dateFunctions";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;

@@ -21,7 +21,7 @@ const Header = ({
 
   const switchClickAction = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    isAdminViewActive ? navigate("/") : navigate("/admin");
+    isAdminViewActive ? navigate("/") : navigate("/admin/");
     setIsAdminViewActive?.((prev) => !prev);
     localStorage.setItem("isAdminViewActive", isAdminViewActive ? "false" : "true");
   };

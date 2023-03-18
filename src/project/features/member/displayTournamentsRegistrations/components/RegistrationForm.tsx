@@ -7,15 +7,15 @@ import {
   useRef,
   useState,
 } from "react";
-import { SelectedTournamentContext } from "../../../../contexts/SelectedTournamentContext";
-import { formatDate } from "../../../../utils/dateFunctions";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
-import Switch from "../../../components/Switch";
-import { ITournament, ITournamentRegistration } from "../../../../interfaces/interfaces";
 import { ValidationError } from "yup";
-import { newTournamentRegistrationSchema } from "../../../../validations/tournamentRegistrationSchema";
 import { mutate } from "swr";
+import { ITournament, ITournamentRegistration } from "../../../../../interfaces/interfaces";
+import { SelectedTournamentContext } from "../../../../../contexts/SelectedTournamentContext";
+import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import { newTournamentRegistrationSchema } from "../../../../../validations/tournamentRegistrationSchema";
+import Switch from "../../../../components/Switch";
+import { formatDate } from "../../../../../utils/dateFunctions";
 
 interface IRegistrationFormProps {
   patchMethod?: boolean;

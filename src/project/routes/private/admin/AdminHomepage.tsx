@@ -30,6 +30,7 @@ const AdminHomepage = () => {
       <h1>Bonjour {user?.firstName}</h1>
 
       <div className="sections-container">
+        {/* Registrations list */}
         <section className="registrations-validation">
           <h2>Demandes d&apos;inscription à traiter</h2>
           <div className="registrations-container">
@@ -81,6 +82,8 @@ const AdminHomepage = () => {
             ).length > 5 && <button className="card">Voir plus</button>}
           </div>
         </section>
+
+        {/* Results list */}
         <section className="results-validation">
           <h2>Résultats à valider</h2>
           <div className="results-container">
@@ -118,6 +121,8 @@ const AdminHomepage = () => {
             ).length > 5 && <div className="card">Voir plus</div>}
           </div>
         </section>
+
+        {/* Users list */}
         <section className="users-validation">
           <h2>Utilisateurs à authentifier</h2>
           <div className="users-container">
@@ -136,6 +141,9 @@ const AdminHomepage = () => {
                     <div className="user-email">{user.email}</div>
                   </div>
                 ))
+            )}
+            {users?.filter((user: IUser) => !user.validatedAccount).length > 5 && (
+              <button className="card">Voir plus</button>
             )}
           </div>
         </section>
