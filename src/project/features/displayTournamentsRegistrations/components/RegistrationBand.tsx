@@ -1,40 +1,153 @@
-import { MouseEvent, useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 import { formatDate } from "../../../../utils/dateFunctions";
 import AdminRegistrationCTA from "./AdminRegistrationCTA";
+import { mutate } from "swr";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 interface IProps {
-  registration: ITournamentRegistration;
-  handleModify: (e: MouseEvent<HTMLButtonElement>) => {};
-  handleValidate: (e: MouseEvent<HTMLButtonElement>) => {};
-  handleCancel: (e: MouseEvent<HTMLButtonElement>) => {};
-  handleRemove: (e: MouseEvent<HTMLButtonElement>) => {};
+  tournamentRegistration: ITournamentRegistration;
+  setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
+  setIsModalActive: Dispatch<SetStateAction<boolean>>;
+  setRequestMessage: Dispatch<SetStateAction<{ success: string; error: string }>>;
 }
 
 const RegistrationBand = ({
-  registration,
-  handleCancel,
-  handleModify,
-  handleRemove,
-  handleValidate,
+  tournamentRegistration,
+  setFocusedRegistration,
+  setIsModalActive,
+  setRequestMessage,
 }: IProps) => {
   //
+  const axiosPrivate = useAxiosPrivate();
   const [toggleChevron, setToggleChevron] = useState("down");
-  const [isModifying, setIsModifying] = useState(true);
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     toggleChevron === "down" ? setToggleChevron("up") : setToggleChevron("down");
   };
 
+  const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsModalActive?.(true);
+    setFocusedRegistration?.(tournamentRegistration);
+  };
+
+  const handleValidate = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    //
+    await mutate(
+      `admin/tournament-registrations`,
+      await axiosPrivate
+        .patch(`admin/tournament-registration/validate/${tournamentRegistration.id}`, {
+          requestState: "validated",
+        })
+        .then((res) => {
+          setRequestMessage({ success: "La demande d'inscription a bien été validée.", error: "" });
+          return res.data;
+        })
+        .catch((err) => {
+          // console.error(err);
+          setRequestMessage({
+            success: "",
+            error: "Une erreur est survenue lors de la validation de la demande d'inscription",
+          });
+        }),
+      {
+        optimisticData: (registrations: Array<ITournamentRegistration>) => {
+          const prev = registrations.filter(
+            (registration: ITournamentRegistration) => registration.id !== tournamentRegistration.id
+          );
+          return [...prev, { ...tournamentRegistration, requestState: "validated" }];
+        },
+        populateCache: (
+          newRegistration: ITournamentRegistration,
+          registrations: Array<ITournamentRegistration>
+        ) => {
+          const prev = registrations.filter(
+            (reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id
+          );
+          return [...prev, newRegistration];
+        },
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
+
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+    // window.scrollTo(0, 0);
+  };
+
+  const handleCancel = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    //
+    await mutate(
+      `admin/tournament-registrations`,
+      axiosPrivate
+        .patch(`admin/tournament-registration/cancel/${tournamentRegistration.id}`, {
+          requestState: "cancelled",
+        })
+        .then((res) => {
+          setRequestMessage({ success: "La demande d'inscription a bien été annulée.", error: "" });
+          return res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          setRequestMessage({
+            success: "",
+            error: "Une erreur est survenue lors de l'annulation de la demande d'inscription.",
+          });
+        }),
+      {
+        optimisticData: (registrations: Array<ITournamentRegistration>) => {
+          const prev = registrations.filter(
+            (registration: ITournamentRegistration) => registration.id !== tournamentRegistration.id
+          );
+          return [...prev, { ...tournamentRegistration, requestState: "cancelled" }];
+        },
+        populateCache: (
+          newRegistration: ITournamentRegistration,
+          registrations: Array<ITournamentRegistration>
+        ) => {
+          const prev = registrations.filter(
+            (reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id
+          );
+          return [...prev, newRegistration];
+        },
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
+
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+    // window.scrollTo(0, 0);
+  };
+
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    //
+    // mutate;
+  };
+
   return (
-    <div className="band registration">
+    <div
+      className="band registration"
+      style={toggleChevron === "down" && window.innerWidth > 1000 ? { rowGap: 0 } : undefined}
+    >
       <div className="registration-date">
-        Demande du {formatDate(registration.updatedAt || registration.createdAt, undefined)}
+        Demande du{" "}
+        {formatDate(
+          tournamentRegistration.updatedAt || tournamentRegistration.createdAt,
+          undefined
+        )}
       </div>
       <div className="identity">
-        {registration.user?.firstName || registration.userFirstName}{" "}
-        {registration.user?.lastName || registration.userLastName}
+        {tournamentRegistration.user?.firstName || tournamentRegistration.userFirstName}{" "}
+        {tournamentRegistration.user?.lastName || tournamentRegistration.userLastName}
       </div>
       <div
         className="details"
@@ -46,57 +159,67 @@ const RegistrationBand = ({
       >
         <i className="fa-solid fa-font"></i>
         <div className="tournament-name">
-          {registration.tournament?.name || registration.tournamentName || undefined}
+          {tournamentRegistration.tournament?.name ||
+            tournamentRegistration.tournamentName ||
+            undefined}
         </div>
         <i className="fa-solid fa-city"></i>
         <div className="tournament-city">
-          {registration.tournament?.city || registration.tournamentCity}
+          {tournamentRegistration.tournament?.city || tournamentRegistration.tournamentCity}
         </div>
         <i className="fa-solid fa-calendar-days"></i>
         <div className="tournament-dates">
-          {registration.tournament?.endDate || registration.tournamentEndDate
+          {tournamentRegistration.tournament?.endDate || tournamentRegistration.tournamentEndDate
             ? formatDate(
-                registration.tournament?.startDate || registration.tournamentStartDate,
-                registration.tournament?.endDate || registration.tournamentEndDate,
+                tournamentRegistration.tournament?.startDate ||
+                  tournamentRegistration.tournamentStartDate,
+                tournamentRegistration.tournament?.endDate ||
+                  tournamentRegistration.tournamentEndDate,
                 "XX & XX xxx XXXX"
               )
             : formatDate(
-                registration.tournament?.startDate || registration.tournamentStartDate,
+                tournamentRegistration.tournament?.startDate ||
+                  tournamentRegistration.tournamentStartDate,
                 undefined,
                 "XX xxx XXXX"
               )}
         </div>
-        {registration.participationSingle && (
+        {tournamentRegistration.participationSingle && (
           <>
             <i className="fa-solid fa-user"></i>
             <div className="single">Simple : oui</div>
           </>
         )}
-        {registration.participationDouble && (
+        {tournamentRegistration.participationDouble && (
           <>
             <i className="fa-solid fa-user-group"></i>
             <div className="double">
-              Double : {registration.doublePartnerName || "X"} /{" "}
-              {registration.doublePartnerClub || ""}
+              Double : {tournamentRegistration.doublePartnerName || "X"}
+              {tournamentRegistration.doublePartnerClub
+                ? " / " + tournamentRegistration.doublePartnerClub
+                : ""}
             </div>
           </>
         )}
-        {registration.participationMixed && (
+        {tournamentRegistration.participationMixed && (
           <>
             <i className="fa-solid fa-user-group"></i>
             <div className="mixed">
-              Mixte : {registration.mixedPartnerName || "X"} / {registration.mixedPartnerClub || ""}
+              Mixte : {tournamentRegistration.mixedPartnerName || "X"}
+              {tournamentRegistration.mixedPartnerClub
+                ? " / " + tournamentRegistration.mixedPartnerClub
+                : ""}
             </div>
           </>
         )}
         <i className="fa-solid fa-comment-dots"></i>
-        <div className="comment">{registration.comment || "Aucun commentaire"}</div>
+        <div className="comment">{tournamentRegistration.comment || "Aucun commentaire"}</div>
       </div>
       <AdminRegistrationCTA
-        registration={registration}
+        tournamentRegistration={tournamentRegistration}
         handleCancel={handleCancel}
         handleModify={handleModify}
-        handleRemove={handleRemove}
+        handleDelete={handleDelete}
         handleValidate={handleValidate}
       />
       <button onClick={handleClick}>

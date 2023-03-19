@@ -26,13 +26,19 @@ const AdminRegistrationsDemands = ({}: IProps) => {
         .catch((err) => console.error(err))
   );
 
-  const handleModify = async (e: MouseEvent<HTMLButtonElement>) => {};
-  const handleValidate = async (e: MouseEvent<HTMLButtonElement>) => {};
-  const handleCancel = async (e: MouseEvent<HTMLButtonElement>) => {};
-  const handleRemove = async (e: MouseEvent<HTMLButtonElement>) => {};
-
   return (
     <main className="admin-space">
+      {requestMessage.success !== "" && (
+        <div className="notification-message">
+          <p className="success">{requestMessage.success}</p>
+        </div>
+      )}
+      {requestMessage.error !== "" && (
+        <div className="notification-message">
+          <p className="error">{requestMessage.error}</p>
+        </div>
+      )}
+
       <h1>Bonjour {user?.firstName}</h1>
       <h2>Les demandes d&apos;inscription</h2>
 
@@ -51,11 +57,10 @@ const AdminRegistrationsDemands = ({}: IProps) => {
               .map((registration: ITournamentRegistration) => (
                 <RegistrationBand
                   key={registration.id}
-                  registration={registration}
-                  handleCancel={handleCancel}
-                  handleModify={handleModify}
-                  handleRemove={handleRemove}
-                  handleValidate={handleValidate}
+                  tournamentRegistration={registration}
+                  setFocusedRegistration={setFocusedRegistration}
+                  setIsModalActive={setIsModalActive}
+                  setRequestMessage={setRequestMessage}
                 />
               ))
           )}
@@ -75,11 +80,10 @@ const AdminRegistrationsDemands = ({}: IProps) => {
               .map((registration: ITournamentRegistration) => (
                 <RegistrationBand
                   key={registration.id}
-                  registration={registration}
-                  handleCancel={handleCancel}
-                  handleModify={handleModify}
-                  handleRemove={handleRemove}
-                  handleValidate={handleValidate}
+                  tournamentRegistration={registration}
+                  setFocusedRegistration={setFocusedRegistration}
+                  setIsModalActive={setIsModalActive}
+                  setRequestMessage={setRequestMessage}
                 />
               ))
           )}
@@ -99,11 +103,10 @@ const AdminRegistrationsDemands = ({}: IProps) => {
               .map((registration: ITournamentRegistration) => (
                 <RegistrationBand
                   key={registration.id}
-                  registration={registration}
-                  handleCancel={handleCancel}
-                  handleModify={handleModify}
-                  handleRemove={handleRemove}
-                  handleValidate={handleValidate}
+                  tournamentRegistration={registration}
+                  setFocusedRegistration={setFocusedRegistration}
+                  setIsModalActive={setIsModalActive}
+                  setRequestMessage={setRequestMessage}
                 />
               ))
           )}
