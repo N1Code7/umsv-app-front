@@ -1,7 +1,6 @@
 import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 import { formatDate } from "../../../../utils/dateFunctions";
-import AdminRegistrationCTA from "./AdminRegistrationCTA";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
@@ -145,10 +144,12 @@ const RegistrationBand = ({
           undefined
         )}
       </div>
+
       <div className="identity">
         {tournamentRegistration.user?.firstName || tournamentRegistration.userFirstName}{" "}
         {tournamentRegistration.user?.lastName || tournamentRegistration.userLastName}
       </div>
+
       <div
         className="details"
         style={
@@ -163,10 +164,12 @@ const RegistrationBand = ({
             tournamentRegistration.tournamentName ||
             undefined}
         </div>
+
         <i className="fa-solid fa-city"></i>
         <div className="tournament-city">
           {tournamentRegistration.tournament?.city || tournamentRegistration.tournamentCity}
         </div>
+
         <i className="fa-solid fa-calendar-days"></i>
         <div className="tournament-dates">
           {tournamentRegistration.tournament?.endDate || tournamentRegistration.tournamentEndDate
@@ -184,12 +187,14 @@ const RegistrationBand = ({
                 "XX xxx XXXX"
               )}
         </div>
+
         {tournamentRegistration.participationSingle && (
           <>
             <i className="fa-solid fa-user"></i>
             <div className="single">Simple : oui</div>
           </>
         )}
+
         {tournamentRegistration.participationDouble && (
           <>
             <i className="fa-solid fa-user-group"></i>
@@ -201,6 +206,7 @@ const RegistrationBand = ({
             </div>
           </>
         )}
+
         {tournamentRegistration.participationMixed && (
           <>
             <i className="fa-solid fa-user-group"></i>
@@ -212,16 +218,28 @@ const RegistrationBand = ({
             </div>
           </>
         )}
+
         <i className="fa-solid fa-comment-dots"></i>
         <div className="comment">{tournamentRegistration.comment || "Aucun commentaire"}</div>
       </div>
-      <AdminRegistrationCTA
-        tournamentRegistration={tournamentRegistration}
-        handleCancel={handleCancel}
-        handleModify={handleModify}
-        handleDelete={handleDelete}
-        handleValidate={handleValidate}
-      />
+
+      <div className="cta-container">
+        <button onClick={handleModify}>✏️</button>
+        <button
+          style={{ display: tournamentRegistration.requestState === "validated" ? "none" : "flex" }}
+          onClick={handleValidate}
+        >
+          ✅
+        </button>
+        <button
+          style={{ display: tournamentRegistration.requestState === "cancelled" ? "none" : "flex" }}
+          onClick={handleCancel}
+        >
+          ↩️
+        </button>
+        <button onClick={handleDelete}>🗑️</button>
+      </div>
+
       <button onClick={handleClick}>
         <i className={`fa-solid fa-chevron-${toggleChevron}`}></i>
       </button>

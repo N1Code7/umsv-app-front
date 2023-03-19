@@ -1,4 +1,4 @@
-import { MouseEvent, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthenticationContext } from "../../../../contexts/AuthenticationContext";
 import useSWR from "swr";
 import { sleep } from "../../../../utils/globals";
