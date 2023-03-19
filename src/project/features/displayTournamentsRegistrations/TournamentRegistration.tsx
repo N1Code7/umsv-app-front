@@ -2,8 +2,8 @@ import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { mutate } from "swr";
 import RegistrationMobileDisplay from "./components/RegistrationMobileDisplay";
 import RegistrationDesktopDisplay from "./components/RegistrationDesktopDisplay";
-import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { ITournamentRegistration } from "../../../interfaces/interfaces";
 
 interface ITournamentRegistrationProps {
   tournamentRegistration: ITournamentRegistration;

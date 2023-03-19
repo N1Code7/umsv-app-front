@@ -5,8 +5,8 @@ import Modal from "../../../components/Modal";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import { sleep } from "../../../../utils/globals";
-import TournamentRegistration from "../../../features/member/displayTournamentsRegistrations/TournamentRegistration";
-import RegistrationForm from "../../../features/member/displayTournamentsRegistrations/components/RegistrationForm";
+import TournamentRegistration from "../../../features/displayTournamentsRegistrations/TournamentRegistration";
+import RegistrationForm from "../../../features/displayTournamentsRegistrations/components/RegistrationForm";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;

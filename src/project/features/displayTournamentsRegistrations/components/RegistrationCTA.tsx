@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import { ITournamentRegistration } from "../../../../../interfaces/interfaces";
+import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;

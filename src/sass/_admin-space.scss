@@ -30,6 +30,76 @@
     flex-wrap: nowrap;
   }
 
+  // .grid-container {
+  //   /**
+  //  * User input values.
+  //  */
+  //   --grid-layout-gap: 10px;
+  //   --grid-column-count: 4;
+  //   --grid-item--min-width: 100px;
+
+  //   /**
+  //  * Calculated values.
+  //  */
+  //   --gap-count: calc(var(--grid-column-count) - 1);
+  //   --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+  //   --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+
+  //   grid-template-columns: repeat(
+  //     auto-fill,
+  //     minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr)
+  //   );
+  //   grid-gap: var(--grid-layout-gap);
+  // }
+
+  .registrations-columns {
+    // display: grid;
+
+    // $column-min-width: 18rem;
+    // $column-number: 3;
+    // $gap: 1.5rem;
+
+    // grid-template-columns: repeat(
+    //   auto-fill,
+    //   minmax(
+    //     max($column-min-width, calc((100% - ($column-number - 1) * $gap) / $column-number)),
+    //     1fr
+    //   )
+    // );
+
+    // gap: 1.5rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    h3 {
+      display: inline-block;
+      position: relative;
+      margin-bottom: 1rem;
+      text-transform: capitalize;
+      font-family: $font-body;
+      font-weight: 600;
+
+      &::after {
+        content: "";
+        width: 100%;
+        height: 2px;
+        border-radius: 20px;
+        background-color: #000;
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+      }
+    }
+
+    & > div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+
   .card {
     display: grid;
     grid-template-columns: 3rem 1fr;
@@ -53,5 +123,67 @@
     background-color: $primary-1;
     color: $content-light;
     font-weight: 500;
+  }
+
+  .band {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+
+    .details {
+      transition: all 0.3s ease-out;
+      overflow: hidden;
+    }
+
+    @include from(1000) {
+      flex-direction: row;
+      padding: 1rem 4rem 1rem 1rem;
+    }
+
+    & > button {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      color: $bg-1;
+      background: inherit;
+      padding: 0.5rem;
+    }
+  }
+
+  .cta-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin: 0.5rem 0 0;
+
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      width: 3rem;
+      padding: 0.5rem;
+      aspect-ratio: 1 / 1;
+      font-size: 1.5rem;
+      border: 1px solid $bg-1;
+      border-radius: 20px;
+
+      &:nth-of-type(1) {
+        background: $warning-2;
+        border: 1px solid $warning;
+      }
+      &:nth-of-type(2) {
+        background: $success-2;
+        border: 1px solid $success-1;
+      }
+      &:nth-of-type(3) {
+        background: $cancelled-2;
+        border: 1px solid $cancelled;
+      }
+      &:nth-of-type(4) {
+        background: $danger-2;
+        border: 1px solid $danger-1;
+      }
+    }
   }
 }

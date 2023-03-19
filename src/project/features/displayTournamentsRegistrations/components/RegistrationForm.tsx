@@ -10,12 +10,12 @@ import {
 import useSWR from "swr";
 import { ValidationError } from "yup";
 import { mutate } from "swr";
-import { ITournament, ITournamentRegistration } from "../../../../../interfaces/interfaces";
-import { SelectedTournamentContext } from "../../../../../contexts/SelectedTournamentContext";
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
-import { newTournamentRegistrationSchema } from "../../../../../validations/tournamentRegistrationSchema";
-import Switch from "../../../../components/Switch";
-import { formatDate } from "../../../../../utils/dateFunctions";
+import { ITournament, ITournamentRegistration } from "../../../../interfaces/interfaces";
+import { SelectedTournamentContext } from "../../../../contexts/SelectedTournamentContext";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import { newTournamentRegistrationSchema } from "../../../../validations/tournamentRegistrationSchema";
+import Switch from "../../../components/Switch";
+import { formatDate } from "../../../../utils/dateFunctions";
 
 interface IRegistrationFormProps {
   patchMethod?: boolean;
