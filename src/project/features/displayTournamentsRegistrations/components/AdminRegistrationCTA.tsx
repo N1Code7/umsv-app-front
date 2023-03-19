@@ -1,6 +1,8 @@
 import { MouseEvent } from "react";
+import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 
 interface IProps {
+  registration: ITournamentRegistration;
   handleModify: (e: MouseEvent<HTMLButtonElement>) => void;
   handleValidate: (e: MouseEvent<HTMLButtonElement>) => void;
   handleCancel: (e: MouseEvent<HTMLButtonElement>) => void;
@@ -8,6 +10,7 @@ interface IProps {
 }
 
 const AdminRegistrationCTA = ({
+  registration,
   handleModify,
   handleValidate,
   handleCancel,
@@ -16,8 +19,18 @@ const AdminRegistrationCTA = ({
   return (
     <div className="cta-container">
       <button onClick={handleModify}>✏️</button>
-      <button onClick={handleValidate}>✅</button>
-      <button onClick={handleCancel}>↩️</button>
+      <button
+        style={{ display: registration.requestState === "validated" ? "none" : "flex" }}
+        onClick={handleValidate}
+      >
+        ✅
+      </button>
+      <button
+        style={{ display: registration.requestState === "cancelled" ? "none" : "flex" }}
+        onClick={handleCancel}
+      >
+        ↩️
+      </button>
       <button onClick={handleRemove}>🗑️</button>
     </div>
   );
