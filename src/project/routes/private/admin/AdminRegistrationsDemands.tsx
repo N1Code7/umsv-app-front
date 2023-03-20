@@ -18,7 +18,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });
 
   const { data: registrations, isLoading: registrationsLoading } = useSWR(
-    "admin/tournament-registrations",
+    "/admin/tournament-registrations",
     async (url: string) =>
       sleep(2000)
         .then(() => axiosPrivate.get(url))
@@ -59,9 +59,9 @@ const AdminRegistrationsDemands = ({}: IProps) => {
         <div className="pending-registrations">
           <h3>Demandes en attente</h3>
           {registrationsLoading ? (
-            <p>Chargement des demandes d&pos;inscription</p>
+            <p>Chargement des demandes d&apos;inscription</p>
           ) : !registrations ? (
-            <p>Aucune demande d&apos;inscirption en attente</p>
+            <p>Aucune demande d&apos;inscription en attente</p>
           ) : (
             displayRegistrationCard("pending")
           )}

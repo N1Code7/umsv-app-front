@@ -129,7 +129,40 @@ const RegistrationBand = ({
   const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     //
-    // mutate;
+    mutate(
+      "/admin/tournament-registrations",
+      axiosPrivate
+        .delete(`/admin/tournament-registration/${tournamentRegistration.id}`)
+        .then((res) => {
+          console.log(res.data);
+          setRequestMessage({
+            success: "La demande d'inscription a bien été supprimée.",
+            error: "",
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          setRequestMessage({
+            success: "",
+            error: "Une erreur est survenue lors de la suppression de la demande d'inscription.",
+          });
+        }),
+      {
+        optimisticData: (registrations: Array<ITournamentRegistration>) =>
+          registrations.filter(
+            (reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id
+          ),
+        populateCache: (
+          newRegistration: ITournamentRegistration,
+          allRegistrations: Array<ITournamentRegistration>
+        ) =>
+          allRegistrations.filter(
+            (reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id
+          ),
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
   };
 
   return (
