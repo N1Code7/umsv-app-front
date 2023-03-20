@@ -13,7 +13,7 @@ interface IProps {}
 const AdminRegistrationsDemands = ({}: IProps) => {
   const { user } = useContext(AuthenticationContext);
   const axiosPrivate = useAxiosPrivate();
-  const [isModalActive, setIsModalActive] = useState(true);
+  const [isModalActive, setIsModalActive] = useState(false);
   const [focusedRegistration, setFocusedRegistration] = useState({} as ITournamentRegistration);
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });
 
@@ -25,6 +25,19 @@ const AdminRegistrationsDemands = ({}: IProps) => {
         .then((res) => res.data)
         .catch((err) => console.error(err))
   );
+
+  const displayRegistrationCard = (filter: string) =>
+    registrations
+      .filter((registration: ITournamentRegistration) => registration.requestState === filter)
+      .map((registration: ITournamentRegistration) => (
+        <RegistrationBand
+          key={registration.id}
+          tournamentRegistration={registration}
+          setFocusedRegistration={setFocusedRegistration}
+          setIsModalActive={setIsModalActive}
+          setRequestMessage={setRequestMessage}
+        />
+      ));
 
   return (
     <main className="admin-space">
@@ -50,19 +63,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
           ) : !registrations ? (
             <p>Aucune demande d&apos;inscirption en attente</p>
           ) : (
-            registrations
-              .filter(
-                (registration: ITournamentRegistration) => registration.requestState === "pending"
-              )
-              .map((registration: ITournamentRegistration) => (
-                <RegistrationBand
-                  key={registration.id}
-                  tournamentRegistration={registration}
-                  setFocusedRegistration={setFocusedRegistration}
-                  setIsModalActive={setIsModalActive}
-                  setRequestMessage={setRequestMessage}
-                />
-              ))
+            displayRegistrationCard("pending")
           )}
         </div>
 
@@ -73,19 +74,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
           ) : !registrations ? (
             <p>Aucune demande d&apos;inscirption en attente</p>
           ) : (
-            registrations
-              .filter(
-                (registration: ITournamentRegistration) => registration.requestState === "validated"
-              )
-              .map((registration: ITournamentRegistration) => (
-                <RegistrationBand
-                  key={registration.id}
-                  tournamentRegistration={registration}
-                  setFocusedRegistration={setFocusedRegistration}
-                  setIsModalActive={setIsModalActive}
-                  setRequestMessage={setRequestMessage}
-                />
-              ))
+            displayRegistrationCard("validated")
           )}
         </div>
 
@@ -96,19 +85,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
           ) : !registrations ? (
             <p>Aucune demande d&apos;inscirption en attente</p>
           ) : (
-            registrations
-              .filter(
-                (registration: ITournamentRegistration) => registration.requestState === "cancelled"
-              )
-              .map((registration: ITournamentRegistration) => (
-                <RegistrationBand
-                  key={registration.id}
-                  tournamentRegistration={registration}
-                  setFocusedRegistration={setFocusedRegistration}
-                  setIsModalActive={setIsModalActive}
-                  setRequestMessage={setRequestMessage}
-                />
-              ))
+            displayRegistrationCard("cancelled")
           )}
         </div>
       </div>
