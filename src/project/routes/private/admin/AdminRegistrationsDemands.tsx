@@ -1,12 +1,13 @@
 import { useContext, useState } from "react";
 import { AuthenticationContext } from "../../../../contexts/AuthenticationContext";
-import useSWR from "swr";
+import useSWR, { preload } from "swr";
 import { sleep } from "../../../../utils/globals";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 import RegistrationBand from "../../../features/displayTournamentsRegistrations/components/RegistrationBand";
 import RegistrationForm from "../../../features/displayTournamentsRegistrations/components/RegistrationForm";
 import Modal from "../../../components/Modal";
+import AdminRegistrationForm from "../../../features/displayTournamentsRegistrations/components/AdminRegistrationForm";
 
 interface IProps {}
 
@@ -17,18 +18,26 @@ const AdminRegistrationsDemands = ({}: IProps) => {
   const [focusedRegistration, setFocusedRegistration] = useState({} as ITournamentRegistration);
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });
 
+  const fetcher = async (url: string) =>
+    sleep(2000)
+      .then(() => axiosPrivate.get(url))
+      .then((res) => res.data)
+      .catch((err) => console.error(err));
   const { data: registrations, isLoading: registrationsLoading } = useSWR(
     "/admin/tournament-registrations",
-    async (url: string) =>
-      sleep(2000)
-        .then(() => axiosPrivate.get(url))
-        .then((res) => res.data)
-        .catch((err) => console.error(err))
+    fetcher
   );
+  const { data: tournaments, isLoading: tournamentsLoading } = useSWR("/tournaments", fetcher);
+  const { data: users, isLoading: usersLoading } = useSWR("/admin/users", fetcher);
 
   const displayRegistrationCard = (filter: string) =>
     registrations
       .filter((registration: ITournamentRegistration) => registration.requestState === filter)
+      .sort(
+        (a: ITournamentRegistration, b: ITournamentRegistration) =>
+          Number(new Date(b.updatedAt || b.createdAt)) -
+          Number(new Date(a.updatedAt || a.createdAt))
+      )
       .map((registration: ITournamentRegistration) => (
         <RegistrationBand
           key={registration.id}
@@ -38,6 +47,11 @@ const AdminRegistrationsDemands = ({}: IProps) => {
           setRequestMessage={setRequestMessage}
         />
       ));
+
+  const displayRegistrationsNumber = (filter: string) =>
+    registrations.filter(
+      (registration: ITournamentRegistration) => registration.requestState === filter
+    ).length;
 
   return (
     <main className="admin-space">
@@ -55,9 +69,20 @@ const AdminRegistrationsDemands = ({}: IProps) => {
       <h1>Bonjour {user?.firstName}</h1>
       <h2>Les demandes d&apos;inscription</h2>
 
-      <div className="registrations-columns">
+      <div className="registrations-blocks">
         <div className="pending-registrations">
-          <h3>Demandes en attente</h3>
+          {/* {registrationsLoading ? (
+            <>
+              <h3>Demandes en attente (...)</h3>
+              <p>Chargement des demandes d&apos;inscription</p>
+            </>
+          ) : (
+            <h3>Demandes en attente ({displayRegistrationsNumber("pending")})</h3>
+          )} */}
+          <h3>
+            Demandes en attente (
+            {registrationsLoading ? "..." : displayRegistrationsNumber("pending")})
+          </h3>
           {registrationsLoading ? (
             <p>Chargement des demandes d&apos;inscription</p>
           ) : !registrations ? (
@@ -68,20 +93,26 @@ const AdminRegistrationsDemands = ({}: IProps) => {
         </div>
 
         <div className="validated-registrations">
-          <h3>Demandes traitées</h3>
+          <h3>
+            Demandes traitées (
+            {registrationsLoading ? "..." : displayRegistrationsNumber("validated")})
+          </h3>
           {registrationsLoading ? (
-            <p>Chargement des demandes d&pos;inscription</p>
+            <p>Chargement des demandes d&apos;inscription</p>
           ) : !registrations ? (
-            <p>Aucune demande d&apos;inscirption en attente</p>
+            <p>Aucune demande d&apos;inscription en attente</p>
           ) : (
             displayRegistrationCard("validated")
           )}
         </div>
 
         <div className="cancelled-registrations">
-          <h3>Demandes annulées</h3>
+          <h3>
+            Demandes annulées (
+            {registrationsLoading ? "..." : displayRegistrationsNumber("cancelled")})
+          </h3>
           {registrationsLoading ? (
-            <p>Chargement des demandes d&pos;inscription</p>
+            <p>Chargement des demandes d&apos;inscription</p>
           ) : !registrations ? (
             <p>Aucune demande d&apos;inscirption en attente</p>
           ) : (
@@ -97,7 +128,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
               <h2>Modification inscription :</h2>
             </div>
 
-            <RegistrationForm
+            <AdminRegistrationForm
               patchMethod={true}
               setRequestMessage={setRequestMessage}
               focusedRegistration={focusedRegistration}

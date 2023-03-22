@@ -177,7 +177,8 @@ textarea {
 }
 
 .registration-form {
-  .choose-tournament-identifier {
+  .choose-tournament-identifier,
+  .choose-user-identifier {
     align-self: center;
     flex-direction: row;
     align-items: center;

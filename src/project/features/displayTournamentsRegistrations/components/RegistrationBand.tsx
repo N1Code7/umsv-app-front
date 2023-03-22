@@ -1,7 +1,7 @@
-import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 import { formatDate } from "../../../../utils/dateFunctions";
-import { mutate } from "swr";
+import { mutate, preload } from "swr";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 interface IProps {
@@ -28,17 +28,17 @@ const RegistrationBand = ({
 
   const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setIsModalActive?.(true);
     setFocusedRegistration?.(tournamentRegistration);
+    setIsModalActive?.(true);
   };
 
   const handleValidate = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     //
     await mutate(
-      `admin/tournament-registrations`,
+      `/admin/tournament-registrations`,
       await axiosPrivate
-        .patch(`admin/tournament-registration/validate/${tournamentRegistration.id}`, {
+        .patch(`/admin/tournament-registration/validate/${tournamentRegistration.id}`, {
           requestState: "validated",
         })
         .then((res) => {
@@ -83,9 +83,9 @@ const RegistrationBand = ({
     e.preventDefault();
     //
     await mutate(
-      `admin/tournament-registrations`,
+      `/admin/tournament-registrations`,
       axiosPrivate
-        .patch(`admin/tournament-registration/cancel/${tournamentRegistration.id}`, {
+        .patch(`/admin/tournament-registration/cancel/${tournamentRegistration.id}`, {
           requestState: "cancelled",
         })
         .then((res) => {
@@ -163,6 +163,11 @@ const RegistrationBand = ({
         rollbackOnError: true,
       }
     );
+
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+    // window.scrollTo(0, 0);
   };
 
   return (
@@ -214,8 +219,8 @@ const RegistrationBand = ({
                 "XX & XX xxx XXXX"
               )
             : formatDate(
-                tournamentRegistration.tournament?.startDate ||
-                  tournamentRegistration.tournamentStartDate,
+                tournamentRegistration?.tournament?.startDate ||
+                  tournamentRegistration?.tournamentStartDate,
                 undefined,
                 "XX xxx XXXX"
               )}

@@ -52,7 +52,7 @@
   //   grid-gap: var(--grid-layout-gap);
   // }
 
-  .registrations-columns {
+  .registrations-blocks {
     // display: grid;
 
     // $column-min-width: 18rem;
@@ -89,7 +89,7 @@
         background-color: #000;
         position: absolute;
         left: 0;
-        bottom: -2px;
+        bottom: -5px;
       }
     }
 
