@@ -59,12 +59,16 @@ const AdminRegistrationForm = ({
     focusedRegistration?.participationMixed || false
   );
   const [chooseNewTournament, setChooseNewTournament] = useState(
-    (focusedRegistration?.tournament?.id ||
-      (selectedTournament && Object.keys(selectedTournament).length)) !== 0
+    !focusedRegistration?.id
+      ? false
+      : (focusedRegistration?.tournament?.id ||
+          (selectedTournament && Object.keys(selectedTournament).length)) !== 0
       ? false
       : true
   );
-  const [chooseNewUser, setChooseNewUser] = useState(focusedRegistration?.user?.id ? false : true);
+  const [chooseNewUser, setChooseNewUser] = useState(
+    !focusedRegistration?.id ? false : focusedRegistration?.user?.id ? false : true
+  );
   const registrationSelectUser = useRef<HTMLSelectElement>(null);
   const registrationUserLastName = useRef<HTMLInputElement>(null);
   const registrationUserFirstName = useRef<HTMLInputElement>(null);
@@ -179,83 +183,92 @@ const AdminRegistrationForm = ({
         { abortEarly: false }
       )
       .then(async () => {
-        // if (!patchMethod) {
-        //   // await axiosPrivate
-        //   //   .post("tournament-registration", bodyRequest)
-        //   //   .then(() =>
-        //   //     setRequestMessage({
-        //   //       error: "",
-        //   //       success: "Votre demande d'inscription a bien été créée ! 👌",
-        //   //     })
-        //   //   )
-        //   //   .catch((err) => {
-        //   //     console.error(err);
-        //   //     setRequestMessage({
-        //   //       error:
-        //   //         "Une erreur est survenue lors de l'envoi de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur.",
-        //   //       success: "",
-        //   //     });
-        //   //   });
-        // } else {
         isModalActive && setIsModalActive?.(false);
-
-        await mutate(
-          "/admin/tournament-registrations",
-          await axiosPrivate
-            .patch(`/admin/tournament-registration/${focusedRegistration?.id}`, bodyRequest)
-            .then((res) => {
-              setRequestMessage({
-                error: "",
-                success: `La demande d'inscription de ${(
-                  focusedRegistration?.user.firstName || focusedRegistration?.userFirstName
-                )?.toUpperCase()} a bien été modifiée ! 👌`,
-              });
-              console.log(res.data);
-
-              return res.data;
-            })
-            .catch((err) => {
-              console.error(err);
-              setRequestMessage({
-                error:
-                  "Une erreur est survenue lors de la modification de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur.",
-                success: "",
-              });
-            }),
-          {
-            optimisticData: (registrations: Array<ITournamentRegistration>) => {
-              const prev = registrations.filter(
-                (registration: ITournamentRegistration) =>
-                  registration.id !== focusedRegistration?.id
-              );
-              return [
-                ...prev,
-                { ...focusedRegistration, ...bodyRequest } as ITournamentRegistration,
-              ].sort(
-                (a: ITournamentRegistration, b: ITournamentRegistration) =>
-                  Number(new Date(b.updatedAt || b.createdAt)) -
-                  Number(new Date(a.updatedAt || a.createdAt))
-              );
-            },
-            populateCache: (
-              newRegistration: ITournamentRegistration,
-              tournamentsRegistrations: Array<ITournamentRegistration>
-            ) => {
-              const prev = tournamentsRegistrations.filter(
-                (registration: ITournamentRegistration) =>
-                  registration.id !== focusedRegistration?.id
-              );
-              return [...prev, newRegistration].sort(
-                (a: ITournamentRegistration, b: ITournamentRegistration) =>
-                  Number(new Date(b.updatedAt || b.createdAt)) -
-                  Number(new Date(a.updatedAt || a.createdAt))
-              );
-            },
-            rollbackOnError: true,
-            revalidate: false,
-          }
-        );
-
+        if (!patchMethod) {
+          await mutate(
+            "/admin/tournament-registrations",
+            await axiosPrivate
+              .post("/admin/tournament-registration", bodyRequest)
+              .then((res) => {
+                setRequestMessage({
+                  error: "",
+                  success: "La demande d'inscription a bien été créée ! 👌",
+                });
+                return res.data;
+              })
+              .catch((err) => {
+                console.error(err);
+                setRequestMessage({
+                  error:
+                    "Une erreur est survenue lors de la création de la demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter le web master 😉.",
+                  success: "",
+                });
+              }),
+            {
+              optimisticData: (all: Array<ITournamentRegistration>) =>
+                [...all, bodyRequest as ITournamentRegistration].sort(
+                  (a: ITournamentRegistration, b: ITournamentRegistration) =>
+                    Number(new Date(b.updatedAt || b.createdAt)) -
+                    Number(new Date(a.updatedAt || a.createdAt))
+                ),
+              populateCache: (
+                result: ITournamentRegistration,
+                currentRegistrations: Array<ITournamentRegistration>
+              ) => [...currentRegistrations, result],
+            }
+          );
+        } else {
+          await mutate(
+            "/admin/tournament-registrations",
+            await axiosPrivate
+              .patch(`/admin/tournament-registration/${focusedRegistration?.id}`, bodyRequest)
+              .then((res) => {
+                setRequestMessage({
+                  error: "",
+                  success: `La demande d'inscription de ${(
+                    focusedRegistration?.user.firstName || focusedRegistration?.userFirstName
+                  )?.toUpperCase()} a bien été modifiée ! 👌`,
+                });
+                return res.data;
+              })
+              .catch((err) => {
+                console.error(err);
+                setRequestMessage({
+                  error:
+                    "Une erreur est survenue lors de la modification de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur.",
+                  success: "",
+                });
+              }),
+            {
+              optimisticData: (registrations: Array<ITournamentRegistration>) => {
+                const prev = registrations.filter(
+                  (registration: ITournamentRegistration) =>
+                    registration.id !== focusedRegistration?.id
+                );
+                return [
+                  ...prev,
+                  { ...focusedRegistration, ...bodyRequest } as ITournamentRegistration,
+                ].sort(
+                  (a: ITournamentRegistration, b: ITournamentRegistration) =>
+                    Number(new Date(b.updatedAt || b.createdAt)) -
+                    Number(new Date(a.updatedAt || a.createdAt))
+                );
+              },
+              populateCache: (
+                newRegistration: ITournamentRegistration,
+                tournamentsRegistrations: Array<ITournamentRegistration>
+              ) => {
+                const prev = tournamentsRegistrations.filter(
+                  (registration: ITournamentRegistration) =>
+                    registration.id !== focusedRegistration?.id
+                );
+                return [...prev, newRegistration];
+              },
+              rollbackOnError: true,
+              revalidate: false,
+            }
+          );
+        }
         setTimeout(() => {
           setRequestMessage({ success: "", error: "" });
         }, 10000);

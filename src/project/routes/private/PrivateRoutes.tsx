@@ -27,8 +27,6 @@ const PrivateRoutes = ({ allowedRoles }: IPrivateRoutesProps) => {
     setDisplayNavigation((prev) => !prev);
   };
 
-  console.log(localStorage.getItem("isAdminViewActive"));
-
   return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
     <>
       <Header

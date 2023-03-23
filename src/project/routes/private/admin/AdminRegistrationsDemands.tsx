@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
+import { MouseEvent, useContext, useRef, useState } from "react";
 import { AuthenticationContext } from "../../../../contexts/AuthenticationContext";
-import useSWR, { preload } from "swr";
+import useSWR from "swr";
 import { sleep } from "../../../../utils/globals";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
 import RegistrationBand from "../../../features/displayTournamentsRegistrations/components/RegistrationBand";
-import RegistrationForm from "../../../features/displayTournamentsRegistrations/components/RegistrationForm";
 import Modal from "../../../components/Modal";
 import AdminRegistrationForm from "../../../features/displayTournamentsRegistrations/components/AdminRegistrationForm";
 
@@ -17,6 +16,12 @@ const AdminRegistrationsDemands = ({}: IProps) => {
   const [isModalActive, setIsModalActive] = useState(false);
   const [focusedRegistration, setFocusedRegistration] = useState({} as ITournamentRegistration);
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });
+  const [patchMethod, setPatchMethod] = useState(false);
+  const pendingSectionRef = useRef<HTMLDivElement>(null);
+  const [isPendingSectionOpened, setIsPendingSectionOpened] = useState(true);
+  const [isValidatedSectionOpened, setIsValidatedSectionOpened] = useState(false);
+  const [isCancelledSectionOpened, setIsCancelledSectionOpened] = useState(false);
+  // const [isSearchActive, setIsSearchActive] = useState(false);
 
   const fetcher = async (url: string) =>
     sleep(2000)
@@ -29,6 +34,29 @@ const AdminRegistrationsDemands = ({}: IProps) => {
   );
   const { data: tournaments, isLoading: tournamentsLoading } = useSWR("/tournaments", fetcher);
   const { data: users, isLoading: usersLoading } = useSWR("/admin/users", fetcher);
+
+  const handleAddRegistrationClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setPatchMethod?.(false);
+    setIsModalActive?.(true);
+  };
+
+  const handleOpeningSection = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    switch ((e.target as HTMLButtonElement).dataset.section) {
+      case "pending":
+        setIsPendingSectionOpened((prev) => !prev);
+        break;
+      case "validated":
+        setIsValidatedSectionOpened((prev) => !prev);
+        break;
+      case "cancelled":
+        setIsCancelledSectionOpened((prev) => !prev);
+        break;
+      default:
+        return;
+    }
+  };
 
   const displayRegistrationCard = (filter: string) =>
     registrations
@@ -45,6 +73,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
           setFocusedRegistration={setFocusedRegistration}
           setIsModalActive={setIsModalActive}
           setRequestMessage={setRequestMessage}
+          setPatchMethod={setPatchMethod}
         />
       ));
 
@@ -70,54 +99,122 @@ const AdminRegistrationsDemands = ({}: IProps) => {
       <h2>Les demandes d&apos;inscription</h2>
 
       <div className="registrations-blocks">
+        <div className="global-actions">
+          <button
+            className="btn btn-primary"
+            id="addRegistration"
+            onClick={handleAddRegistrationClick}
+          >
+            <span>
+              <i className="fa-solid fa-plus"></i>
+            </span>
+            Créer une inscription
+          </button>
+
+          {/* <input
+            type={isSearchActive ? "button" : "search"}
+            className="btn btn-primary"
+            id="searchRegistration"
+            value={"rechercher"}
+            onClick={() => setIsSearchActive((prev) => !prev)}
+            // onClick={(e:MouseEvent<HTMLInputElement>) => {e.preventDefault()}}
+          /> */}
+          {/* <input type="search" name="searchRegistration" placeholder="Test" />
+          <input type="month" name="" id="" /> */}
+        </div>
+
         <div className="pending-registrations">
-          {/* {registrationsLoading ? (
-            <>
-              <h3>Demandes en attente (...)</h3>
+          <div className="section-header">
+            <h3>
+              Demandes en attente (
+              {registrationsLoading ? "..." : displayRegistrationsNumber("pending")})
+            </h3>
+            <button onClick={handleOpeningSection}>
+              <i
+                className={`fa-solid fa-chevron-${isPendingSectionOpened ? "up" : "down"}`}
+                data-section="pending"
+              ></i>
+            </button>
+          </div>
+          <div
+            className="section-body"
+            style={
+              isPendingSectionOpened
+                ? undefined
+                : { maxHeight: 0, opacity: 0, zIndex: "-5", position: "absolute" }
+            }
+            ref={pendingSectionRef}
+          >
+            {registrationsLoading ? (
               <p>Chargement des demandes d&apos;inscription</p>
-            </>
-          ) : (
-            <h3>Demandes en attente ({displayRegistrationsNumber("pending")})</h3>
-          )} */}
-          <h3>
-            Demandes en attente (
-            {registrationsLoading ? "..." : displayRegistrationsNumber("pending")})
-          </h3>
-          {registrationsLoading ? (
-            <p>Chargement des demandes d&apos;inscription</p>
-          ) : !registrations ? (
-            <p>Aucune demande d&apos;inscription en attente</p>
-          ) : (
-            displayRegistrationCard("pending")
-          )}
+            ) : !registrations ? (
+              <p>Aucune demande d&apos;inscription en attente</p>
+            ) : (
+              displayRegistrationCard("pending")
+            )}
+          </div>
         </div>
 
         <div className="validated-registrations">
-          <h3>
-            Demandes traitées (
-            {registrationsLoading ? "..." : displayRegistrationsNumber("validated")})
-          </h3>
-          {registrationsLoading ? (
-            <p>Chargement des demandes d&apos;inscription</p>
-          ) : !registrations ? (
-            <p>Aucune demande d&apos;inscription en attente</p>
-          ) : (
-            displayRegistrationCard("validated")
-          )}
+          <div className="section-header">
+            <h3>
+              Demandes traitées (
+              {registrationsLoading ? "..." : displayRegistrationsNumber("validated")})
+            </h3>
+            <button onClick={handleOpeningSection}>
+              <i
+                className={`fa-solid fa-chevron-${isValidatedSectionOpened ? "up" : "down"}`}
+                data-section="validated"
+              ></i>
+            </button>
+          </div>
+          <div
+            className="section-body"
+            style={
+              isValidatedSectionOpened
+                ? undefined
+                : { maxHeight: 0, opacity: 0, zIndex: "-5", position: "absolute" }
+            }
+          >
+            {registrationsLoading ? (
+              <p>Chargement des demandes d&apos;inscription</p>
+            ) : !registrations ? (
+              <p>Aucune demande d&apos;inscription en attente</p>
+            ) : (
+              displayRegistrationCard("validated")
+            )}
+          </div>
         </div>
 
         <div className="cancelled-registrations">
-          <h3>
-            Demandes annulées (
-            {registrationsLoading ? "..." : displayRegistrationsNumber("cancelled")})
-          </h3>
-          {registrationsLoading ? (
-            <p>Chargement des demandes d&apos;inscription</p>
-          ) : !registrations ? (
-            <p>Aucune demande d&apos;inscirption en attente</p>
-          ) : (
-            displayRegistrationCard("cancelled")
-          )}
+          <div className="section-header">
+            <h3>
+              Demandes annulées (
+              {registrationsLoading ? "..." : displayRegistrationsNumber("cancelled")})
+            </h3>
+            <button onClick={handleOpeningSection}>
+              <i
+                className={`fa-solid fa-chevron-${isCancelledSectionOpened ? "up" : "down"}`}
+                data-section="cancelled"
+              ></i>
+            </button>
+          </div>
+          <div
+            className="section-body"
+            style={
+              isCancelledSectionOpened
+                ? undefined
+                : { maxHeight: 0, opacity: 0, zIndex: "-5", position: "absolute" }
+            }
+          >
+            {registrationsLoading ? (
+              <p>Chargement des demandes d&apos;inscription</p>
+            ) : !registrations ? (
+              <p>Aucune demande d&apos;inscirption en attente</p>
+            ) : (
+              displayRegistrationCard("cancelled")
+            )}
+          </div>
         </div>
       </div>
 
@@ -129,7 +226,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
             </div>
 
             <AdminRegistrationForm
-              patchMethod={true}
+              patchMethod={patchMethod}
               setRequestMessage={setRequestMessage}
               focusedRegistration={focusedRegistration}
               isModalActive={isModalActive}

@@ -9,6 +9,7 @@ interface IProps {
   setFocusedRegistration: Dispatch<SetStateAction<ITournamentRegistration>>;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
   setRequestMessage: Dispatch<SetStateAction<{ success: string; error: string }>>;
+  setPatchMethod: Dispatch<SetStateAction<boolean>>;
 }
 
 const RegistrationBand = ({
@@ -16,20 +17,24 @@ const RegistrationBand = ({
   setFocusedRegistration,
   setIsModalActive,
   setRequestMessage,
+  setPatchMethod,
 }: IProps) => {
   //
   const axiosPrivate = useAxiosPrivate();
   const [toggleChevron, setToggleChevron] = useState("down");
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
     e.preventDefault();
-    toggleChevron === "down" ? setToggleChevron("up") : setToggleChevron("down");
+    if (e.target !== document.querySelector(".cta-container button"))
+      toggleChevron === "down" ? setToggleChevron("up") : setToggleChevron("down");
+    e.stopPropagation();
   };
 
   const handleModify = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setFocusedRegistration?.(tournamentRegistration);
     setIsModalActive?.(true);
+    setPatchMethod?.(true);
   };
 
   const handleValidate = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -173,7 +178,10 @@ const RegistrationBand = ({
   return (
     <div
       className="band registration"
+      id="registrationBand"
       style={toggleChevron === "down" && window.innerWidth > 1000 ? { rowGap: 0 } : undefined}
+      onClick={handleClick}
+      // onClick={() => (toggleChevron === "down" ? setToggleChevron("up") : setToggleChevron("down"))}
     >
       <div className="registration-date">
         Demande du{" "}

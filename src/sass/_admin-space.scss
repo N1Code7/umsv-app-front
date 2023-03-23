@@ -2,10 +2,20 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   h1 {
     margin-bottom: 0.5rem;
   }
+
+  // h2 {
+  //   margin: 0;
+  // }
 
   .sections-container {
     display: flex;
@@ -73,13 +83,25 @@
     flex-direction: column;
     gap: 2rem;
 
-    h3 {
-      display: inline-block;
+    .global-actions {
+      display: flex;
+      flex-direction: row;
+
+      button {
+        flex-grow: 2;
+
+        @include ptt {
+          flex-grow: 0;
+        }
+      }
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       position: relative;
       margin-bottom: 1rem;
-      text-transform: capitalize;
-      font-family: $font-body;
-      font-weight: 600;
 
       &::after {
         content: "";
@@ -91,13 +113,36 @@
         left: 0;
         bottom: -5px;
       }
+
+      button {
+        padding: 0.1rem 0.5rem;
+        background: transparent;
+        font-size: 1.1rem;
+      }
     }
 
-    & > div {
+    h3 {
+      display: inline-block;
+      position: relative;
+      text-transform: capitalize;
+      font-family: $font-body;
+      font-weight: 600;
+    }
+
+    .section-body {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      //   height: auto;
+      //   transform-origin: top;
+      overflow: hidden;
     }
+
+    // & > div {
+    //   display: flex;
+    //   flex-direction: column;
+    //   gap: 0.5rem;
+    // }
   }
 
   .card {

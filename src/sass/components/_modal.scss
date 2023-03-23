@@ -4,14 +4,16 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: min(27rem, 90vw);
-  height: min(150vw, 45rem);
+  // height: min(150vw, 45rem);
+  height: 90vh;
   background: $bg-3;
   z-index: 21;
   border-radius: 3px;
 
   @include ptt {
     width: 70vw;
-    height: max(40rem, 82vw);
+    // height: max(40rem, 82vw);
+    height: min(90vh, 56rem);
   }
 
   @include from(1000) {
