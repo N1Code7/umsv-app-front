@@ -62,7 +62,11 @@ const RegistrationBand = ({
           const prev = registrations.filter(
             (registration: ITournamentRegistration) => registration.id !== tournamentRegistration.id
           );
-          return [...prev, { ...tournamentRegistration, requestState: "validated" }];
+          return [...prev, { ...tournamentRegistration, requestState: "validated" }].sort(
+            (a: ITournamentRegistration, b: ITournamentRegistration) =>
+              Number(new Date(b.updatedAt || b.createdAt)) -
+              Number(new Date(a.updatedAt || a.createdAt))
+          );
         },
         populateCache: (
           newRegistration: ITournamentRegistration,
@@ -109,7 +113,11 @@ const RegistrationBand = ({
           const prev = registrations.filter(
             (registration: ITournamentRegistration) => registration.id !== tournamentRegistration.id
           );
-          return [...prev, { ...tournamentRegistration, requestState: "cancelled" }];
+          return [...prev, { ...tournamentRegistration, requestState: "cancelled" }].sort(
+            (a: ITournamentRegistration, b: ITournamentRegistration) =>
+              Number(new Date(b.updatedAt || b.createdAt)) -
+              Number(new Date(a.updatedAt || a.createdAt))
+          );
         },
         populateCache: (
           newRegistration: ITournamentRegistration,
@@ -154,9 +162,13 @@ const RegistrationBand = ({
         }),
       {
         optimisticData: (registrations: Array<ITournamentRegistration>) =>
-          registrations.filter(
-            (reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id
-          ),
+          registrations
+            .filter((reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id)
+            .sort(
+              (a: ITournamentRegistration, b: ITournamentRegistration) =>
+                Number(new Date(b.updatedAt || b.createdAt)) -
+                Number(new Date(a.updatedAt || a.createdAt))
+            ),
         populateCache: (
           newRegistration: ITournamentRegistration,
           allRegistrations: Array<ITournamentRegistration>

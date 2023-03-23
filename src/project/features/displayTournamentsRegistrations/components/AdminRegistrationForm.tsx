@@ -156,8 +156,6 @@ const AdminRegistrationForm = ({
       comment: registrationComment.current?.value || null,
     };
 
-    console.log(bodyRequest);
-
     await adminTournamentRegistrationSchema
       .validate(
         {
