@@ -30,13 +30,13 @@ const Tournament = ({ tournament, displayOnMobile }: ITournamentProps) => {
         <a
           // HAVE TO CHANGE URL !!!!!!
           href="https://www.lifb.org/wp-content/uploads/2022/09/OPS_Reglement_Autorisations_Tournois_2022-2023_NVF-1.pdf"
-          className="btn see-file"
+          className="btn btn-see-file"
           target="_blank"
           rel="noopener noreferrer"
         >
           📄
         </a>
-        <button className="btn register" onClick={handleRegister}>
+        <button className="btn btn-success" onClick={handleRegister}>
           ➕
         </button>
       </div>

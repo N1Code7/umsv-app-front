@@ -270,20 +270,26 @@ const RegistrationBand = ({
       </div>
 
       <div className="cta-container">
-        <button onClick={handleModify}>✏️</button>
+        <button className="btn btn-modify" onClick={handleModify}>
+          ✏️
+        </button>
         <button
+          className="btn btn-success"
           style={{ display: tournamentRegistration.requestState === "validated" ? "none" : "flex" }}
           onClick={handleValidate}
         >
           ✅
         </button>
         <button
+          className="btn btn-cancel"
           style={{ display: tournamentRegistration.requestState === "cancelled" ? "none" : "flex" }}
           onClick={handleCancel}
         >
           ↩️
         </button>
-        <button onClick={handleDelete}>🗑️</button>
+        <button className="btn btn-delete" onClick={handleDelete}>
+          🗑️
+        </button>
       </div>
 
       <button onClick={handleClick}>

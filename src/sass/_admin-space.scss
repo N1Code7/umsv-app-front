@@ -17,6 +17,12 @@
   //   margin: 0;
   // }
 
+  .tournaments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .sections-container {
     display: flex;
     flex-direction: column;
@@ -239,33 +245,33 @@
     }
 
     button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
+      // text-align: center;
       width: 3rem;
       padding: 0.5rem;
       aspect-ratio: 1 / 1;
       font-size: 1.5rem;
-      border: 1px solid $bg-1;
+      // border: 1px solid $bg-1;
       border-radius: 20px;
 
-      &:nth-of-type(1) {
-        background: $warning-2;
-        border: 1px solid $warning;
-      }
-      &:nth-of-type(2) {
-        background: $success-2;
-        border: 1px solid $success-1;
-      }
-      &:nth-of-type(3) {
-        background: $cancelled-2;
-        border: 1px solid $cancelled;
-      }
-      &:nth-of-type(4) {
-        background: $danger-2;
-        border: 1px solid $danger-1;
-      }
+      // &:nth-of-type(1) {
+      //   background: $warning-2;
+      //   border: 1px solid $warning;
+      // }
+      // &:nth-of-type(2) {
+      //   background: $success-2;
+      //   border: 1px solid $success-1;
+      // }
+      // &:nth-of-type(3) {
+      //   background: $cancelled-2;
+      //   border: 1px solid $cancelled;
+      // }
+      // &:nth-of-type(4) {
+      //   background: $danger-2;
+      //   border: 1px solid $danger-1;
+      // }
     }
   }
 }
