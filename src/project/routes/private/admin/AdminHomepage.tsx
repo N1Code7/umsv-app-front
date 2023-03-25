@@ -97,10 +97,11 @@ const AdminHomepage = () => {
                   (registration: ITournamentRegistration) =>
                     registration.requestState === "validated" &&
                     Number(
-                      new Date(registration.tournament.endDate || registration.tournamentEndDate)
+                      new Date(registration.tournament?.endDate || registration.tournamentEndDate)
                     ) < Number(new Date()) &&
                     !registration.result?.areResultsValidated
                 )
+                .slice(0, 5)
                 .map((registration: ITournamentRegistration) => (
                   <div key={registration.id} className="card">
                     <i className="fa-solid fa-user"></i>
@@ -117,8 +118,11 @@ const AdminHomepage = () => {
             {registrations?.filter(
               (registration: ITournamentRegistration) =>
                 registration.requestState === "validated" &&
+                Number(
+                  new Date(registration.tournament?.endDate || registration.tournamentEndDate)
+                ) < Number(new Date()) &&
                 !registration.result?.areResultsValidated
-            ).length > 5 && <div className="card">Voir plus</div>}
+            ).length > 5 && <button className="card">Voir plus</button>}
           </div>
         </section>
 
