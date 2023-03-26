@@ -3,11 +3,17 @@ import { ITournament } from "../../../../interfaces/interfaces";
 import { sleep } from "../../../../utils/globals";
 import useSWR from "swr";
 import TournamentBand from "../../../features/tournaments/components/TournamentBand";
+import { MouseEvent, useState } from "react";
 
 interface IProps {}
 
 const AdminTournamentsHandle = ({}: IProps) => {
   const axiosPrivate = useAxiosPrivate();
+  const [selectedSeason, setSelectedSeason] = useState(
+    Number(new Date().getMonth()) < 9
+      ? `${new Date().getFullYear() - 1}/${new Date().getFullYear()}`
+      : `${new Date().getFullYear()}/${new Date().getFullYear() + 1}`
+  );
   //
   const fetcher = async (url: string) =>
     sleep(2000)
@@ -23,6 +29,16 @@ const AdminTournamentsHandle = ({}: IProps) => {
     { id: 4, value: "2022/2023" },
   ];
 
+  const sortTournamentsBySeason = (array: Array<ITournament>, season: string) =>
+    array.filter((tournament: ITournament) => tournament.season === season);
+
+  const handleSeasonFilter = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.dir(e.target);
+
+    setSelectedSeason((e.target as HTMLButtonElement).innerText);
+  };
+
   return (
     <main className="admin-space">
       <h1>Gestion des tournois</h1>
@@ -31,12 +47,20 @@ const AdminTournamentsHandle = ({}: IProps) => {
       ) : (
         <>
           <div className="seasons-filter">
-            {seasons.map((item: { id: number; value: string }) => (
-              <span key={item.id}>{item.value}</span>
-            ))}
+            {seasons
+              .sort((a, b) => b.value.localeCompare(a.value))
+              .map((item: { id: number; value: string }) => (
+                <button
+                  key={item.id}
+                  onClick={handleSeasonFilter}
+                  className={selectedSeason === item.value ? "selected" : undefined}
+                >
+                  {item.value}
+                </button>
+              ))}
           </div>
           <div className="tournaments-list">
-            {tournaments.map((tournament: ITournament) => (
+            {sortTournamentsBySeason(tournaments, selectedSeason).map((tournament: ITournament) => (
               <TournamentBand key={tournament.id} tournament={tournament} />
             ))}
           </div>

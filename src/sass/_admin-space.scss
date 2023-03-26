@@ -17,6 +17,31 @@
   //   margin: 0;
   // }
 
+  .seasons-filter {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    button {
+      padding: 0.5rem 0.7rem;
+      border-radius: 20px;
+      background: $primary-1;
+      color: $content-light;
+
+      &.selected {
+        background: $content-light;
+        color: $primary-1;
+        border: 2px solid $primary-1;
+      }
+    }
+  }
+
   .tournaments-list {
     display: flex;
     flex-direction: column;
