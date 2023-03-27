@@ -1,19 +1,68 @@
 import { MouseEvent, useEffect, useState } from "react";
 import { ITournament } from "../../../../interfaces/interfaces";
 import { formatDate } from "../../../../utils/dateFunctions";
+import { mutate } from "swr";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import TournamentForm from "./TournamentForm";
 
 interface IProps {
   tournament: ITournament;
 }
 
 const TournamentBand = ({ tournament }: IProps) => {
+  const axiosPrivate = useAxiosPrivate();
   const [isChevronDown, setIsChevronDown] = useState("down");
 
+  // const bodyRequest:ITournament = {
+  //   name,
+  //   city,
+  //   startDate,
+  //   endDate,
+  //   isTeamCompetition,
+  //   standardPrice1,
+  //   standardPrice2,
+  //   standardPrice3,
+  //   elitePrice1,
+  //   elitePrice2,
+  //   elitePrice3,
+  //   priceSingle,
+  //   priceDouble,
+  //   priceMixed,
+  //   registrationClosingDate,
+  //   randomDraw,
+  //   emailContact,
+  //   telContact,
+  //   registrationMethod,
+  //   paymentMethod,
+  //   regulationFileName,
+  //   regulationFileUrl,
+  //   comment
+  // }
+
   const handleClick = (e: MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.target !== document.querySelector(".cta-container button"))
-      isChevronDown === "down" ? setIsChevronDown("up") : setIsChevronDown("down");
+    if (!Array.from(document.querySelectorAll(".details a")).includes(e.target as Element)) {
+      e.preventDefault();
+
+      if (
+        e.target !==
+        document.querySelector(
+          ".cta-container button, .registration-modalities a, .contacts a:nth-of-type(1), .contacts a:nth-of-type(2)"
+        )
+      ) {
+        isChevronDown === "down" ? setIsChevronDown("up") : setIsChevronDown("down");
+      }
+    }
     e.stopPropagation();
+  };
+
+  const handleModify = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    //
+    await mutate(
+      "tournaments",
+      await axiosPrivate.patch(`/admin/tournament/${tournament.id}`, {}),
+      {}
+    );
   };
 
   return (
@@ -69,13 +118,41 @@ const TournamentBand = ({ tournament }: IProps) => {
           <li>Limite d&apos;inscription : {formatDate(tournament.registrationClosingDate)}</li>
           <li>Tirage au sort : {formatDate(tournament.randomDraw)}</li>
           <li>
-            <a href={tournament.regulationFileUrl}>Règlement particulier</a>
+            {tournament.regulationFileUrl ? (
+              <a href={tournament.regulationFileUrl} target="_blank" rel="noopener noreferrer">
+                Réglement particulier
+              </a>
+            ) : (
+              <span>Pas de réglement</span>
+            )}
           </li>
         </ul>
         <i className="fa-solid fa-address-card"></i>
         <ul className="contacts">
-          <li>Email : {tournament.emailContact}</li>
-          <li>Tél : {tournament.telContact}</li>
+          <li>
+            Email :{" "}
+            {tournament.emailContact ? (
+              <a href={`mailto:${tournament.emailContact}`}>{tournament.emailContact}</a>
+            ) : (
+              "-"
+            )}
+          </li>
+          <li>
+            Tél :{" "}
+            {tournament.telContact ? (
+              <a
+                href={`tel:+33${
+                  tournament.telContact[0] === "+"
+                    ? tournament.telContact.slice(3)
+                    : tournament.telContact.slice(1)
+                }`}
+              >
+                {tournament.telContact}
+              </a>
+            ) : (
+              "-"
+            )}
+          </li>
         </ul>
         <i className="fa-solid fa-comment-dots"></i>
         <div className="comment">{tournament.comment || "Aucun commentaire"}</div>

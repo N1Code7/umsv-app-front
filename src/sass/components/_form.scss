@@ -62,8 +62,10 @@ input {
 
   &[type="text"],
   &[type="email"],
+  &[type="tel"],
   &[type="password"],
-  &[type="date"] {
+  &[type="date"],
+  &[type="number"] {
     height: 3rem;
     border: 1.5px solid grey;
     border-radius: 3px;
@@ -84,6 +86,7 @@ input {
     border-radius: 3px;
     appearance: none;
     -webkit-appearance: none;
+    font-size: clamp(0.8rem, 4vmin, 1rem);
     font-weight: 500;
     cursor: pointer;
     margin-top: 0.6rem;
@@ -176,6 +179,134 @@ textarea {
   }
 }
 
+.dates {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.3rem, 2vmin, 1.2rem);
+
+  span {
+    font-weight: 500;
+  }
+
+  input {
+    font-size: clamp(0.8rem, 3vmin, 1.2rem);
+  }
+}
+
+.prices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+
+  &-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .price {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    text-align: center;
+
+    label {
+      font-size: 0.9rem;
+      font-weight: normal;
+    }
+
+    input {
+      width: clamp(4rem, 18vw, 10rem);
+
+      &::placeholder {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+.checkboxes-container {
+  .checkboxes {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.6rem;
+
+    @include ptt {
+      // gap: clamp(2rem, 5vw, 5rem);
+      justify-content: space-around;
+    }
+
+    input[type="checkbox"] {
+      display: none;
+
+      &:checked + label {
+        background-image: linear-gradient($primary-1 0 0);
+        background-size: 100% 100%;
+        color: $content-light;
+        font-weight: 500;
+      }
+    }
+
+    label {
+      position: relative;
+      min-width: clamp(4rem, 20vmin, 7rem);
+      padding: 0.6rem 0.3rem;
+      border: 2px solid $primary-1;
+      border-radius: 3px;
+      background-image: linear-gradient($primary-1 0 0);
+      background-origin: border-box;
+      background-position: 0 100%;
+      background-size: 0 100%;
+      background-repeat: no-repeat;
+      transition: 0.4s;
+      text-align: center;
+      font-size: 0.9rem;
+
+      @include coarse {
+        box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
+      }
+
+      @include fine {
+        &:hover {
+          box-shadow: 2px 2px 13px 2px rgba($primary-1, 0.6);
+        }
+      }
+
+      @include from(1000) {
+        font-size: 1.1rem;
+      }
+    }
+
+    .form-row {
+      flex-direction: row;
+    }
+  }
+}
+
+.partner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  @include ptt {
+    flex-direction: row;
+    gap: 1.2rem;
+
+    input:first-of-type {
+      flex-grow: 2;
+    }
+
+    input:last-of-type {
+      width: 25%;
+    }
+  }
+}
+
 .registration-form {
   .choose-tournament-identifier,
   .choose-user-identifier {
@@ -193,103 +324,5 @@ textarea {
         width: auto;
       }
     }
-  }
-
-  .dates {
-    display: flex;
-    align-items: center;
-    gap: clamp(0.3rem, 2vmin, 1.2rem);
-
-    span {
-      font-weight: 500;
-    }
-
-    input {
-      font-size: clamp(0.8rem, 3vmin, 1.2rem);
-    }
-  }
-
-  .checkboxes-container {
-    .checkboxes {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 0.6rem;
-
-      @include ptt {
-        // gap: clamp(2rem, 5vw, 5rem);
-        justify-content: space-around;
-      }
-
-      input[type="checkbox"] {
-        display: none;
-
-        &:checked + label {
-          background-image: linear-gradient($primary-1 0 0);
-          background-size: 100% 100%;
-          color: $content-light;
-          font-weight: 500;
-        }
-      }
-
-      label {
-        position: relative;
-        min-width: clamp(4rem, 20vmin, 7rem);
-        padding: 0.6rem 0.3rem;
-        border: 2px solid $primary-1;
-        border-radius: 3px;
-        background-image: linear-gradient($primary-1 0 0);
-        background-origin: border-box;
-        background-position: 0 100%;
-        background-size: 0 100%;
-        background-repeat: no-repeat;
-        transition: 0.4s;
-        text-align: center;
-        font-size: 0.9rem;
-
-        @include coarse {
-          box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
-        }
-
-        @include fine {
-          &:hover {
-            box-shadow: 2px 2px 13px 2px rgba($primary-1, 0.6);
-          }
-        }
-
-        @include from(1000) {
-          font-size: 1.1rem;
-        }
-      }
-
-      .form-row {
-        flex-direction: row;
-      }
-    }
-  }
-
-  .partner-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-
-    @include ptt {
-      flex-direction: row;
-      gap: 1.2rem;
-
-      input:first-of-type {
-        flex-grow: 2;
-      }
-
-      input:last-of-type {
-        width: 25%;
-      }
-    }
-  }
-
-  input[type="submit"] {
-    font-size: clamp(0.8rem, 4vmin, 1rem);
   }
 }

@@ -33,8 +33,8 @@ export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat
         formattedDate[0]
       }`;
     } else {
-      return `du ${formattedDate2[2]} ${getMonthOfYear(entryDate1)} au ${
-        formattedDate[2]
+      return `du ${formattedDate[2]} ${getMonthOfYear(entryDate1)} au ${
+        formattedDate2[2]
       } ${getMonthOfYear(entryDate2)} ${formattedDate[0]}`;
     }
   }
