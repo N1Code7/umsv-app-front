@@ -13,6 +13,19 @@
     margin-bottom: 0.5rem;
   }
 
+  .global-actions {
+    display: flex;
+    flex-direction: row;
+
+    button {
+      flex-grow: 2;
+
+      @include ptt {
+        flex-grow: 0;
+      }
+    }
+  }
+
   // h2 {
   //   margin: 0;
   // }
@@ -48,7 +61,7 @@
     flex-direction: column;
     gap: 0.5rem;
 
-    @include from(1200) {
+    @include from(1300) {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
     }
@@ -119,19 +132,6 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-
-    .global-actions {
-      display: flex;
-      flex-direction: row;
-
-      button {
-        flex-grow: 2;
-
-        @include ptt {
-          flex-grow: 0;
-        }
-      }
-    }
 
     .section-header {
       display: flex;
@@ -223,6 +223,11 @@
 
       &.tournament {
         grid-template-columns: repeat(3, 25%);
+      }
+    }
+
+    @include from(1300) {
+      &.tournament {
         min-height: 10rem;
         height: fit-content;
       }

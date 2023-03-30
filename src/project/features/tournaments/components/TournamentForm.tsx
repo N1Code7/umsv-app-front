@@ -1,9 +1,12 @@
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import { ITournament } from "../../../../interfaces/interfaces";
 import { formatDate } from "../../../../utils/dateFunctions";
+import { tournamentSchema } from "../../../../validations/tournamentSchema";
+import { mutate } from "swr";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import { ValidationError } from "yup";
 
 interface IProps {
-  isModalActive: boolean;
   patchMethod?: string;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
   focusedTournament: ITournament;
@@ -11,31 +14,143 @@ interface IProps {
 }
 
 interface IFormErrors {
-  tournamentName: string;
-  tournamentCity: string;
-  tournamentStartDate: string;
-  tournamentEndDate: string;
+  name: string;
+  city: string;
+  startDate: string;
+  endDate: string;
+  isTeamCompetition: string;
+  standardPrice1: string;
+  standardPrice2: string;
+  standardPrice3: string;
+  elitePrice1: string;
+  elitePrice2: string;
+  elitePrice3: string;
+  priceSingle: string;
+  priceDouble: string;
+  priceMixed: string;
+  registrationClosingDate: string;
+  randomDraw: string;
+  emailContact: string;
+  telContact: string;
+  registrationMethod: string;
+  paymentMethod: string;
+  comment: string;
 }
 
-const TournamentForm = ({ isModalActive, setIsModalActive, setRequestMessage }: IProps) => {
+const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
+  const axiosPrivate = useAxiosPrivate();
   const [formErrors, setFormErrors] = useState({} as IFormErrors);
   const [patchMethod, setPatchMethod] = useState(false);
   const tournamentNameRef = useRef<HTMLInputElement>(null);
   const tournamentCityRef = useRef<HTMLInputElement>(null);
-  const tournamentStartDateNameRef = useRef<HTMLInputElement>(null);
+  const tournamentStartDateRef = useRef<HTMLInputElement>(null);
   const tournamentEndDateRef = useRef<HTMLInputElement>(null);
+  const isTournamentTeamCompetitionRef = useRef<HTMLInputElement>(null);
+  const tournamentStandardPrice1Ref = useRef<HTMLInputElement>(null);
+  const tournamentStandardPrice2Ref = useRef<HTMLInputElement>(null);
+  const tournamentStandardPrice3Ref = useRef<HTMLInputElement>(null);
+  const tournamentElitePrice1Ref = useRef<HTMLInputElement>(null);
+  const tournamentElitePrice2Ref = useRef<HTMLInputElement>(null);
+  const tournamentElitePrice3Ref = useRef<HTMLInputElement>(null);
+  const tournamentPriceSingleRef = useRef<HTMLInputElement>(null);
+  const tournamentPriceDoubleRef = useRef<HTMLInputElement>(null);
+  const tournamentPriceMixedRef = useRef<HTMLInputElement>(null);
+  const tournamentRegistrationClosingDateRef = useRef<HTMLInputElement>(null);
+  const tournamentRandomDrawRef = useRef<HTMLInputElement>(null);
+  const tournamentEmailContactRef = useRef<HTMLInputElement>(null);
+  const tournamentTelContactRef = useRef<HTMLInputElement>(null);
+  const tournamentRegistrationMethodRef = useRef<HTMLInputElement>(null);
+  const tournamentPaymentMethodRef = useRef<HTMLInputElement>(null);
+  const tournamentRegulationUrlRef = useRef<HTMLInputElement>(null);
+  const tournamentCommentRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleFormSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    let errors = {} as IFormErrors;
+    //
+    const bodyRequest = {
+      name: tournamentNameRef.current?.value,
+      city: tournamentCityRef.current?.value,
+      startDate: tournamentStartDateRef.current!.valueAsDate,
+      endDate: tournamentEndDateRef.current?.valueAsDate,
+      isTeamCompetition: isTournamentTeamCompetitionRef.current?.checked,
+      standardPrice1: tournamentStandardPrice1Ref.current?.valueAsNumber || null,
+      standardPrice2: tournamentStandardPrice2Ref.current?.valueAsNumber || null,
+      standardPrice3: tournamentStandardPrice3Ref.current?.valueAsNumber || null,
+      elitePrice1: tournamentElitePrice1Ref.current?.valueAsNumber || null,
+      elitePrice2: tournamentElitePrice2Ref.current?.valueAsNumber || null,
+      elitePrice3: tournamentElitePrice3Ref.current?.valueAsNumber || null,
+      priceSingle: tournamentPriceSingleRef.current?.valueAsNumber || null,
+      priceDouble: tournamentPriceDoubleRef.current?.valueAsNumber || null,
+      priceMixed: tournamentPriceMixedRef.current?.valueAsNumber || null,
+      registrationClosingDate: tournamentRegistrationClosingDateRef.current?.valueAsDate || null,
+      randomDraw: tournamentRandomDrawRef.current?.valueAsDate || null,
+      emailContact: tournamentEmailContactRef.current?.value,
+      telContact: tournamentTelContactRef.current?.value,
+      registrationMethod: tournamentRegistrationMethodRef.current?.value,
+      paymentMethod: tournamentPaymentMethodRef.current?.value,
+      comment: tournamentCommentRef.current?.value,
+    };
+
+    await tournamentSchema
+      .validate(bodyRequest, { abortEarly: false })
+      .then(async () => {
+        setIsModalActive?.(false);
+        await mutate(
+          "/tournaments",
+          await axiosPrivate
+            .post("/admin/tournament", bodyRequest)
+            .then((res) => {
+              setRequestMessage({ success: "Le tournoi a bien été créé ! 👌", error: "" });
+              return res.data;
+            })
+            .catch((err) => {
+              console.error(err);
+              setRequestMessage({
+                success: "",
+                error: "Une erreur est survenue lors de la création du tournoi ! 🤕",
+              });
+            }),
+          {
+            optimisticData: (tournaments: Array<ITournament>) => [
+              ...tournaments,
+              { id: tournaments.length, ...{ bodyRequest } },
+            ],
+            populateCache: (newTournament: ITournament, tournaments: Array<ITournament>) => [
+              ...tournaments,
+              newTournament,
+            ],
+            revalidate: false,
+            rollbackOnError: false,
+          }
+        );
+
+        setTimeout(() => {
+          setRequestMessage({ success: "", error: "" });
+        }, 10000);
+        window.scrollTo(0, 0);
+      })
+      .catch((err) => {
+        console.dir(err);
+
+        err.inner.forEach(
+          (err: ValidationError) => (errors = { ...errors, [err.path as string]: err.message })
+        );
+      });
+
+    setFormErrors(errors);
+  };
+
   //
   return (
-    <form className="form">
+    <form className="form" onSubmit={handleFormSubmit}>
       <div className="form-row">
         <label htmlFor="tournamentName">Nom du tournoi</label>
-        {formErrors.tournamentName && (
-          <div className="form-error-detail">{formErrors.tournamentName}</div>
-        )}
+        {formErrors.name && <div className="form-error-detail">{formErrors.name}</div>}
         <input
           type="text"
           id="tournamentName"
-          className={formErrors.tournamentName ? "form-error" : ""}
+          className={formErrors.name ? "form-error" : undefined}
           autoFocus
           // defaultValue={focusedRegistration?.tournamentName || undefined}
           ref={tournamentNameRef}
@@ -43,31 +158,26 @@ const TournamentForm = ({ isModalActive, setIsModalActive, setRequestMessage }: 
       </div>
       <div className="form-row">
         <label htmlFor="tournamentCity">Ville du tournoi</label>
-        {formErrors.tournamentCity && (
-          <div className="form-error-detail">{formErrors.tournamentCity}</div>
-        )}
+        {formErrors.city && <div className="form-error-detail">{formErrors.city}</div>}
         <input
           type="text"
           id="tournamentCity"
-          className={formErrors.tournamentCity ? "form-error" : ""}
+          className={formErrors.city ? "form-error" : undefined}
           ref={tournamentCityRef}
           // defaultValue={focusedRegistration?.tournamentCity || undefined}
           required
         />
       </div>
       <div className="form-row">
-        {formErrors.tournamentStartDate && (
-          <div className="form-error-detail">{formErrors.tournamentStartDate}</div>
-        )}
-        {formErrors.tournamentEndDate && (
-          <div className="form-error-detail">{formErrors.tournamentEndDate}</div>
-        )}
+        {formErrors.startDate && <div className="form-error-detail">{formErrors.startDate}</div>}
+        {formErrors.endDate && <div className="form-error-detail">{formErrors.endDate}</div>}
         <div className="dates">
           <label htmlFor="startDate">Du </label>
           <input
             type="date"
             id="startDate"
-            ref={tournamentStartDateNameRef}
+            className={formErrors.startDate ? "form-error" : undefined}
+            ref={tournamentStartDateRef}
             min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
             // defaultValue={
             //   (focusedRegistration?.tournamentStartDate &&
@@ -80,20 +190,9 @@ const TournamentForm = ({ isModalActive, setIsModalActive, setRequestMessage }: 
           <input
             type="date"
             id="endDate"
+            className={formErrors.endDate ? "form-error" : undefined}
             ref={tournamentEndDateRef}
-            // min={
-            //   tournamentStartDate.current?.value
-            //     ? formatDate(
-            //         new Date(
-            //           new Date(registrationStartDate.current?.value!).setDate(
-            //             new Date(registrationStartDate.current?.value!).getDate() + 1
-            //           )
-            //         ).toISOString(),
-            //         undefined,
-            //         "XXXX-XX-XX"
-            //       )
-            //     : undefined
-            // }
+            min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
             // defaultValue={
             //   (focusedRegistration?.tournamentEndDate &&
             //     formatDate(focusedRegistration?.tournamentEndDate, undefined, "XXXX-XX-XX")) ||
@@ -104,53 +203,144 @@ const TournamentForm = ({ isModalActive, setIsModalActive, setRequestMessage }: 
       </div>
       <div className="form-row">
         <label htmlFor="isTeamCompetition">Est-ce une compétition par équipe ?</label>
-        <input type="checkbox" name="isTeamCompetition" id="isTeamCompetition" />
+        {formErrors.isTeamCompetition && (
+          <div className="form-error-detail">{formErrors.isTeamCompetition}</div>
+        )}
+        <input
+          type="checkbox"
+          name="isTeamCompetition"
+          id="isTeamCompetition"
+          className={formErrors.isTeamCompetition ? "form-error" : undefined}
+          ref={isTournamentTeamCompetitionRef}
+        />
       </div>
 
       <div className="form-row">
         <div className="prices">
+          {formErrors.standardPrice1 && (
+            <div className="form-error-detail">{formErrors.standardPrice1}</div>
+          )}
+          {formErrors.standardPrice2 && (
+            <div className="form-error-detail">{formErrors.standardPrice2}</div>
+          )}
+          {formErrors.standardPrice3 && (
+            <div className="form-error-detail">{formErrors.standardPrice3}</div>
+          )}
           <div className="prices-content">
             <div className="price">
-              <label htmlFor="standardPrice1">Prix 1 tableau</label>
-              <input type="number" name="standardPrice1" id="standardPrice1" />
+              <label htmlFor="standardPrice3">Prix 1 tableau</label>
+
+              <input
+                type="number"
+                name="standardPrice1"
+                id="standardPrice1"
+                className={formErrors.standardPrice1 ? "form-error" : undefined}
+                ref={tournamentStandardPrice1Ref}
+              />
             </div>
             <div className="price">
               <label htmlFor="standardPrice2">Prix 2 tableaux</label>
-              <input type="number" name="standardPrice2" id="standardPrice2" />
+              <input
+                type="number"
+                name="standardPrice2"
+                id="standardPrice2"
+                className={formErrors.standardPrice2 ? "form-error" : undefined}
+                ref={tournamentStandardPrice2Ref}
+              />
             </div>
             <div className="price">
               <label htmlFor="standardPrice3">Prix 3 tableaux</label>
-              <input type="number" name="standardPrice3" id="standardPrice3" />
+              <input
+                type="number"
+                name="standardPrice3"
+                id="standardPrice3"
+                className={formErrors.standardPrice3 ? "form-error" : undefined}
+                ref={tournamentStandardPrice3Ref}
+              />
             </div>
           </div>
           <div className="form-separator"></div>
+          {formErrors.elitePrice1 && (
+            <div className="form-error-detail">{formErrors.elitePrice1}</div>
+          )}
+          {formErrors.elitePrice2 && (
+            <div className="form-error-detail">{formErrors.elitePrice2}</div>
+          )}
+          {formErrors.elitePrice3 && (
+            <div className="form-error-detail">{formErrors.elitePrice3}</div>
+          )}
           <div className="prices-content">
             <div className="price">
-              <label htmlFor="standardPrice1">Prix élite 1 tableau</label>
-              <input type="number" name="standardPrice1" id="standardPrice1" />
+              <label htmlFor="elitePrice1">Prix élite 1 tableau</label>
+              <input
+                type="number"
+                name="elitePrice1"
+                id="elitePrice1"
+                className={formErrors.elitePrice1 ? "form-error" : undefined}
+                ref={tournamentElitePrice1Ref}
+              />
             </div>
             <div className="price">
-              <label htmlFor="standardPrice2">Prix élite 2 tableaux</label>
-              <input type="number" name="standardPrice2" id="standardPrice2" />
+              <label htmlFor="elitePrice2">Prix élite 2 tableaux</label>
+              <input
+                type="number"
+                name="elitePrice2"
+                id="elitePrice2"
+                className={formErrors.elitePrice2 ? "form-error" : undefined}
+                ref={tournamentElitePrice2Ref}
+              />
             </div>
             <div className="price">
-              <label htmlFor="standardPrice3">Prix élite 3 tableaux</label>
-              <input type="number" name="standardPrice3" id="standardPrice3" />
+              <label htmlFor="elitePrice3">Prix élite 3 tableaux</label>
+              <input
+                type="number"
+                name="elitePrice3"
+                id="elitePrice3"
+                className={formErrors.elitePrice3 ? "form-error" : undefined}
+                ref={tournamentElitePrice3Ref}
+              />
             </div>
           </div>
           <div className="form-separator"></div>
+          {formErrors.priceSingle && (
+            <div className="form-error-detail">{formErrors.priceSingle}</div>
+          )}
+          {formErrors.priceDouble && (
+            <div className="form-error-detail">{formErrors.priceDouble}</div>
+          )}
+          {formErrors.priceMixed && (
+            <div className="form-error-detail">{formErrors.priceMixed}</div>
+          )}
           <div className="prices-content">
             <div className="price">
-              <label htmlFor="standardPrice1">Prix tableau simple</label>
-              <input type="number" name="standardPrice1" id="standardPrice1" />
+              <label htmlFor="priceSingle">Prix tableau simple</label>
+              <input
+                type="number"
+                name="priceSingle"
+                id="priceSingle"
+                className={formErrors.priceSingle ? "form-error" : undefined}
+                ref={tournamentPriceSingleRef}
+              />
             </div>
             <div className="price">
-              <label htmlFor="standardPrice2">Prix tableau double</label>
-              <input type="number" name="standardPrice2" id="standardPrice2" />
+              <label htmlFor="priceDouble">Prix tableau double</label>
+              <input
+                type="number"
+                name="priceDouble"
+                id="priceDouble"
+                className={formErrors.priceDouble ? "form-error" : undefined}
+                ref={tournamentPriceDoubleRef}
+              />
             </div>
             <div className="price">
-              <label htmlFor="standardPrice3">Prix tableau mixte</label>
-              <input type="number" name="standardPrice3" id="standardPrice3" />
+              <label htmlFor="priceMixed">Prix tableau mixte</label>
+              <input
+                type="number"
+                name="priceMixed"
+                id="priceMixed"
+                className={formErrors.priceMixed ? "form-error" : undefined}
+                ref={tournamentPriceMixedRef}
+              />
             </div>
           </div>
         </div>
@@ -158,31 +348,71 @@ const TournamentForm = ({ isModalActive, setIsModalActive, setRequestMessage }: 
 
       <div className="form-row">
         <label htmlFor="registrationClosingDate">Date de limite d&apos;inscription</label>
-        <input type="date" name="registrationClosingDate" id="registrationClosingDate" />
+        {formErrors.registrationClosingDate && (
+          <div className="form-error-detail">{formErrors.registrationClosingDate}</div>
+        )}
+        <input
+          type="date"
+          name="registrationClosingDate"
+          id="registrationClosingDate"
+          className={formErrors.registrationClosingDate ? "form-error" : undefined}
+          ref={tournamentRegistrationClosingDateRef}
+        />
       </div>
 
       <div className="form-row">
         <label htmlFor="randomDrawDate">Date du Tirage au sort (TauS)</label>
-        <input type="date" name="randomDrawDate" id="randomDrawDate" />
+        {formErrors.randomDraw && <div className="form-error-detail">{formErrors.randomDraw}</div>}
+        <input
+          type="date"
+          name="randomDrawDate"
+          id="randomDrawDate"
+          className={formErrors.randomDraw ? "form-error" : undefined}
+          ref={tournamentRandomDrawRef}
+        />
       </div>
 
       <div className="form-row">
         <label htmlFor="emailContact">Email de l&apos;organisateur</label>
-        <input type="email" name="emailContact" id="emailContact" />
+        {formErrors.emailContact && (
+          <div className="form-error-detail">{formErrors.emailContact}</div>
+        )}
+        <input
+          type="email"
+          name="emailContact"
+          id="emailContact"
+          className={formErrors.emailContact ? "form-error" : undefined}
+          ref={tournamentEmailContactRef}
+        />
       </div>
 
       <div className="form-row">
         <label htmlFor="telContact">Téléphone de l&apos;organisateur</label>
-        <input type="tel" name="telContact" id="telContact" pattern="0[0-9]{9}" min={10} max={12} />
+        {formErrors.telContact && <div className="form-error-detail">{formErrors.telContact}</div>}
+        <input
+          type="tel"
+          name="telContact"
+          id="telContact"
+          className={formErrors.telContact ? "form-error" : undefined}
+          // pattern="0[0-9]{9}"
+          min={10}
+          max={12}
+          ref={tournamentTelContactRef}
+        />
       </div>
 
       <div className="form-row">
         <label htmlFor="registrationMethod">Méthode d&apos;inscription</label>
+        {formErrors.registrationMethod && (
+          <div className="form-error-detail">{formErrors.registrationMethod}</div>
+        )}
         <input
           type="text"
           name="registrationMethod"
           id="registrationMethod"
+          className={formErrors.telContact ? "form-error" : undefined}
           list="registrationMethodList"
+          ref={tournamentRegistrationMethodRef}
         />
         <datalist id="registrationMethodList">
           <option value="Badnet / eBad"></option>
@@ -193,8 +423,18 @@ const TournamentForm = ({ isModalActive, setIsModalActive, setRequestMessage }: 
       </div>
 
       <div className="form-row">
-        <label htmlFor="paymentMethod">Méthode d&apos;inscription</label>
-        <input type="text" name="paymentMethod" id="paymentMethod" list="paymentMethodList" />
+        <label htmlFor="paymentMethod">Méthode de paiement</label>
+        {formErrors.paymentMethod && (
+          <div className="form-error-detail">{formErrors.paymentMethod}</div>
+        )}
+        <input
+          type="text"
+          name="paymentMethod"
+          id="paymentMethod"
+          className={formErrors.paymentMethod ? "form-error" : undefined}
+          list="paymentMethodList"
+          ref={tournamentPaymentMethodRef}
+        />
         <datalist id="paymentMethodList">
           <option value="Portefeuille Badnet"></option>
           <option value="CB"></option>
@@ -211,7 +451,13 @@ const TournamentForm = ({ isModalActive, setIsModalActive, setRequestMessage }: 
 
       <div className="form-row">
         <label htmlFor="comment">Commentaires</label>
-        <textarea name="comment" id="comment"></textarea>
+        {formErrors.comment && <div className="form-error-detail">{formErrors.comment}</div>}
+        <textarea
+          name="comment"
+          id="comment"
+          className={formErrors.comment ? "form-error" : undefined}
+          ref={tournamentCommentRef}
+        ></textarea>
       </div>
 
       <input

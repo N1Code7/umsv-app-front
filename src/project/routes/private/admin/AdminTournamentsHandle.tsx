@@ -16,7 +16,7 @@ const AdminTournamentsHandle = ({}: IProps) => {
       ? `${new Date().getFullYear() - 1}/${new Date().getFullYear()}`
       : `${new Date().getFullYear()}/${new Date().getFullYear() + 1}`
   );
-  const [isModalActive, setIsModalActive] = useState(true);
+  const [isModalActive, setIsModalActive] = useState(false);
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });
   const [focusedTournament, setFocusedTournament] = useState({} as ITournament);
   //
@@ -44,9 +44,31 @@ const AdminTournamentsHandle = ({}: IProps) => {
     setSelectedSeason((e.target as HTMLButtonElement).innerText);
   };
 
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsModalActive?.(true);
+    setFocusedTournament({} as ITournament);
+  };
+
   return (
     <main className="admin-space">
+      {requestMessage.success !== "" && (
+        <div className="notification-message">
+          <p className="success">{requestMessage.success}</p>
+        </div>
+      )}
+      {requestMessage.error !== "" && (
+        <div className="notification-message">
+          <p className="error">{requestMessage.error}</p>
+        </div>
+      )}
+
       <h1>Gestion des tournois</h1>
+      <div className="global-actions">
+        <button className="btn btn-primary" onClick={handleClick}>
+          Créer un tournoi
+        </button>
+      </div>
       {tournamentsLoading ? (
         <p>Chargement des tournois</p>
       ) : (
@@ -88,7 +110,6 @@ const AdminTournamentsHandle = ({}: IProps) => {
               // patchMethod={patchMethod}
               setRequestMessage={setRequestMessage}
               focusedTournament={focusedTournament}
-              isModalActive={isModalActive}
               setIsModalActive={setIsModalActive}
             />
           </div>

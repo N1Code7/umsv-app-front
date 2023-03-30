@@ -13,32 +13,6 @@ const TournamentBand = ({ tournament }: IProps) => {
   const axiosPrivate = useAxiosPrivate();
   const [isChevronDown, setIsChevronDown] = useState("down");
 
-  // const bodyRequest:ITournament = {
-  //   name,
-  //   city,
-  //   startDate,
-  //   endDate,
-  //   isTeamCompetition,
-  //   standardPrice1,
-  //   standardPrice2,
-  //   standardPrice3,
-  //   elitePrice1,
-  //   elitePrice2,
-  //   elitePrice3,
-  //   priceSingle,
-  //   priceDouble,
-  //   priceMixed,
-  //   registrationClosingDate,
-  //   randomDraw,
-  //   emailContact,
-  //   telContact,
-  //   registrationMethod,
-  //   paymentMethod,
-  //   regulationFileName,
-  //   regulationFileUrl,
-  //   comment
-  // }
-
   const handleClick = (e: MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
     if (!Array.from(document.querySelectorAll(".details a")).includes(e.target as Element)) {
       e.preventDefault();
