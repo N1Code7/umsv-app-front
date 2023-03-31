@@ -407,7 +407,8 @@ const AdminRegistrationForm = ({
               : tournaments
                   .filter(
                     (tournament: ITournament) =>
-                      new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 ||
+                      (tournament.randomDraw &&
+                        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10) ||
                       tournament.id === focusedRegistration?.tournament?.id
                   )
                   .sort(

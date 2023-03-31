@@ -232,15 +232,21 @@ const RegistrationBand = ({
         <div className="tournament-dates">
           {tournamentRegistration.tournament?.endDate || tournamentRegistration.tournamentEndDate
             ? formatDate(
-                tournamentRegistration.tournament?.startDate ||
-                  tournamentRegistration.tournamentStartDate,
-                tournamentRegistration.tournament?.endDate ||
-                  tournamentRegistration.tournamentEndDate,
+                String(
+                  tournamentRegistration.tournament?.startDate ||
+                    tournamentRegistration.tournamentStartDate
+                ),
+                String(
+                  tournamentRegistration.tournament?.endDate ||
+                    tournamentRegistration.tournamentEndDate
+                ),
                 "XX & XX xxx XXXX"
               )
             : formatDate(
-                tournamentRegistration?.tournament?.startDate ||
-                  tournamentRegistration?.tournamentStartDate,
+                String(
+                  tournamentRegistration?.tournament?.startDate ||
+                    tournamentRegistration?.tournamentStartDate
+                ),
                 undefined,
                 "XX xxx XXXX"
               )}

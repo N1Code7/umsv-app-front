@@ -17,6 +17,7 @@ const AdminTournamentsHandle = ({}: IProps) => {
       : `${new Date().getFullYear()}/${new Date().getFullYear() + 1}`
   );
   const [isModalActive, setIsModalActive] = useState(false);
+  const [patchMethod, setPatchMethod] = useState(false);
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });
   const [focusedTournament, setFocusedTournament] = useState({} as ITournament);
   //
@@ -46,6 +47,7 @@ const AdminTournamentsHandle = ({}: IProps) => {
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setPatchMethod(false);
     setIsModalActive?.(true);
     setFocusedTournament({} as ITournament);
   };
@@ -93,7 +95,14 @@ const AdminTournamentsHandle = ({}: IProps) => {
                   Number(new Date(a.startDate)) - Number(new Date(b.startDate))
               )
               .map((tournament: ITournament) => (
-                <TournamentBand key={tournament.id} tournament={tournament} />
+                <TournamentBand
+                  key={tournament.id}
+                  tournament={tournament}
+                  setIsModalActive={setIsModalActive}
+                  setFocusedTournament={setFocusedTournament}
+                  setPatchMethod={setPatchMethod}
+                  setRequestMessage={setRequestMessage}
+                />
               ))}
           </div>
         </>
@@ -107,7 +116,7 @@ const AdminTournamentsHandle = ({}: IProps) => {
             </div>
 
             <TournamentForm
-              // patchMethod={patchMethod}
+              patchMethod={patchMethod}
               setRequestMessage={setRequestMessage}
               focusedTournament={focusedTournament}
               setIsModalActive={setIsModalActive}

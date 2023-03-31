@@ -3,7 +3,7 @@ import * as yup from "yup";
 export const tournamentSchema = yup.object({
   name: yup.string().notRequired(),
   city: yup.string().required(),
-  startDate: yup.date().required().min(new Date()),
+  startDate: yup.date().required(),
   endDate: yup
     .date()
     .notRequired()

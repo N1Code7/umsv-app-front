@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { ITournament } from "../../../../interfaces/interfaces";
 import { formatDate } from "../../../../utils/dateFunctions";
 import { mutate } from "swr";
@@ -7,9 +7,20 @@ import TournamentForm from "./TournamentForm";
 
 interface IProps {
   tournament: ITournament;
+  setPatchMethod: Dispatch<SetStateAction<boolean>>;
+  setIsModalActive: Dispatch<SetStateAction<boolean>>;
+  setFocusedTournament: Dispatch<SetStateAction<ITournament>>;
+  setRequestMessage: Dispatch<SetStateAction<{ success: string; error: string }>>;
 }
 
-const TournamentBand = ({ tournament }: IProps) => {
+const TournamentBand = ({
+  tournament,
+  setPatchMethod,
+  setIsModalActive,
+  setFocusedTournament,
+  setRequestMessage,
+}: IProps) => {
+  //
   const axiosPrivate = useAxiosPrivate();
   const [isChevronDown, setIsChevronDown] = useState("down");
 
@@ -18,10 +29,11 @@ const TournamentBand = ({ tournament }: IProps) => {
       e.preventDefault();
 
       if (
-        e.target !==
-        document.querySelector(
-          ".cta-container button, .registration-modalities a, .contacts a:nth-of-type(1), .contacts a:nth-of-type(2)"
-        )
+        !Array.from(
+          document.querySelectorAll(
+            ".cta-container button, .registration-modalities a, .contacts a:nth-of-type(1), .contacts a:nth-of-type(2)"
+          )
+        ).includes(e.target as Element)
       ) {
         isChevronDown === "down" ? setIsChevronDown("up") : setIsChevronDown("down");
       }
@@ -31,12 +43,42 @@ const TournamentBand = ({ tournament }: IProps) => {
 
   const handleModify = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setPatchMethod?.(true);
+    setFocusedTournament?.(tournament);
+    setIsModalActive?.(true);
+  };
+
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     //
-    await mutate(
-      "tournaments",
-      await axiosPrivate.patch(`/admin/tournament/${tournament.id}`, {}),
-      {}
-    );
+    await mutate("/tournaments", axiosPrivate.delete(`/admin/tournament/${tournament.id}`), {
+      optimisticData: (all: Array<ITournament>) =>
+        all
+          .filter((tou: ITournament) => tou.id !== tournament.id)
+          .sort(
+            (a: ITournament, b: ITournament) =>
+              Number(new Date(a.startDate)) - Number(new Date(b.startDate))
+          ),
+      populateCache: (result, current: Array<ITournament>) =>
+        current.filter((tou: ITournament) => tou.id !== tournament.id),
+      revalidate: false,
+      rollbackOnError: true,
+    })
+      .then(() => {
+        setRequestMessage({ success: "Le tournoi a bien été supprimé ! 👌", error: "" });
+      })
+      .catch((err) => {
+        console.error(err);
+        setRequestMessage({
+          success: "",
+          error: "Une erreur est survenue lors de la suppression du tournoi ! 🤕",
+        });
+      });
+
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -44,8 +86,8 @@ const TournamentBand = ({ tournament }: IProps) => {
       <div className="abstract">
         <div className="tournament-date">
           {formatDate(
-            tournament.startDate,
-            tournament.endDate || undefined,
+            String(tournament.startDate),
+            String(tournament.endDate) || undefined,
             tournament.endDate ? "interval" : "XX xxx XXXX"
           )}
         </div>
@@ -89,8 +131,10 @@ const TournamentBand = ({ tournament }: IProps) => {
         <ul className="registration-modalities">
           <li>Mode d&apos;inscription : {tournament.registrationMethod}</li>
           <li>Paiement : {tournament.paymentMethod}</li>
-          <li>Limite d&apos;inscription : {formatDate(tournament.registrationClosingDate)}</li>
-          <li>Tirage au sort : {formatDate(tournament.randomDraw)}</li>
+          <li>
+            Limite d&apos;inscription : {formatDate(String(tournament.registrationClosingDate))}
+          </li>
+          <li>Tirage au sort : {formatDate(String(tournament.randomDraw))}</li>
           <li>
             {tournament.regulationFileUrl ? (
               <a href={tournament.regulationFileUrl} target="_blank" rel="noopener noreferrer">
@@ -121,7 +165,13 @@ const TournamentBand = ({ tournament }: IProps) => {
                     : tournament.telContact.slice(1)
                 }`}
               >
-                {tournament.telContact}
+                {[
+                  tournament.telContact.slice(0, 2),
+                  tournament.telContact.slice(2, 4),
+                  tournament.telContact.slice(4, 6),
+                  tournament.telContact.slice(6, 8),
+                  tournament.telContact.slice(8, 10),
+                ].join(" ")}
               </a>
             ) : (
               "-"
@@ -132,8 +182,12 @@ const TournamentBand = ({ tournament }: IProps) => {
         <div className="comment">{tournament.comment || "Aucun commentaire"}</div>
       </div>
       <div className="cta-container">
-        <button className="btn btn-modify">✏️</button>
-        <button className="btn btn-delete">🗑️</button>
+        <button className="btn btn-modify" onClick={handleModify}>
+          ✏️
+        </button>
+        <button className="btn btn-delete" onClick={handleDelete}>
+          🗑️
+        </button>
       </div>
 
       <button onClick={handleClick}>

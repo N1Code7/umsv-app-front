@@ -7,7 +7,7 @@ import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { ValidationError } from "yup";
 
 interface IProps {
-  patchMethod?: string;
+  patchMethod?: boolean;
   setIsModalActive: Dispatch<SetStateAction<boolean>>;
   focusedTournament: ITournament;
   setRequestMessage: Dispatch<SetStateAction<{ success: string; error: string }>>;
@@ -37,10 +37,14 @@ interface IFormErrors {
   comment: string;
 }
 
-const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
+const TournamentForm = ({
+  patchMethod,
+  focusedTournament,
+  setIsModalActive,
+  setRequestMessage,
+}: IProps) => {
   const axiosPrivate = useAxiosPrivate();
   const [formErrors, setFormErrors] = useState({} as IFormErrors);
-  const [patchMethod, setPatchMethod] = useState(false);
   const tournamentNameRef = useRef<HTMLInputElement>(null);
   const tournamentCityRef = useRef<HTMLInputElement>(null);
   const tournamentStartDateRef = useRef<HTMLInputElement>(null);
@@ -69,11 +73,11 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
     let errors = {} as IFormErrors;
     //
     const bodyRequest = {
-      name: tournamentNameRef.current?.value,
-      city: tournamentCityRef.current?.value,
-      startDate: tournamentStartDateRef.current!.valueAsDate,
-      endDate: tournamentEndDateRef.current?.valueAsDate,
-      isTeamCompetition: isTournamentTeamCompetitionRef.current?.checked,
+      name: tournamentNameRef.current?.value || null,
+      city: tournamentCityRef.current!.value,
+      startDate: tournamentStartDateRef.current!.valueAsDate!,
+      endDate: tournamentEndDateRef.current?.valueAsDate || null,
+      isTeamCompetition: isTournamentTeamCompetitionRef.current!.checked,
       standardPrice1: tournamentStandardPrice1Ref.current?.valueAsNumber || null,
       standardPrice2: tournamentStandardPrice2Ref.current?.valueAsNumber || null,
       standardPrice3: tournamentStandardPrice3Ref.current?.valueAsNumber || null,
@@ -85,45 +89,88 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
       priceMixed: tournamentPriceMixedRef.current?.valueAsNumber || null,
       registrationClosingDate: tournamentRegistrationClosingDateRef.current?.valueAsDate || null,
       randomDraw: tournamentRandomDrawRef.current?.valueAsDate || null,
-      emailContact: tournamentEmailContactRef.current?.value,
-      telContact: tournamentTelContactRef.current?.value,
-      registrationMethod: tournamentRegistrationMethodRef.current?.value,
-      paymentMethod: tournamentPaymentMethodRef.current?.value,
-      comment: tournamentCommentRef.current?.value,
+      emailContact: tournamentEmailContactRef.current?.value || null,
+      telContact: tournamentTelContactRef.current?.value || null,
+      registrationMethod: tournamentRegistrationMethodRef.current?.value || null,
+      paymentMethod: tournamentPaymentMethodRef.current?.value || null,
+      comment: tournamentCommentRef.current?.value || null,
     };
 
     await tournamentSchema
       .validate(bodyRequest, { abortEarly: false })
       .then(async () => {
         setIsModalActive?.(false);
-        await mutate(
-          "/tournaments",
-          await axiosPrivate
-            .post("/admin/tournament", bodyRequest)
-            .then((res) => {
-              setRequestMessage({ success: "Le tournoi a bien été créé ! 👌", error: "" });
-              return res.data;
-            })
-            .catch((err) => {
-              console.error(err);
-              setRequestMessage({
-                success: "",
-                error: "Une erreur est survenue lors de la création du tournoi ! 🤕",
-              });
-            }),
-          {
-            optimisticData: (tournaments: Array<ITournament>) => [
-              ...tournaments,
-              { id: tournaments.length, ...{ bodyRequest } },
-            ],
-            populateCache: (newTournament: ITournament, tournaments: Array<ITournament>) => [
-              ...tournaments,
-              newTournament,
-            ],
-            revalidate: false,
-            rollbackOnError: false,
-          }
-        );
+
+        if (!patchMethod) {
+          await mutate(
+            "/tournaments",
+            await axiosPrivate
+              .post("/admin/tournament", bodyRequest)
+              .then((res) => {
+                setRequestMessage({ success: "Le tournoi a bien été créé ! 👌", error: "" });
+                return res.data;
+              })
+              .catch((err) => {
+                console.error(err);
+                setRequestMessage({
+                  success: "",
+                  error: "Une erreur est survenue lors de la création du tournoi ! 🤕",
+                });
+              }),
+            {
+              optimisticData: (tournaments: Array<ITournament>) =>
+                [...tournaments, { id: tournaments.length, ...bodyRequest } as ITournament].sort(
+                  (a: ITournament, b: ITournament) =>
+                    Number(new Date(a.startDate)) - Number(new Date(b.startDate))
+                ),
+              populateCache: (newTournament: ITournament, tournaments: Array<ITournament>) => [
+                ...tournaments,
+                newTournament,
+              ],
+              revalidate: false,
+              rollbackOnError: false,
+            }
+          );
+        } else {
+          await mutate(
+            "/tournaments",
+            await axiosPrivate
+              .patch(`/admin/tournament/${focusedTournament.id}`, bodyRequest)
+              .then((res) => {
+                setRequestMessage({ success: "Le tournoi a bien été modifié ! 👌", error: "" });
+                return res.data;
+              })
+              .catch((err) => {
+                console.error(err);
+                setRequestMessage({
+                  success: "",
+                  error: "Une erreur est survenue lors de la modification du tournoi ! 🤕",
+                });
+              }),
+            {
+              optimisticData: (tournaments: Array<ITournament>) => {
+                const prev = tournaments.filter(
+                  (tournament: ITournament) => tournament.id !== focusedTournament.id
+                );
+                return [
+                  ...tournaments,
+                  { id: focusedTournament.id, ...bodyRequest } as ITournament,
+                ].sort(
+                  (a: ITournament, b: ITournament) =>
+                    Number(new Date(a.startDate)) - Number(new Date(b.startDate))
+                );
+              },
+              populateCache: (newTournament: ITournament, tournaments: Array<ITournament>) => {
+                const prev = tournaments.filter(
+                  (tournament: ITournament) => tournament.id !== focusedTournament.id
+                );
+                return [...prev, newTournament];
+              },
+              revalidate: false,
+              rollbackOnError: false,
+            }
+          );
+        }
 
         setTimeout(() => {
           setRequestMessage({ success: "", error: "" });
@@ -152,7 +199,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           id="tournamentName"
           className={formErrors.name ? "form-error" : undefined}
           autoFocus
-          // defaultValue={focusedRegistration?.tournamentName || undefined}
+          defaultValue={focusedTournament?.name || undefined}
           ref={tournamentNameRef}
         />
       </div>
@@ -164,7 +211,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           id="tournamentCity"
           className={formErrors.city ? "form-error" : undefined}
           ref={tournamentCityRef}
-          // defaultValue={focusedRegistration?.tournamentCity || undefined}
+          defaultValue={focusedTournament?.city || undefined}
           required
         />
       </div>
@@ -178,12 +225,12 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
             id="startDate"
             className={formErrors.startDate ? "form-error" : undefined}
             ref={tournamentStartDateRef}
-            min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
-            // defaultValue={
-            //   (focusedRegistration?.tournamentStartDate &&
-            //     formatDate(focusedRegistration?.tournamentStartDate, undefined, "XXXX-XX-XX")) ||
-            //   undefined
-            // }
+            // min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
+            defaultValue={
+              (focusedTournament?.startDate &&
+                formatDate(String(focusedTournament?.startDate), undefined, "XXXX-XX-XX")) ||
+              undefined
+            }
             required
           />
           <label htmlFor="endDate"> au </label>
@@ -192,12 +239,12 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
             id="endDate"
             className={formErrors.endDate ? "form-error" : undefined}
             ref={tournamentEndDateRef}
-            min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
-            // defaultValue={
-            //   (focusedRegistration?.tournamentEndDate &&
-            //     formatDate(focusedRegistration?.tournamentEndDate, undefined, "XXXX-XX-XX")) ||
-            //   undefined
-            // }
+            // min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
+            defaultValue={
+              (focusedTournament?.endDate &&
+                formatDate(String(focusedTournament?.endDate), undefined, "XXXX-XX-XX")) ||
+              undefined
+            }
           />
         </div>
       </div>
@@ -212,6 +259,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           id="isTeamCompetition"
           className={formErrors.isTeamCompetition ? "form-error" : undefined}
           ref={isTournamentTeamCompetitionRef}
+          defaultChecked={focusedTournament?.isTeamCompetition || false}
         />
       </div>
 
@@ -236,6 +284,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="standardPrice1"
                 className={formErrors.standardPrice1 ? "form-error" : undefined}
                 ref={tournamentStandardPrice1Ref}
+                defaultValue={focusedTournament?.standardPrice1 || undefined}
               />
             </div>
             <div className="price">
@@ -246,6 +295,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="standardPrice2"
                 className={formErrors.standardPrice2 ? "form-error" : undefined}
                 ref={tournamentStandardPrice2Ref}
+                defaultValue={focusedTournament?.standardPrice2 || undefined}
               />
             </div>
             <div className="price">
@@ -256,6 +306,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="standardPrice3"
                 className={formErrors.standardPrice3 ? "form-error" : undefined}
                 ref={tournamentStandardPrice3Ref}
+                defaultValue={focusedTournament?.standardPrice3 || undefined}
               />
             </div>
           </div>
@@ -278,6 +329,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="elitePrice1"
                 className={formErrors.elitePrice1 ? "form-error" : undefined}
                 ref={tournamentElitePrice1Ref}
+                defaultValue={focusedTournament?.elitePrice1 || undefined}
               />
             </div>
             <div className="price">
@@ -288,6 +340,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="elitePrice2"
                 className={formErrors.elitePrice2 ? "form-error" : undefined}
                 ref={tournamentElitePrice2Ref}
+                defaultValue={focusedTournament?.elitePrice2 || undefined}
               />
             </div>
             <div className="price">
@@ -298,6 +351,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="elitePrice3"
                 className={formErrors.elitePrice3 ? "form-error" : undefined}
                 ref={tournamentElitePrice3Ref}
+                defaultValue={focusedTournament?.elitePrice3 || undefined}
               />
             </div>
           </div>
@@ -320,6 +374,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="priceSingle"
                 className={formErrors.priceSingle ? "form-error" : undefined}
                 ref={tournamentPriceSingleRef}
+                defaultValue={focusedTournament?.priceSingle || undefined}
               />
             </div>
             <div className="price">
@@ -330,6 +385,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="priceDouble"
                 className={formErrors.priceDouble ? "form-error" : undefined}
                 ref={tournamentPriceDoubleRef}
+                defaultValue={focusedTournament?.priceDouble || undefined}
               />
             </div>
             <div className="price">
@@ -340,6 +396,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
                 id="priceMixed"
                 className={formErrors.priceMixed ? "form-error" : undefined}
                 ref={tournamentPriceMixedRef}
+                defaultValue={focusedTournament?.priceMixed || undefined}
               />
             </div>
           </div>
@@ -357,6 +414,13 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           id="registrationClosingDate"
           className={formErrors.registrationClosingDate ? "form-error" : undefined}
           ref={tournamentRegistrationClosingDateRef}
+          defaultValue={
+            (focusedTournament?.registrationClosingDate &&
+              formatDate(
+                (String(focusedTournament?.registrationClosingDate), undefined, "XXXX-XX-XX")
+              )) ||
+            undefined
+          }
         />
       </div>
 
@@ -369,6 +433,11 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           id="randomDrawDate"
           className={formErrors.randomDraw ? "form-error" : undefined}
           ref={tournamentRandomDrawRef}
+          defaultValue={
+            (focusedTournament?.randomDraw &&
+              formatDate(String(focusedTournament?.randomDraw), undefined, "XXXX-XX-XX")) ||
+            undefined
+          }
         />
       </div>
 
@@ -383,6 +452,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           id="emailContact"
           className={formErrors.emailContact ? "form-error" : undefined}
           ref={tournamentEmailContactRef}
+          defaultValue={focusedTournament?.emailContact || undefined}
         />
       </div>
 
@@ -394,10 +464,11 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           name="telContact"
           id="telContact"
           className={formErrors.telContact ? "form-error" : undefined}
-          // pattern="0[0-9]{9}"
+          pattern="0[0-9]{9}"
           min={10}
           max={12}
           ref={tournamentTelContactRef}
+          defaultValue={focusedTournament?.telContact || undefined}
         />
       </div>
 
@@ -413,6 +484,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           className={formErrors.telContact ? "form-error" : undefined}
           list="registrationMethodList"
           ref={tournamentRegistrationMethodRef}
+          defaultValue={focusedTournament?.registrationMethod || undefined}
         />
         <datalist id="registrationMethodList">
           <option value="Badnet / eBad"></option>
@@ -434,6 +506,7 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           className={formErrors.paymentMethod ? "form-error" : undefined}
           list="paymentMethodList"
           ref={tournamentPaymentMethodRef}
+          defaultValue={focusedTournament?.paymentMethod || undefined}
         />
         <datalist id="paymentMethodList">
           <option value="Portefeuille Badnet"></option>
@@ -457,12 +530,14 @@ const TournamentForm = ({ setIsModalActive, setRequestMessage }: IProps) => {
           id="comment"
           className={formErrors.comment ? "form-error" : undefined}
           ref={tournamentCommentRef}
+          defaultValue={focusedTournament?.comment || undefined}
         ></textarea>
       </div>
 
       <input
         type="submit"
-        value={(patchMethod ? "Modifier" : "Créer") + " le tournoi"}
+        value={`${patchMethod ? "Modifier" : "Créer"} le tournoi`}
+        // value={(patchMethod ? "Modifier" : "Créer") + " le tournoi"}
         className="btn btn-primary"
       />
     </form>
