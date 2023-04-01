@@ -3,7 +3,6 @@ import { ITournament } from "../../../../interfaces/interfaces";
 import { formatDate } from "../../../../utils/dateFunctions";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import TournamentForm from "./TournamentForm";
 
 interface IProps {
   tournament: ITournament;

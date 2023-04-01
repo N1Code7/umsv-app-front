@@ -10,6 +10,7 @@ import TournamentForm from "../../../features/tournaments/components/TournamentF
 interface IProps {}
 
 const AdminTournamentsHandle = ({}: IProps) => {
+  //
   const axiosPrivate = useAxiosPrivate();
   const [selectedSeason, setSelectedSeason] = useState(
     Number(new Date().getMonth()) < 9
@@ -36,12 +37,10 @@ const AdminTournamentsHandle = ({}: IProps) => {
   ];
 
   const filterTournamentsBySeason = (array: Array<ITournament>, season: string) =>
-    array.filter((tournament: ITournament) => tournament.season === season);
+    array.filter((tournament: ITournament) => tournament?.season === season);
 
   const handleSeasonFilter = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // console.dir(e.target);
-
     setSelectedSeason((e.target as HTMLButtonElement).innerText);
   };
 

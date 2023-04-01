@@ -5,6 +5,7 @@ import { tournamentSchema } from "../../../../validations/tournamentSchema";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { ValidationError } from "yup";
+import useAxiosPrivateMultipart from "../../../../hooks/useAxiosPrivateMultipart";
 
 interface IProps {
   patchMethod?: boolean;
@@ -44,6 +45,7 @@ const TournamentForm = ({
   setRequestMessage,
 }: IProps) => {
   const axiosPrivate = useAxiosPrivate();
+  const axiosPrivateMultipart = useAxiosPrivateMultipart();
   const [formErrors, setFormErrors] = useState({} as IFormErrors);
   const tournamentNameRef = useRef<HTMLInputElement>(null);
   const tournamentCityRef = useRef<HTMLInputElement>(null);
@@ -65,13 +67,13 @@ const TournamentForm = ({
   const tournamentTelContactRef = useRef<HTMLInputElement>(null);
   const tournamentRegistrationMethodRef = useRef<HTMLInputElement>(null);
   const tournamentPaymentMethodRef = useRef<HTMLInputElement>(null);
-  const tournamentRegulationUrlRef = useRef<HTMLInputElement>(null);
+  const tournamentFileRef = useRef<HTMLInputElement>(null);
   const tournamentCommentRef = useRef<HTMLTextAreaElement>(null);
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     let errors = {} as IFormErrors;
-    //
+
     const bodyRequest = {
       name: tournamentNameRef.current?.value || null,
       city: tournamentCityRef.current!.value,
@@ -101,11 +103,16 @@ const TournamentForm = ({
       .then(async () => {
         setIsModalActive?.(false);
 
+        let formData = new FormData();
+        tournamentFileRef.current?.files?.[0] &&
+          formData.append("file", tournamentFileRef.current?.files[0]);
+        formData.append("data", JSON.stringify(bodyRequest));
+
         if (!patchMethod) {
           await mutate(
             "/tournaments",
-            await axiosPrivate
-              .post("/admin/tournament", bodyRequest)
+            await axiosPrivateMultipart
+              .post("/admin/tournament", formData)
               .then((res) => {
                 setRequestMessage({ success: "Le tournoi a bien été créé ! 👌", error: "" });
                 return res.data;
@@ -128,14 +135,14 @@ const TournamentForm = ({
                 newTournament,
               ],
               revalidate: false,
-              rollbackOnError: false,
+              rollbackOnError: true,
             }
           );
         } else {
           await mutate(
             "/tournaments",
-            await axiosPrivate
-              .patch(`/admin/tournament/${focusedTournament.id}`, bodyRequest)
+            axiosPrivateMultipart
+              .post(`/admin/tournament/${focusedTournament.id}`, formData)
               .then((res) => {
                 setRequestMessage({ success: "Le tournoi a bien été modifié ! 👌", error: "" });
                 return res.data;
@@ -519,7 +526,7 @@ const TournamentForm = ({
 
       <div className="form-row">
         <label htmlFor="file">Importer le réglement</label>
-        <input type="file" name="file" id="file" />
+        <input type="file" name="file" id="file" ref={tournamentFileRef} />
       </div>
 
       <div className="form-row">

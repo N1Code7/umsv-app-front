@@ -29,7 +29,7 @@ export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat
   } else if (outputFormat === "interval" && entryDate2 !== undefined) {
     let formattedDate2 = entryDate2.split("T")[0].split("-");
     if (new Date(entryDate1).getMonth() === new Date(entryDate2).getMonth()) {
-      return `du ${formattedDate2[2]} au ${formattedDate[2]} ${getMonthOfYear(entryDate1)} ${
+      return `du ${formattedDate[2]} au ${formattedDate2[2]} ${getMonthOfYear(entryDate1)} ${
         formattedDate[0]
       }`;
     } else {
