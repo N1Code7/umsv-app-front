@@ -139,3 +139,20 @@ export interface IFFBadStats {
   weekNumber: number;
   year: number;
 }
+
+export interface IArticle {
+  id: number;
+  title: string;
+  content: string;
+  mainImageName: string;
+  mainImageUrl: string;
+  firstAdditionalImageName: string;
+  firstAdditionalImageUrl: string;
+  secondAdditionalImageName: string;
+  secondAdditionalImageUrl: string;
+  thirdAdditionalImageName: string;
+  thirdAdditionalImageUrl: string;
+  isVisible: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}

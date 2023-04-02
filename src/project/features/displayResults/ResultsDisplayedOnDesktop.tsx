@@ -33,8 +33,8 @@ const ResultsDisplayedOnDesktop = ({
       >
         {tournamentRegistration.tournament
           ? formatDate(
-              tournamentRegistration.tournament.startDate,
-              tournamentRegistration.tournament.endDate,
+              String(tournamentRegistration.tournament.startDate),
+              String(tournamentRegistration.tournament.endDate),
               "XX & XX xxx XXXX"
             )
           : tournamentRegistration.tournamentEndDate

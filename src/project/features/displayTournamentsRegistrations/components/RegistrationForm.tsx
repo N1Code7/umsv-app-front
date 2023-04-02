@@ -278,7 +278,8 @@ const RegistrationForm = ({
               : tournaments
                   .filter(
                     (tournament: ITournament) =>
-                      new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 ||
+                      (tournament.randomDraw &&
+                        tournament.randomDraw.getTime() - new Date().getTime() > -10) ||
                       tournament.id === focusedRegistration?.tournament?.id
                   )
                   .sort(
@@ -289,8 +290,12 @@ const RegistrationForm = ({
                     <option key={tournament.id} value={tournament.id}>
                       {tournament.name?.slice(0, 20) + "..." || "ℹ️"} - {tournament.city} -{" "}
                       {tournament.endDate
-                        ? formatDate(tournament.startDate, tournament.endDate, "XX & XX xxx XXXX")
-                        : formatDate(tournament.startDate, undefined, "XX xxx XXXX")}
+                        ? formatDate(
+                            String(tournament.startDate),
+                            String(tournament.endDate),
+                            "XX & XX xxx XXXX"
+                          )
+                        : formatDate(String(tournament.startDate), undefined, "XX xxx XXXX")}
                     </option>
                   ))}
           </select>

@@ -419,8 +419,12 @@ const AdminRegistrationForm = ({
                     <option key={tournament.id} value={tournament.id}>
                       {tournament.name?.slice(0, 20) + "..." || "ℹ️"} - {tournament.city} -{" "}
                       {tournament.endDate
-                        ? formatDate(tournament.startDate, tournament.endDate, "XX & XX xxx XXXX")
-                        : formatDate(tournament.startDate, undefined, "XX xxx XXXX")}
+                        ? formatDate(
+                            String(tournament.startDate),
+                            String(tournament.endDate),
+                            "XX & XX xxx XXXX"
+                          )
+                        : formatDate(String(tournament.startDate), undefined, "XX xxx XXXX")}
                     </option>
                   ))}
           </select>

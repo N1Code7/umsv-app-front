@@ -64,12 +64,18 @@ const AdminHomepage = () => {
                     <div className="tournament-date">
                       {registration.tournament?.endDate || registration.tournamentEndDate
                         ? formatDate(
-                            registration.tournament?.startDate || registration.tournamentStartDate,
-                            registration.tournament?.endDate || registration.tournamentEndDate,
+                            String(
+                              registration.tournament?.startDate || registration.tournamentStartDate
+                            ),
+                            String(
+                              registration.tournament?.endDate || registration.tournamentEndDate
+                            ),
                             "XX & XX xxx XXXX"
                           )
                         : formatDate(
-                            registration.tournament?.startDate || registration.tournamentStartDate,
+                            String(
+                              registration.tournament?.startDate || registration.tournamentStartDate
+                            ),
                             undefined,
                             "XX xxx XXXX"
                           )}

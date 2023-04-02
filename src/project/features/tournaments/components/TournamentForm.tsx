@@ -44,7 +44,6 @@ const TournamentForm = ({
   setIsModalActive,
   setRequestMessage,
 }: IProps) => {
-  const axiosPrivate = useAxiosPrivate();
   const axiosPrivateMultipart = useAxiosPrivateMultipart();
   const [formErrors, setFormErrors] = useState({} as IFormErrors);
   const tournamentNameRef = useRef<HTMLInputElement>(null);
@@ -159,10 +158,7 @@ const TournamentForm = ({
                 const prev = tournaments.filter(
                   (tournament: ITournament) => tournament.id !== focusedTournament.id
                 );
-                return [
-                  ...tournaments,
-                  { id: focusedTournament.id, ...bodyRequest } as ITournament,
-                ].sort(
+                return [...prev, { id: focusedTournament.id, ...bodyRequest } as ITournament].sort(
                   (a: ITournament, b: ITournament) =>
                     Number(new Date(a.startDate)) - Number(new Date(b.startDate))
                 );
@@ -174,7 +170,7 @@ const TournamentForm = ({
                 return [...prev, newTournament];
               },
               revalidate: false,
-              rollbackOnError: false,
+              rollbackOnError: true,
             }
           );
         }
