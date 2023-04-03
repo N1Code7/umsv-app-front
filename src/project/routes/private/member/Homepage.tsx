@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Event from "../../../components/Event";
 import { IClubEvent, ITournament } from "../../../../interfaces/interfaces";
 import Tournament from "../../../components/Tournament";

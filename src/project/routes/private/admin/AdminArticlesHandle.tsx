@@ -5,7 +5,7 @@ import { sleep } from "../../../../utils/globals";
 import { IArticle } from "../../../../interfaces/interfaces";
 import ArticleBand from "../../../features/articles/ArticleBand";
 import Modal from "../../../components/Modal";
-import ArticleForm from "../../../features/articles/components/ArticleForm";
+import ArticleForm from "../../../features/articles/ArticleForm";
 
 interface IProps {}
 

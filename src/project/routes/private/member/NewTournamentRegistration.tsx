@@ -1,5 +1,5 @@
 import { useState } from "react";
-import RegistrationForm from "../../../features/tournamentsRegistrations/components/RegistrationForm";
+import RegistrationForm from "../../../features/tournamentsRegistrations/RegistrationForm";
 
 const NewTournamentRegistration = () => {
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });

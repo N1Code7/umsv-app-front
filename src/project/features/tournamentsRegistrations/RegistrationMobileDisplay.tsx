@@ -1,7 +1,7 @@
 import { MouseEvent } from "react";
 import RegistrationCTA from "./RegistrationCTA";
-import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import { formatDate } from "../../../../utils/dateFunctions";
+import { ITournamentRegistration } from "../../../interfaces/interfaces";
+import { formatDate } from "../../../utils/dateFunctions";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;

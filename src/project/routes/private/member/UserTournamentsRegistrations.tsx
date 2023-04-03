@@ -6,7 +6,7 @@ import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
 import { sleep } from "../../../../utils/globals";
 import TournamentRegistration from "../../../features/tournamentsRegistrations/TournamentRegistration";
-import RegistrationForm from "../../../features/tournamentsRegistrations/components/RegistrationForm";
+import RegistrationForm from "../../../features/tournamentsRegistrations/RegistrationForm";
 
 interface IUserTournamentsProps {
   deviceDisplay: string;

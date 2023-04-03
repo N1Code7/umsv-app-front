@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { sleep } from "../../../../utils/globals";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import RegistrationBand from "../../../features/tournamentsRegistrations/components/RegistrationBand";
+import RegistrationBand from "../../../features/tournamentsRegistrations/RegistrationBand";
 import Modal from "../../../components/Modal";
 import AdminRegistrationForm from "../../../features/tournamentsRegistrations/AdminRegistrationForm";
 

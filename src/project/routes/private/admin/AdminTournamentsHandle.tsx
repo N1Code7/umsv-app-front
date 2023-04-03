@@ -5,7 +5,7 @@ import useSWR from "swr";
 import TournamentBand from "../../../features/tournaments/TournamentBand";
 import { MouseEvent, useState } from "react";
 import Modal from "../../../components/Modal";
-import TournamentForm from "../../../features/tournaments/components/TournamentForm";
+import TournamentForm from "../../../features/tournaments/TournamentForm";
 
 interface IProps {}
 

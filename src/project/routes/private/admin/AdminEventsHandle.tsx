@@ -1,7 +1,7 @@
 interface IProps {}
 
 const AdminEventsHandle = ({}: IProps) => {
-  return <></>;
+  return <main className="admin-space"></main>;
 };
 
 export default AdminEventsHandle;

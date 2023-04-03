@@ -1,10 +1,10 @@
 import { Dispatch, FormEvent, SetStateAction, useEffect, useRef, useState } from "react";
-import { ITournament } from "../../../../interfaces/interfaces";
-import { formatDate } from "../../../../utils/dateFunctions";
-import { tournamentSchema } from "../../../../validations/tournamentSchema";
+import { ITournament } from "../../../interfaces/interfaces";
+import { formatDate } from "../../../utils/dateFunctions";
+import { tournamentSchema } from "../../../validations/tournamentSchema";
 import { mutate } from "swr";
 import { ValidationError } from "yup";
-import useAxiosPrivateMultipart from "../../../../hooks/useAxiosPrivateMultipart";
+import useAxiosPrivateMultipart from "../../../hooks/useAxiosPrivateMultipart";
 
 interface IProps {
   patchMethod?: boolean;

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthenticationContext } from "../../../../contexts/AuthenticationContext";
 import useSWR from "swr";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
