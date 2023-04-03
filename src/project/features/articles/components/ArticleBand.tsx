@@ -81,7 +81,51 @@ const ArticleBand = ({
     window.scrollTo(0, 0);
   };
 
-  const handleToggleVisibility = async () => {};
+  const handleToggleVisibility = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    //
+    await mutate(
+      "/articles",
+      await axiosPrivate
+        .patch(`/article/toggle-visibility/${article.id}`)
+        .then((res) => {
+          setRequestMessage({
+            success: "La visibilité de l'article a bien été modifiée ! 👌",
+            error: "",
+          });
+          return res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          setRequestMessage({
+            success: "",
+            error:
+              "Une erreur est survenue lors de la modification de la visibilité de l'article ! 🤕",
+          });
+        }),
+      {
+        optimisticData: (all: Array<IArticle>) => {
+          const prev = all.filter((art: IArticle) => art.id !== article.id);
+          return [...prev, { ...article, visible: !article.visible } as IArticle].sort(
+            (a: IArticle, b: IArticle) =>
+              Number(new Date(b.updatedAt || b.createdAt)) -
+              Number(new Date(a.updatedAt || a.createdAt))
+          );
+        },
+        populateCache: (newArticle: IArticle, all: Array<IArticle>) => {
+          const prev = all.filter((art: IArticle) => art.id !== article.id);
+          return [...prev, newArticle];
+        },
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
+
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+    // window.scrollTo(0, 0);
+  };
 
   return (
     <div className="article band" onClick={handleClick}>
