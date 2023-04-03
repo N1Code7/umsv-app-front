@@ -1,7 +1,7 @@
 import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
-import { ITournamentRegistration } from "../../../../interfaces/interfaces";
+import { ITournamentRegistration } from "../../../interfaces/interfaces";
 import { mutate } from "swr";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 interface IProps {
   focusedRegistration: ITournamentRegistration;

@@ -1,8 +1,8 @@
 import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
-import { ITournament } from "../../../../interfaces/interfaces";
-import { formatDate } from "../../../../utils/dateFunctions";
+import { ITournament } from "../../../interfaces/interfaces";
+import { formatDate } from "../../../utils/dateFunctions";
 import { mutate } from "swr";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 interface IProps {
   tournament: ITournament;

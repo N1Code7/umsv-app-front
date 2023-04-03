@@ -225,6 +225,10 @@
       &.tournament {
         grid-template-columns: repeat(3, 25%);
       }
+
+      &.article {
+        grid-template-columns: repeat(3, 20%);
+      }
     }
 
     @include from(1300) {
@@ -237,8 +241,8 @@
     .abstract {
       grid-column: 1/4;
 
-      .article-title {
-        margin-right: 2rem;
+      @include from(1000) {
+        align-items: flex-start;
       }
 
       .tournament-date {

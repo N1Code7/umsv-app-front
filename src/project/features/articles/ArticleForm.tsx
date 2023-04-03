@@ -1,9 +1,9 @@
 import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 import { mutate } from "swr";
 import { ValidationError } from "yup";
-import useAxiosPrivateMultipart from "../../../../hooks/useAxiosPrivateMultipart";
-import { IArticle } from "../../../../interfaces/interfaces";
-import { articleSchema } from "../../../../validations/articleSchema";
+import useAxiosPrivateMultipart from "../../../hooks/useAxiosPrivateMultipart";
+import { IArticle } from "../../../interfaces/interfaces";
+import { articleSchema } from "../../../validations/articleSchema";
 
 interface IProps {
   patchMethod?: boolean;

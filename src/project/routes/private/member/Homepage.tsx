@@ -157,8 +157,6 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
             new Date(tournament.startDate).getFullYear() === Number(searchByYear))
         );
       } else {
-        console.log(tournament.randomDraw);
-
         return new Date(tournament.randomDraw || 0).getTime() - new Date().getTime() > -10;
       }
     });

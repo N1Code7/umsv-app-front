@@ -2,7 +2,7 @@ import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { ITournament } from "../../../../interfaces/interfaces";
 import { sleep } from "../../../../utils/globals";
 import useSWR from "swr";
-import TournamentBand from "../../../features/tournaments/components/TournamentBand";
+import TournamentBand from "../../../features/tournaments/TournamentBand";
 import { MouseEvent, useState } from "react";
 import Modal from "../../../components/Modal";
 import TournamentForm from "../../../features/tournaments/components/TournamentForm";

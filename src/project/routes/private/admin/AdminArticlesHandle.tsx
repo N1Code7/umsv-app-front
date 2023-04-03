@@ -3,7 +3,7 @@ import useSWR from "swr";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { sleep } from "../../../../utils/globals";
 import { IArticle } from "../../../../interfaces/interfaces";
-import ArticleBand from "../../../features/articles/components/ArticleBand";
+import ArticleBand from "../../../features/articles/ArticleBand";
 import Modal from "../../../components/Modal";
 import ArticleForm from "../../../features/articles/components/ArticleForm";
 

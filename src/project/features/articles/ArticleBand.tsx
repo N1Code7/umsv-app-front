@@ -1,7 +1,7 @@
 import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
-import { IArticle } from "../../../../interfaces/interfaces";
+import { IArticle } from "../../../interfaces/interfaces";
 import { mutate } from "swr";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Image from "next/image";
 
 interface IProps {
@@ -131,7 +131,8 @@ const ArticleBand = ({
     <div className="article band" onClick={handleClick}>
       <div className="abstract">
         <div className="article-title">
-          {article.title + " "} {article.visible ? "(publié)" : "(non publié)"}
+          {article.title + " "}{" "}
+          <strong style={{ fontWeight: 600 }}>({article.visible ? "publié" : "non publié"})</strong>
         </div>
       </div>
       <div
