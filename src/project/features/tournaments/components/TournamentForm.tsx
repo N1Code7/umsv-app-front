@@ -3,7 +3,6 @@ import { ITournament } from "../../../../interfaces/interfaces";
 import { formatDate } from "../../../../utils/dateFunctions";
 import { tournamentSchema } from "../../../../validations/tournamentSchema";
 import { mutate } from "swr";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { ValidationError } from "yup";
 import useAxiosPrivateMultipart from "../../../../hooks/useAxiosPrivateMultipart";
 

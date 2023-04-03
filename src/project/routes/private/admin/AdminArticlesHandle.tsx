@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import useSWR from "swr";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { sleep } from "../../../../utils/globals";
@@ -26,6 +26,13 @@ const AdminArticlesHandle = ({}: IProps) => {
       })
   );
 
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setPatchMethod(false);
+    setIsModalActive?.(true);
+    setFocusedArticle({} as IArticle);
+  };
+
   return (
     <main className="admin-space">
       {requestMessage.success !== "" && (
@@ -41,20 +48,32 @@ const AdminArticlesHandle = ({}: IProps) => {
 
       <h1>Gestion des articles</h1>
 
+      <div className="global-actions">
+        <button className="btn btn-primary" onClick={handleClick}>
+          Créer un article
+        </button>
+      </div>
+
       <div className="list articles-list">
         {articlesLoading ? (
           <p>Chargement des articles</p>
         ) : (
-          articles.map((article: IArticle) => (
-            <ArticleBand
-              key={article.id}
-              article={article}
-              setFocusedArticle={setFocusedArticle}
-              setIsModalActive={setIsModalActive}
-              setPatchMethod={setPatchMethod}
-              setRequestMessage={setRequestMessage}
-            />
-          ))
+          articles
+            .sort(
+              (a: IArticle, b: IArticle) =>
+                Number(new Date(b.updatedAt || b.createdAt)) -
+                Number(new Date(a.updatedAt || a.createdAt))
+            )
+            .map((article: IArticle) => (
+              <ArticleBand
+                key={article.id}
+                article={article}
+                setFocusedArticle={setFocusedArticle}
+                setIsModalActive={setIsModalActive}
+                setPatchMethod={setPatchMethod}
+                setRequestMessage={setRequestMessage}
+              />
+            ))
         )}
       </div>
 

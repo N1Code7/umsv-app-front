@@ -278,8 +278,7 @@ const RegistrationForm = ({
               : tournaments
                   .filter(
                     (tournament: ITournament) =>
-                      (tournament.randomDraw &&
-                        tournament.randomDraw.getTime() - new Date().getTime() > -10) ||
+                      new Date(tournament.randomDraw || 0).getTime() - new Date().getTime() > -10 ||
                       tournament.id === focusedRegistration?.tournament?.id
                   )
                   .sort(

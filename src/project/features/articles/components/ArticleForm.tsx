@@ -46,7 +46,7 @@ const ArticleForm = ({
     const bodyRequest = {
       title: articleTitleRef.current!.value,
       content: articleContentRef.current!.value,
-      isVisible: isArticleVisibleRef.current!.checked,
+      visible: isArticleVisibleRef.current!.checked,
     };
 
     await articleSchema
@@ -88,9 +88,9 @@ const ArticleForm = ({
                     Number(new Date(b.updatedAt || b.createdAt)) -
                     Number(new Date(a.updatedAt || a.createdAt))
                 ),
-              populateCache: (newTournament: IArticle, articles: Array<IArticle>) => [
+              populateCache: (newArticle: IArticle, articles: Array<IArticle>) => [
                 ...articles,
-                newTournament,
+                newArticle,
               ],
               revalidate: false,
               rollbackOnError: true,
@@ -102,6 +102,7 @@ const ArticleForm = ({
             axiosPrivateMultipart
               .post(`/article/${focusedArticle.id}`, formData)
               .then((res) => {
+                console.log("test update");
                 setRequestMessage({ success: "L'article a bien été modifié ! 👌", error: "" });
                 return res.data;
               })
@@ -186,7 +187,7 @@ const ArticleForm = ({
           type="checkbox"
           id="visibility"
           ref={isArticleVisibleRef}
-          defaultChecked={focusedArticle?.isVisible || false}
+          defaultChecked={focusedArticle?.visible || false}
         />
       </div>
 

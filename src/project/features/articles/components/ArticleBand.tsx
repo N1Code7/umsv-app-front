@@ -87,8 +87,7 @@ const ArticleBand = ({
     <div className="article band" onClick={handleClick}>
       <div className="abstract">
         <div className="article-title">
-          {article.title + " "} {article.isVisible ? "(publié)" : "(non publié)"}
-          {article.isVisible ? "1" : "2"}
+          {article.title + " "} {article.visible ? "(publié)" : "(non publié)"}
         </div>
       </div>
       <div

@@ -13,7 +13,6 @@ const useAxiosPrivateMultipart = () => {
         if (!config.headers["Authorization"]) {
           config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
           config.headers["Content-Type"] = "multipart/ form-data";
-          console.log(config.headers);
         }
         return config;
       },

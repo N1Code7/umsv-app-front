@@ -237,6 +237,10 @@
     .abstract {
       grid-column: 1/4;
 
+      .article-title {
+        margin-right: 2rem;
+      }
+
       .tournament-date {
         font-weight: 500;
       }

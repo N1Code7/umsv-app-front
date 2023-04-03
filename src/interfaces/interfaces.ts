@@ -152,7 +152,7 @@ export interface IArticle {
   secondAdditionalImageUrl: string;
   thirdAdditionalImageName: string;
   thirdAdditionalImageUrl: string;
-  isVisible: boolean;
+  visible: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
