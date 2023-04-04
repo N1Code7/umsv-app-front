@@ -1,8 +1,9 @@
 import { Dispatch, MouseEvent, SetStateAction, useState } from "react";
-import { IArticle, IClubEvent } from "../../../interfaces/interfaces";
+import { IClubEvent } from "../../../interfaces/interfaces";
 import { mutate } from "swr";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import Image from "next/image";
+import { formatDate } from "../../../utils/dateFunctions";
 
 interface IProps {
   event: IClubEvent;
@@ -50,28 +51,28 @@ const EventBand = ({
   const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     //
-    await mutate("/articles", axiosPrivate.delete(`/article/${event.id}`), {
-      optimisticData: (all: Array<IArticle>) =>
+    await mutate("/events", axiosPrivate.delete(`/event/${event.id}`), {
+      optimisticData: (all: Array<IClubEvent>) =>
         all
-          .filter((item: IArticle) => item.id !== event.id)
+          .filter((item: IClubEvent) => item.id !== event.id)
           .sort(
-            (a: IArticle, b: IArticle) =>
+            (a: IClubEvent, b: IClubEvent) =>
               Number(new Date(b.updatedAt || b.createdAt)) -
               Number(new Date(a.updatedAt || a.createdAt))
           ),
-      populateCache: (result, current: Array<IArticle>) =>
-        current.filter((item: IArticle) => item.id !== event.id),
+      populateCache: (result, current: Array<IClubEvent>) =>
+        current.filter((item: IClubEvent) => item.id !== event.id),
       revalidate: false,
       rollbackOnError: true,
     })
       .then(() => {
-        setRequestMessage({ success: "L'article a bien été supprimé ! 👌", error: "" });
+        setRequestMessage({ success: "L'événement a bien été supprimé ! 👌", error: "" });
       })
       .catch((err) => {
         console.error(err);
         setRequestMessage({
           success: "",
-          error: "Une erreur est survenue lors de la suppression de l'article ! 🤕",
+          error: "Une erreur est survenue lors de la suppression de l'événement ! 🤕",
         });
       });
 
@@ -85,12 +86,12 @@ const EventBand = ({
     e.preventDefault();
     //
     await mutate(
-      "/articles",
+      "/events",
       await axiosPrivate
-        .patch(`/article/toggle-visibility/${event.id}`)
+        .patch(`/event/toggle-visibility/${event.id}`)
         .then((res) => {
           setRequestMessage({
-            success: "La visibilité de l'article a bien été modifiée ! 👌",
+            success: "La visibilité de l'événement a bien été modifiée ! 👌",
             error: "",
           });
           return res.data;
@@ -100,7 +101,7 @@ const EventBand = ({
           setRequestMessage({
             success: "",
             error:
-              "Une erreur est survenue lors de la modification de la visibilité de l'article ! 🤕",
+              "Une erreur est survenue lors de la modification de la visibilité de l'événement ! 🤕",
           });
         }),
       {
@@ -130,9 +131,9 @@ const EventBand = ({
   return (
     <div className="article band" onClick={handleClick}>
       <div className="abstract">
-        <div className="article-title">
-          {article.title + " "}{" "}
-          <strong style={{ fontWeight: 600 }}>({article.visible ? "publié" : "non publié"})</strong>
+        <div className="article-content">
+          {event.content + " "}{" "}
+          <strong style={{ fontWeight: 600 }}>({event.visible ? "publié" : "non publié"})</strong>
         </div>
       </div>
       <div
@@ -143,43 +144,18 @@ const EventBand = ({
             : { maxHeight: 500, opacity: 1, marginTop: "0.5rem", marginBottom: "0.5rem", zIndex: 0 }
         }
       >
-        <i className="fa-solid fa-comment-dots"></i>
-        <div className="article-content">{article.content}</div>
-        <i className="fa-solid fa-file-image"></i>
-        <Image
-          src={article.mainImageUrl}
-          alt={`image de ${article.title}`}
-          width={200}
-          height={200}
-        />
-        <i className="fa-solid fa-file-image"></i>
-        <div className="article-additional-images">
-          {article.firstAdditionalImageUrl && (
-            <Image
-              src={article.firstAdditionalImageUrl}
-              alt={`image de ${article.title}`}
-              width={50}
-              height={50}
-            />
-          )}
-          {article.secondAdditionalImageUrl && (
-            <Image
-              src={article.secondAdditionalImageUrl}
-              alt={`image de ${article.title}`}
-              width={50}
-              height={50}
-            />
-          )}
-          {article.thirdAdditionalImageUrl && (
-            <Image
-              src={article.thirdAdditionalImageUrl}
-              alt={`image de ${article.title}`}
-              width={50}
-              height={50}
-            />
-          )}
+        <i className="fa-solid fa-calendar-days"></i>
+        <div className="event-dates">
+          {event.endDate
+            ? `Du ${formatDate(event.startDate, undefined, "XX xxx XXXX")} au 
+          ${formatDate(event.endDate, undefined, "XX xxx XXXX")}`
+            : `Le ${formatDate(event.startDate, undefined, "XX xxx XXXX")}`}
         </div>
+
+        <i className="fa-solid fa-file-image"></i>
+        <Image src={event.imageUrl} alt={`image de ${event.content}`} width={200} height={200} />
       </div>
+
       <div className="cta-container">
         <button className="btn btn-modify" onClick={handleModify}>
           ✏️

@@ -98,7 +98,7 @@ const ArticleForm = ({
           );
         } else {
           await mutate(
-            "/tournaments",
+            "/articles",
             axiosPrivateMultipart
               .post(`/article/${focusedArticle.id}`, formData)
               .then((res) => {

@@ -1,10 +1,10 @@
 import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 import { mutate } from "swr";
 import { ValidationError } from "yup";
-import useAxiosPrivateMultipart from "../../../../hooks/useAxiosPrivateMultipart";
-import { IArticle } from "../../../../interfaces/interfaces";
-import { articleSchema } from "../../../../validations/articleSchema";
+import useAxiosPrivateMultipart from "../../../hooks/useAxiosPrivateMultipart";
 import { IClubEvent } from "../../../interfaces/interfaces";
+import { eventSchema } from "../../../validations/eventSchema";
+import { formatDate } from "../../../utils/dateFunctions";
 
 interface IProps {
   patchMethod?: boolean;
@@ -14,12 +14,9 @@ interface IProps {
 }
 
 interface IFormErrors {
-  title: string;
+  startDate: string;
+  endDate: string;
   content: string;
-  mainImageUrl: string;
-  firstAdditionalImage: string;
-  secondAdditionalImage: string;
-  thirdAdditionalImage: string;
   visible: boolean;
 }
 
@@ -27,66 +24,58 @@ const EventForm = ({ patchMethod, focusedEvent, setIsModalActive, setRequestMess
   //
   const axiosPrivateMultipart = useAxiosPrivateMultipart();
   const [formErrors, setFormErrors] = useState({} as IFormErrors);
-  const articleTitleRef = useRef<HTMLInputElement>(null);
-  const articleContentRef = useRef<HTMLTextAreaElement>(null);
-  const articleMainImageRef = useRef<HTMLInputElement>(null);
-  const articleFirstAdditionalImageRef = useRef<HTMLInputElement>(null);
-  const articleSecondAdditionalImageRef = useRef<HTMLInputElement>(null);
-  const articleThirdAdditionalImageRef = useRef<HTMLInputElement>(null);
-  const isArticleVisibleRef = useRef<HTMLInputElement>(null);
+  const eventStartDateRef = useRef<HTMLInputElement>(null);
+  const eventEndDateRef = useRef<HTMLInputElement>(null);
+  const eventContentRef = useRef<HTMLInputElement>(null);
+  const eventFileRef = useRef<HTMLInputElement>(null);
+  const isEventVisibleRef = useRef<HTMLInputElement>(null);
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     let errors = {} as IFormErrors;
 
     const bodyRequest = {
-      title: articleTitleRef.current!.value,
-      content: articleContentRef.current!.value,
-      visible: isArticleVisibleRef.current!.checked,
+      startDate: eventStartDateRef.current!.value,
+      endDate: eventEndDateRef.current!.value,
+      content: eventContentRef.current!.value,
+      visible: isEventVisibleRef.current!.checked,
     };
 
-    await articleSchema
+    await eventSchema
       .validate(bodyRequest, { abortEarly: false })
       .then(async () => {
         setIsModalActive?.(false);
 
         let formData = new FormData();
-        articleMainImageRef.current?.files?.[0] &&
-          formData.append("mainFile", articleMainImageRef.current?.files[0]);
-        articleFirstAdditionalImageRef.current?.files?.[0] &&
-          formData.append("firstAddFile", articleFirstAdditionalImageRef.current?.files[0]);
-        articleSecondAdditionalImageRef.current?.files?.[0] &&
-          formData.append("secondAddFile", articleSecondAdditionalImageRef.current?.files[0]);
-        articleThirdAdditionalImageRef.current?.files?.[0] &&
-          formData.append("thirdAddFile", articleThirdAdditionalImageRef.current?.files[0]);
+        eventFileRef.current?.files?.[0] && formData.append("file", eventFileRef.current?.files[0]);
         formData.append("data", JSON.stringify(bodyRequest));
 
         if (!patchMethod) {
           await mutate(
-            "/articles",
+            "/events",
             await axiosPrivateMultipart
-              .post("/article", formData)
+              .post("/event", formData)
               .then((res) => {
-                setRequestMessage({ success: "L'article a bien été créé ! 👌", error: "" });
+                setRequestMessage({ success: "L'événement a bien été créé ! 👌", error: "" });
                 return res.data;
               })
               .catch((err) => {
                 console.error(err);
                 setRequestMessage({
                   success: "",
-                  error: "Une erreur est survenue lors de la création de l'article ! 🤕",
+                  error: "Une erreur est survenue lors de la création de l'événement ! 🤕",
                 });
               }),
             {
-              optimisticData: (articles: Array<IArticle>) =>
-                [...articles, { id: articles.length, ...bodyRequest } as IArticle].sort(
-                  (a: IArticle, b: IArticle) =>
+              optimisticData: (events: Array<IClubEvent>) =>
+                [...events, { id: events.slice(-1)[0].id + 1, ...bodyRequest } as IClubEvent].sort(
+                  (a: IClubEvent, b: IClubEvent) =>
                     Number(new Date(b.updatedAt || b.createdAt)) -
                     Number(new Date(a.updatedAt || a.createdAt))
                 ),
-              populateCache: (newArticle: IArticle, articles: Array<IArticle>) => [
-                ...articles,
-                newArticle,
+              populateCache: (newEvent: IClubEvent, events: Array<IClubEvent>) => [
+                ...events,
+                newEvent,
               ],
               revalidate: false,
               rollbackOnError: true,
@@ -94,33 +83,32 @@ const EventForm = ({ patchMethod, focusedEvent, setIsModalActive, setRequestMess
           );
         } else {
           await mutate(
-            "/tournaments",
-            axiosPrivateMultipart
-              .post(`/article/${focusedArticle.id}`, formData)
+            "/events",
+            await axiosPrivateMultipart
+              .post(`/event/${focusedEvent.id}`, formData)
               .then((res) => {
-                console.log("test update");
-                setRequestMessage({ success: "L'article a bien été modifié ! 👌", error: "" });
+                setRequestMessage({ success: "L'événement a bien été modifié ! 👌", error: "" });
                 return res.data;
               })
               .catch((err) => {
                 console.error(err);
                 setRequestMessage({
                   success: "",
-                  error: "Une erreur est survenue lors de la modification de l'article ! 🤕",
+                  error: "Une erreur est survenue lors de la modification de l'événement ! 🤕",
                 });
               }),
             {
-              optimisticData: (articles: Array<IArticle>) => {
-                const prev = articles.filter((article: IArticle) => article.id !== focusedEvent.id);
-                return [...prev, { id: focusedEvent.id, ...bodyRequest } as IArticle].sort(
-                  (a: IArticle, b: IArticle) =>
+              optimisticData: (events: Array<IClubEvent>) => {
+                const prev = events.filter((event: IClubEvent) => event.id !== focusedEvent.id);
+                return [...prev, { id: focusedEvent.id, ...bodyRequest } as IClubEvent].sort(
+                  (a: IClubEvent, b: IClubEvent) =>
                     Number(new Date(b.updatedAt || b.createdAt)) -
                     Number(new Date(a.updatedAt || a.createdAt))
                 );
               },
-              populateCache: (newArticle: IArticle, articles: Array<IArticle>) => {
-                const prev = articles.filter((article: IArticle) => article.id !== focusedEvent.id);
-                return [...prev, newArticle];
+              populateCache: (newEvent: IClubEvent, events: Array<IClubEvent>) => {
+                const prev = events.filter((event: IClubEvent) => event.id !== focusedEvent.id);
+                return [...prev, newEvent];
               },
               revalidate: false,
               rollbackOnError: true,
@@ -148,29 +136,60 @@ const EventForm = ({ patchMethod, focusedEvent, setIsModalActive, setRequestMess
   return (
     <form className="form" onSubmit={handleFormSubmit}>
       <div className="form-row">
-        <label htmlFor="tournamentName">Titre de l&apos;article</label>
-        {formErrors.title && <div className="form-error-detail">{formErrors.title}</div>}
+        <label htmlFor="eventContent">Contenu de l&apos;événement</label>
+        {formErrors.content && <div className="form-error-detail">{formErrors.content}</div>}
         <input
           type="text"
-          id="articleTitle"
-          className={formErrors.title ? "form-error" : undefined}
+          id="eventContent"
+          className={formErrors.content ? "form-error" : undefined}
           autoFocus
-          defaultValue={focusedArticle?.title || undefined}
-          ref={articleTitleRef}
+          defaultValue={focusedEvent?.content || undefined}
+          ref={eventContentRef}
         />
       </div>
 
       <div className="form-row">
-        <label htmlFor="comment">Contenu de l&apos;article</label>
-        {formErrors.content && <div className="form-error-detail">{formErrors.content}</div>}
-        <textarea
-          name="articleContent"
-          id="articleContent"
-          rows={10}
-          className={formErrors.content ? "form-error" : undefined}
-          ref={articleContentRef}
-          defaultValue={focusedArticle?.content || undefined}
-        ></textarea>
+        {formErrors.startDate && <div className="form-error-detail">{formErrors.startDate}</div>}
+        {formErrors.endDate && <div className="form-error-detail">{formErrors.endDate}</div>}
+        <div className="dates">
+          <label htmlFor="startDate">Du </label>
+          <input
+            type="date"
+            id="startDate"
+            ref={eventStartDateRef}
+            min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
+            defaultValue={
+              (focusedEvent?.startDate &&
+                formatDate(focusedEvent?.startDate, undefined, "XXXX-XX-XX")) ||
+              undefined
+            }
+            required
+          />
+          <label htmlFor="endDate"> au </label>
+          <input
+            type="date"
+            id="endDate"
+            ref={eventEndDateRef}
+            min={
+              eventStartDateRef.current?.value
+                ? formatDate(
+                    new Date(
+                      new Date(eventStartDateRef.current?.value!).setDate(
+                        new Date(eventStartDateRef.current?.value!).getDate() + 1
+                      )
+                    ).toISOString(),
+                    undefined,
+                    "XXXX-XX-XX"
+                  )
+                : undefined
+            }
+            defaultValue={
+              (focusedEvent?.endDate &&
+                formatDate(focusedEvent?.endDate, undefined, "XXXX-XX-XX")) ||
+              undefined
+            }
+          />
+        </div>
       </div>
 
       <div className="form-row">
@@ -178,44 +197,14 @@ const EventForm = ({ patchMethod, focusedEvent, setIsModalActive, setRequestMess
         <input
           type="checkbox"
           id="visibility"
-          ref={isArticleVisibleRef}
-          defaultChecked={focusedArticle?.visible || false}
+          ref={isEventVisibleRef}
+          defaultChecked={focusedEvent?.visible || false}
         />
       </div>
 
       <div className="form-row">
         <label htmlFor="mainImage">Image principale</label>
-        <input type="file" name="mainImage" id="mainImage" ref={articleMainImageRef} />
-      </div>
-
-      <div className="form-row">
-        <label htmlFor="firstAdditionalImage">Image secondaire (1)</label>
-        <input
-          type="file"
-          name="firstAdditionalImage"
-          id="firstAdditionalImage"
-          ref={articleFirstAdditionalImageRef}
-        />
-      </div>
-
-      <div className="form-row">
-        <label htmlFor="secondAdditionalImage">Image secondaire (2)</label>
-        <input
-          type="file"
-          name="secondAdditionalImage"
-          id="secondAdditionalImage"
-          ref={articleSecondAdditionalImageRef}
-        />
-      </div>
-
-      <div className="form-row">
-        <label htmlFor="thirdAdditionalImage">Image secondaire (3)</label>
-        <input
-          type="file"
-          name="thirdAdditionalImage"
-          id="thirdAdditionalImage"
-          ref={articleThirdAdditionalImageRef}
-        />
+        <input type="file" name="mainImage" id="mainImage" ref={eventFileRef} />
       </div>
 
       <input
