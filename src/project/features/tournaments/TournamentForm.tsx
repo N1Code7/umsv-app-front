@@ -124,7 +124,10 @@ const TournamentForm = ({
               }),
             {
               optimisticData: (tournaments: Array<ITournament>) =>
-                [...tournaments, { id: tournaments.length, ...bodyRequest } as ITournament].sort(
+                [
+                  ...tournaments,
+                  { id: tournaments.slice(-1)[0].id + 1, ...bodyRequest } as ITournament,
+                ].sort(
                   (a: ITournament, b: ITournament) =>
                     Number(new Date(a.startDate)) - Number(new Date(b.startDate))
                 ),

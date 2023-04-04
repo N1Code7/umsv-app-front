@@ -83,7 +83,10 @@ const ArticleForm = ({
               }),
             {
               optimisticData: (articles: Array<IArticle>) =>
-                [...articles, { id: articles.length, ...bodyRequest } as IArticle].sort(
+                [
+                  ...articles,
+                  { id: articles.slice(-1)[0].id + 1, ...bodyRequest } as IArticle,
+                ].sort(
                   (a: IArticle, b: IArticle) =>
                     Number(new Date(b.updatedAt || b.createdAt)) -
                     Number(new Date(a.updatedAt || a.createdAt))
