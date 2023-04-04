@@ -30,6 +30,20 @@
       }
     }
   }
+
+  &-toggle-active {
+    width: 52px;
+    height: 32px;
+    background: grey;
+
+    &.active {
+      background: $primary-1;
+
+      .switch-circle-toggle-active {
+        transform: translate(calc(52px - 28px - 6px), -50%);
+      }
+    }
+  }
 }
 
 /** Set the circle inside the switch */
@@ -48,6 +62,12 @@
   }
 
   &-toggle-form {
+    left: 3px;
+    width: 28px;
+    background: $content-light;
+  }
+
+  &-toggle-active {
     left: 3px;
     width: 28px;
     background: $content-light;

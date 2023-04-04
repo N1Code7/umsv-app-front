@@ -111,7 +111,7 @@ const AdminTournamentsHandle = ({}: IProps) => {
         <Modal isModalActive={isModalActive} setIsModalActive={setIsModalActive}>
           <div className="modal-content modal-registration">
             <div className="title">
-              <h2>Modification inscription :</h2>
+              <h2>Modification du tournoi :</h2>
             </div>
 
             <TournamentForm

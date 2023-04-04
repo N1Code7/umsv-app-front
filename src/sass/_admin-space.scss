@@ -113,6 +113,7 @@
   //   grid-gap: var(--grid-layout-gap);
   // }
 
+  .blocks,
   .registrations-blocks {
     // display: grid;
 
@@ -226,7 +227,8 @@
         grid-template-columns: repeat(3, 25%);
       }
 
-      &.article {
+      &.article,
+      &.club-event {
         grid-template-columns: repeat(3, 20%);
       }
     }
@@ -240,9 +242,11 @@
 
     .abstract {
       grid-column: 1/4;
+      margin-right: 2rem;
 
       @include from(1000) {
         align-items: flex-start;
+        margin-right: 0;
       }
 
       .tournament-date {
@@ -285,9 +289,6 @@
       background: inherit;
       padding: 0.5rem;
     }
-  }
-
-  .prices {
   }
 
   .registration-modalities,

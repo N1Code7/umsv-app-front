@@ -129,9 +129,9 @@ const EventBand = ({
   };
 
   return (
-    <div className="article band" onClick={handleClick}>
+    <div className="club-event band" onClick={handleClick}>
       <div className="abstract">
-        <div className="article-content">
+        <div className="content">
           {event.content + " "}{" "}
           <strong style={{ fontWeight: 600 }}>({event.visible ? "publié" : "non publié"})</strong>
         </div>

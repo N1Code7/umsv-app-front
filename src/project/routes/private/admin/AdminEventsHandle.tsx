@@ -46,7 +46,7 @@ const AdminEventsHandle = ({}: IProps) => {
         </div>
       )}
 
-      <h1>Gestion des articles</h1>
+      <h1>Gestion des événements</h1>
 
       <div className="global-actions">
         <button className="btn btn-primary" onClick={handleClick}>

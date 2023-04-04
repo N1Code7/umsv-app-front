@@ -228,62 +228,62 @@ textarea {
 }
 
 .checkboxes-container {
-  .checkboxes {
-    display: flex;
+  .form-row {
     flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 0.6rem;
+  }
+}
 
-    @include ptt {
-      // gap: clamp(2rem, 5vw, 5rem);
-      justify-content: space-around;
-    }
+.checkboxes {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.6rem;
 
-    input[type="checkbox"] {
-      display: none;
+  @include ptt {
+    // gap: clamp(2rem, 5vw, 5rem);
+    justify-content: space-around;
+  }
 
-      &:checked + label {
-        background-image: linear-gradient($primary-1 0 0);
-        background-size: 100% 100%;
-        color: $content-light;
-        font-weight: 500;
-      }
-    }
+  input[type="checkbox"] {
+    display: none;
 
-    label {
-      position: relative;
-      min-width: clamp(4rem, 20vmin, 7rem);
-      padding: 0.6rem 0.3rem;
-      border: 2px solid $primary-1;
-      border-radius: 3px;
+    &:checked + label {
       background-image: linear-gradient($primary-1 0 0);
-      background-origin: border-box;
-      background-position: 0 100%;
-      background-size: 0 100%;
-      background-repeat: no-repeat;
-      transition: 0.4s;
-      text-align: center;
-      font-size: 0.9rem;
+      background-size: 100% 100%;
+      color: $content-light;
+      font-weight: 500;
+    }
+  }
 
-      @include coarse {
-        box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
-      }
+  label {
+    position: relative;
+    min-width: clamp(4rem, 20vmin, 7rem);
+    padding: 0.6rem 0.3rem;
+    border: 2px solid $primary-1;
+    border-radius: 3px;
+    background-image: linear-gradient($primary-1 0 0);
+    background-origin: border-box;
+    background-position: 0 100%;
+    background-size: 0 100%;
+    background-repeat: no-repeat;
+    transition: 0.4s;
+    text-align: center;
+    font-size: 0.9rem;
 
-      @include fine {
-        &:hover {
-          box-shadow: 2px 2px 13px 2px rgba($primary-1, 0.6);
-        }
-      }
+    @include coarse {
+      box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
+    }
 
-      @include from(1000) {
-        font-size: 1.1rem;
+    @include fine {
+      &:hover {
+        box-shadow: 2px 2px 13px 2px rgba($primary-1, 0.6);
       }
     }
 
-    .form-row {
-      flex-direction: row;
+    @include from(1000) {
+      font-size: 1.1rem;
     }
   }
 }
@@ -323,6 +323,81 @@ textarea {
       @include from(500) {
         width: auto;
       }
+    }
+  }
+}
+
+.radio-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+
+  & > div {
+    display: flex;
+  }
+
+  input[type="radio"] {
+    display: none;
+
+    &:checked + label {
+      background-image: linear-gradient($primary-1 0 0);
+      background-size: 100% 100%;
+      color: $content-light;
+      font-weight: 500;
+    }
+  }
+
+  label {
+    position: relative;
+    width: min(30vmin, 7rem);
+    padding: 0.4rem 0.3rem;
+    border: 2px solid $primary-1;
+    border-radius: 3px;
+    background-image: linear-gradient($primary-1 0 0);
+    background-origin: border-box;
+    background-position: 0 100%;
+    background-size: 0 100%;
+    background-repeat: no-repeat;
+    transition: 0.4s;
+    text-align: center;
+    font-size: 0.9rem;
+
+    @include coarse {
+      box-shadow: 2px 2px 8px 1px rgba(black, 0.2);
+    }
+
+    @include fine {
+      &:hover {
+        box-shadow: 2px 2px 13px 2px rgba($primary-1, 0.6);
+      }
+    }
+
+    @include from(1000) {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.switch-identifier {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  span {
+    position: absolute;
+    top: 50%;
+    width: 6rem;
+    text-align: center;
+
+    &:first-of-type {
+      left: 50%;
+      transform: translate(calc(-50% - 80px), -50%);
+    }
+    &:last-of-type {
+      right: 50%;
+      transform: translate(calc(50% + 60px), -50%);
     }
   }
 }
