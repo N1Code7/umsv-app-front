@@ -70,6 +70,10 @@ const Login = () => {
       : setSubmitEnabled(false);
   }, [email, password]);
 
+  useEffect(() => {
+    localStorage.removeItem("isAdminViewActive");
+  }, []);
+
   return (
     <>
       <Header />

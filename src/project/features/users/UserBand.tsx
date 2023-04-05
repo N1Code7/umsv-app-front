@@ -1,8 +1,9 @@
-import { Dispatch, MouseEvent, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useContext, useEffect, useState } from "react";
 import { ITournamentRegistration, IUser } from "../../../interfaces/interfaces";
 import { formatDate } from "../../../utils/dateFunctions";
 import { mutate, preload } from "swr";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
 
 interface IProps {
   user: IUser;
@@ -20,6 +21,7 @@ const UserBand = ({
   setPatchMethod,
 }: IProps) => {
   //
+  const { user: connectedUser } = useContext(AuthenticationContext);
   const axiosPrivate = useAxiosPrivate();
   const [toggleChevron, setToggleChevron] = useState("down");
 
@@ -289,31 +291,36 @@ const UserBand = ({
         <div className="comment">{tournamentRegistration.comment || "Aucun commentaire"}</div> */}
       </div>
 
-      <div className="cta-container">
-        <button className="btn btn-modify" onClick={handleModify}>
-          ✏️
-        </button>
-        <button
-          className="btn btn-success"
-          style={{ display: user.state === "validated" ? "none" : "flex" }}
-          // onClick={handleValidate}
-        >
-          ✅
-        </button>
-        <button
-          className="btn btn-cancel"
-          style={{ display: user.state === "cancelled" ? "none" : "flex" }}
-          // onClick={handleCancel}
-        >
-          ↩️
-        </button>
-        <button
-          className="btn btn-delete"
-          // onClick={handleDelete}
-        >
-          🗑️
-        </button>
-      </div>
+      {!connectedUser?.roles.includes("ROLE_SUPERADMIN") &&
+        (user.roles.toString() === ["ROLE_MEMBER"].toString() ||
+          connectedUser?.id === user?.id) && (
+          // (!user.roles.includes("ROLE_SUPERADMIN") || !user.roles.includes("ROLE_ADMIN")) && (
+          <div className="cta-container">
+            <button className="btn btn-modify" onClick={handleModify}>
+              ✏️
+            </button>
+            <button
+              className="btn btn-success"
+              style={{ display: user.state === "validated" ? "none" : "flex" }}
+              // onClick={handleValidate}
+            >
+              ✅
+            </button>
+            <button
+              className="btn btn-cancel"
+              style={{ display: user.state === "cancelled" ? "none" : "flex" }}
+              // onClick={handleCancel}
+            >
+              ↩️
+            </button>
+            <button
+              className="btn btn-delete"
+              // onClick={handleDelete}
+            >
+              🗑️
+            </button>
+          </div>
+        )}
 
       <button onClick={handleClick}>
         <i className={`fa-solid fa-chevron-${toggleChevron}`}></i>

@@ -26,6 +26,7 @@ const Logout = () => {
     setAuth?.({});
     setUser?.({} as IUser);
     document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+    localStorage.removeItem("isAdminViewActive");
     clearCache();
     navigate("/se_connecter", { replace: true });
   };
