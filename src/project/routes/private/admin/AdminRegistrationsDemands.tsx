@@ -60,7 +60,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
 
   const displayRegistrationCard = (filter: string) =>
     registrations
-      .filter((registration: ITournamentRegistration) => registration.requestState === filter)
+      ?.filter((registration: ITournamentRegistration) => registration.requestState === filter)
       .sort(
         (a: ITournamentRegistration, b: ITournamentRegistration) =>
           Number(new Date(b.updatedAt || b.createdAt)) -
@@ -78,7 +78,7 @@ const AdminRegistrationsDemands = ({}: IProps) => {
       ));
 
   const displayRegistrationsNumber = (filter: string) =>
-    registrations.filter(
+    registrations?.filter(
       (registration: ITournamentRegistration) => registration.requestState === filter
     ).length;
 

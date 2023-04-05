@@ -55,7 +55,7 @@ const AdminUsersHandle = ({}: IProps) => {
 
   const displayUserCard = (filter: string) =>
     users
-      .filter((user: IUser) => user.state === filter)
+      ?.filter((user: IUser) => user.state === filter)
       .sort(
         (a: IUser, b: IUser) =>
           Number(new Date(b?.updatedAt || b?.createdAt)) -
@@ -73,7 +73,7 @@ const AdminUsersHandle = ({}: IProps) => {
       ));
 
   const displayUsersNumber = (filter: string) =>
-    users.filter((user: IUser) => user.state === filter).length;
+    users?.filter((user: IUser) => user.state === filter).length;
 
   return (
     <main className="admin-space">

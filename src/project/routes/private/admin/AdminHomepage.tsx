@@ -36,11 +36,9 @@ const AdminHomepage = () => {
           <div className="registrations-container">
             {registrationsLoading ? (
               <p>Chargement des demandes d&apos;inscription</p>
-            ) : !registrations ? (
-              <p>Chargement des demandes d&apos;inscription </p>
             ) : (
               registrations
-                .sort(
+                ?.sort(
                   (a: ITournamentRegistration, b: ITournamentRegistration) =>
                     Number(new Date(b.updatedAt || b.createdAt)) -
                     Number(new Date(a.updatedAt || a.createdAt))
@@ -95,11 +93,9 @@ const AdminHomepage = () => {
           <div className="results-container">
             {registrationsLoading ? (
               <p>Chargement des demandes d&apos;inscription </p>
-            ) : !registrations ? (
-              <p>Aucune nouvelle demande d&apos;inscription</p>
             ) : (
               registrations
-                .filter(
+                ?.filter(
                   (registration: ITournamentRegistration) =>
                     registration.requestState === "validated" &&
                     Number(
@@ -138,11 +134,9 @@ const AdminHomepage = () => {
           <div className="users-container">
             {usersLoading ? (
               <p>Chargement des nouveaux utilisateurs</p>
-            ) : !users ? (
-              <p>Aucun nouveau utilisateur</p>
             ) : (
               users
-                .filter((user: IUser) => !user.validatedAccount)
+                ?.filter((user: IUser) => !user.validatedAccount)
                 .map((user: IUser) => (
                   <div key={user.id} className="card">
                     <i className="fa-solid fa-user"></i>

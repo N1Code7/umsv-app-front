@@ -60,7 +60,7 @@ const AdminEventsHandle = ({}: IProps) => {
         ) : (
           // events.map((event: IClubEvent) => <p key={event.id}>{event.content}</p>)
           events
-            .sort(
+            ?.sort(
               (a: IClubEvent, b: IClubEvent) =>
                 Number(new Date(b.updatedAt || b.createdAt)) -
                 Number(new Date(a.updatedAt || a.createdAt))

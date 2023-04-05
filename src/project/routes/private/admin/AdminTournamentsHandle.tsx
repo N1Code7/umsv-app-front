@@ -37,7 +37,7 @@ const AdminTournamentsHandle = ({}: IProps) => {
   ];
 
   const filterTournamentsBySeason = (array: Array<ITournament>, season: string) =>
-    array.filter((tournament: ITournament) => tournament?.season === season);
+    array?.filter((tournament: ITournament) => tournament?.season === season);
 
   const handleSeasonFilter = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -76,7 +76,7 @@ const AdminTournamentsHandle = ({}: IProps) => {
         <>
           <div className="seasons-filter">
             {seasons
-              .sort((a, b) => b.value.localeCompare(a.value))
+              ?.sort((a, b) => b.value.localeCompare(a.value))
               .map((item: { id: number; value: string }) => (
                 <button
                   key={item.id}
@@ -89,7 +89,7 @@ const AdminTournamentsHandle = ({}: IProps) => {
           </div>
           <div className="tournaments-list">
             {filterTournamentsBySeason(tournaments, selectedSeason)
-              .sort(
+              ?.sort(
                 (a: ITournament, b: ITournament) =>
                   Number(new Date(a.startDate)) - Number(new Date(b.startDate))
               )

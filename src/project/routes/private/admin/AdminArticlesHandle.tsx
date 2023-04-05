@@ -59,7 +59,7 @@ const AdminArticlesHandle = ({}: IProps) => {
           <p>Chargement des articles</p>
         ) : (
           articles
-            .sort(
+            ?.sort(
               (a: IArticle, b: IArticle) =>
                 Number(new Date(b.updatedAt || b.createdAt)) -
                 Number(new Date(a.updatedAt || a.createdAt))

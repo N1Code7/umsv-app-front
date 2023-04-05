@@ -9,7 +9,8 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const previousView = localStorage.getItem("isAdminViewActive") === "true" ? "admin" : "member";
-  const from = location.state?.from?.pathname || (previousView === "admin" && "/admin") || "/";
+  const from = location.state?.from?.pathname || "/";
+  // const from = location.state?.from?.pathname || (previousView === "admin" && "/admin") || "/";
   const { user, setUser, setAuth } = useContext(AuthenticationContext);
   const [email, setEmail] = useState(user?.email || "");
   const [emailError, setEmailError] = useState("");
@@ -53,7 +54,20 @@ const Login = () => {
         });
         document.cookie = `refreshToken=${loginResponse.data.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
         setUser?.(userResponse.data);
-        navigate(from, { replace: true });
+
+        console.log(from);
+
+        if (
+          userResponse.data.firstName + userResponse.data.id ===
+          localStorage.getItem("lastConnected")
+        ) {
+          // localStorage.setItem("isAdminViewActive", "true")
+          navigate(previousView === "admin" ? "/admin" : "/", { replace: true });
+        } else {
+          localStorage.removeItem("isAdminViewActive");
+          navigate(from, { replace: true });
+        }
+        localStorage.removeItem("lastConnected");
       } catch (err) {
         // console.error(err);
         setHasErrorOccurred(true);
@@ -70,9 +84,9 @@ const Login = () => {
       : setSubmitEnabled(false);
   }, [email, password]);
 
-  useEffect(() => {
-    localStorage.removeItem("isAdminViewActive");
-  }, []);
+  // useEffect(() => {
+  //   localStorage.removeItem("isAdminViewActive");
+  // }, []);
 
   return (
     <>
