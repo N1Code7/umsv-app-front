@@ -1,7 +1,7 @@
-import { Dispatch, MouseEvent, SetStateAction, useContext, useEffect, useState } from "react";
-import { ITournamentRegistration, IUser } from "../../../interfaces/interfaces";
+import { Dispatch, MouseEvent, SetStateAction, useContext, useState } from "react";
+import { IUser } from "../../../interfaces/interfaces";
 import { formatDate } from "../../../utils/dateFunctions";
-import { mutate, preload } from "swr";
+import { mutate } from "swr";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
 
@@ -27,7 +27,9 @@ const UserBand = ({
 
   const handleClick = (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
     e.preventDefault();
-    if (e.target !== document.querySelector(".cta-container button"))
+    if (
+      !Array.from(document.querySelectorAll(".cta-container button")).includes(e.target as Element)
+    )
       toggleChevron === "down" ? setToggleChevron("up") : setToggleChevron("down");
     e.stopPropagation();
   };
@@ -39,155 +41,195 @@ const UserBand = ({
     setPatchMethod?.(true);
   };
 
-  // const handleValidate = async (e: MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   //
-  //   await mutate(
-  //     `/admin/users`,
-  //     await axiosPrivate
-  //       .patch(`/admin/user/validate/${user.id}`, {
-  //         requestState: "validated",
-  //       })
-  //       .then((res) => {
-  //         setRequestMessage({ success: "La demande d'inscription a bien été validée.", error: "" });
-  //         return res.data;
-  //       })
-  //       .catch((err) => {
-  //         // console.error(err);
-  //         setRequestMessage({
-  //           success: "",
-  //           error: "Une erreur est survenue lors de la validation de la demande d'inscription",
-  //         });
-  //       }),
-  //     {
-  //       optimisticData: (registrations: Array<ITournamentRegistration>) => {
-  //         const prev = registrations.filter(
-  //           (registration: ITournamentRegistration) => registration.id !== user.id
-  //         );
-  //         return [...prev, { ...user, requestState: "validated" }].sort(
-  //           (a: ITournamentRegistration, b: ITournamentRegistration) =>
-  //             Number(new Date(b.updatedAt || b.createdAt)) -
-  //             Number(new Date(a.updatedAt || a.createdAt))
-  //         );
-  //       },
-  //       populateCache: (
-  //         newRegistration: ITournamentRegistration,
-  //         registrations: Array<ITournamentRegistration>
-  //       ) => {
-  //         const prev = registrations.filter(
-  //           (reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id
-  //         );
-  //         return [...prev, newRegistration];
-  //       },
-  //       revalidate: false,
-  //       rollbackOnError: true,
-  //     }
-  //   );
+  const handleActivate = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await mutate(
+      "/admin/users",
+      await axiosPrivate
+        .patch(`/admin/user/${user.id}/activation`)
+        .then((res) => {
+          setRequestMessage({
+            success: `Le compte de ${res.data.firstName.toUpperCase()} a bien été activé.`,
+            error: "",
+          });
+          return res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          setRequestMessage({
+            success: "",
+            error: "Une erreur est survenue lors de l'activation du compte 🤕.",
+          });
+        }),
+      {
+        optimisticData: (all: Array<IUser>) => {
+          const prev = all.filter((item: IUser) => item.id !== user.id);
+          return [...prev, { ...user, state: "active" }];
+        },
+        populateCache: (result: IUser, all: Array<IUser>) => {
+          const prev = all.filter((item: IUser) => item.id !== user.id);
+          return [...prev, result];
+        },
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
 
-  //   setTimeout(() => {
-  //     setRequestMessage({ success: "", error: "" });
-  //   }, 10000);
-  //   // window.scrollTo(0, 0);
-  // };
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+  };
 
-  // const handleCancel = async (e: MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   //
-  //   await mutate(
-  //     `/admin/tournament-registrations`,
-  //     axiosPrivate
-  //       .patch(`/admin/tournament-registration/cancel/${tournamentRegistration.id}`, {
-  //         requestState: "cancelled",
-  //       })
-  //       .then((res) => {
-  //         setRequestMessage({ success: "La demande d'inscription a bien été annulée.", error: "" });
-  //         return res.data;
-  //       })
-  //       .catch((err) => {
-  //         console.error(err);
-  //         setRequestMessage({
-  //           success: "",
-  //           error: "Une erreur est survenue lors de l'annulation de la demande d'inscription.",
-  //         });
-  //       }),
-  //     {
-  //       optimisticData: (registrations: Array<ITournamentRegistration>) => {
-  //         const prev = registrations.filter(
-  //           (registration: ITournamentRegistration) => registration.id !== tournamentRegistration.id
-  //         );
-  //         return [...prev, { ...tournamentRegistration, requestState: "cancelled" }].sort(
-  //           (a: ITournamentRegistration, b: ITournamentRegistration) =>
-  //             Number(new Date(b.updatedAt || b.createdAt)) -
-  //             Number(new Date(a.updatedAt || a.createdAt))
-  //         );
-  //       },
-  //       populateCache: (
-  //         newRegistration: ITournamentRegistration,
-  //         registrations: Array<ITournamentRegistration>
-  //       ) => {
-  //         const prev = registrations.filter(
-  //           (reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id
-  //         );
-  //         return [...prev, newRegistration];
-  //       },
-  //       revalidate: false,
-  //       rollbackOnError: true,
-  //     }
-  //   );
+  const handleInactivate = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await mutate(
+      "/admin/users",
+      await axiosPrivate
+        .patch(`/admin/user/${user.id}/inactivation`)
+        .then((res) => {
+          setRequestMessage({
+            success: `Le compte de ${res.data.firstName.toUpperCase()} a bien été désactivé.`,
+            error: "",
+          });
+          return res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          setRequestMessage({
+            success: "",
+            error: "Une erreur est survenue lors de l'inactivation du compte 🤕.",
+          });
+        }),
+      {
+        optimisticData: (all: Array<IUser>) => {
+          const prev = all.filter((item: IUser) => item.id !== user.id);
+          return [...prev, { ...user, state: "inactive" }];
+        },
+        populateCache: (result: IUser, all: Array<IUser>) => {
+          const prev = all.filter((item: IUser) => item.id !== user.id);
+          return [...prev, result];
+        },
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
 
-  //   setTimeout(() => {
-  //     setRequestMessage({ success: "", error: "" });
-  //   }, 10000);
-  //   // window.scrollTo(0, 0);
-  // };
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+  };
 
-  // const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   //
-  //   mutate(
-  //     "/admin/tournament-registrations",
-  //     axiosPrivate
-  //       .delete(`/admin/tournament-registration/${tournamentRegistration.id}`)
-  //       .then((res) => {
-  //         console.log(res.data);
-  //         setRequestMessage({
-  //           success: "La demande d'inscription a bien été supprimée.",
-  //           error: "",
-  //         });
-  //       })
-  //       .catch((err) => {
-  //         console.error(err);
-  //         setRequestMessage({
-  //           success: "",
-  //           error: "Une erreur est survenue lors de la suppression de la demande d'inscription.",
-  //         });
-  //       }),
-  //     {
-  //       optimisticData: (registrations: Array<ITournamentRegistration>) =>
-  //         registrations
-  //           .filter((reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id)
-  //           .sort(
-  //             (a: ITournamentRegistration, b: ITournamentRegistration) =>
-  //               Number(new Date(b.updatedAt || b.createdAt)) -
-  //               Number(new Date(a.updatedAt || a.createdAt))
-  //           ),
-  //       populateCache: (
-  //         newRegistration: ITournamentRegistration,
-  //         allRegistrations: Array<ITournamentRegistration>
-  //       ) =>
-  //         allRegistrations.filter(
-  //           (reg: ITournamentRegistration) => reg.id !== tournamentRegistration.id
-  //         ),
-  //       revalidate: false,
-  //       rollbackOnError: true,
-  //     }
-  //   );
+  const handlePromote = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await mutate(
+      "/admin/users",
+      await axiosPrivate
+        .patch(`/admin/user/${user.id}/promotion`)
+        .then((res) => {
+          setRequestMessage({
+            success: `Le compte de ${res.data.firstName.toUpperCase()} a bien été promu ADMIN.`,
+            error: "",
+          });
+          return res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          setRequestMessage({
+            success: "",
+            error: "Une erreur est survenue lors de la promotion du compte en ADMIN 🤕.",
+          });
+        }),
+      {
+        optimisticData: (all: Array<IUser>) => {
+          const prev = all.filter((item: IUser) => item.id !== user.id);
+          return [...prev, { ...user, roles: ["ROLE_ADMIN", "ROLE_MEMBER"] }];
+        },
+        populateCache: (result: IUser, all: Array<IUser>) => {
+          const prev = all.filter((item: IUser) => item.id !== user.id);
+          return [...prev, result];
+        },
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
 
-  //   setTimeout(() => {
-  //     setRequestMessage({ success: "", error: "" });
-  //   }, 10000);
-  //   // window.scrollTo(0, 0);
-  // };
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+  };
+
+  const handleDemote = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await mutate(
+      "/admin/users",
+      await axiosPrivate
+        .patch(`/admin/user/${user.id}/demotion`)
+        .then((res) => {
+          setRequestMessage({
+            success: `Le compte de ${res.data.firstName.toUpperCase()} a bien été rétrogradé MEMBRE.`,
+            error: "",
+          });
+          return res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          setRequestMessage({
+            success: "",
+            error: "Une erreur est survenue lors de la rétrogation du compte en MEMBRE 🤕.",
+          });
+        }),
+      {
+        optimisticData: (all: Array<IUser>) => {
+          const prev = all.filter((item: IUser) => item.id !== user.id);
+          return [...prev, { ...user, roles: ["ROLE_MEMBER"] }];
+        },
+        populateCache: (result: IUser, all: Array<IUser>) => {
+          const prev = all.filter((item: IUser) => item.id !== user.id);
+          return [...prev, result];
+        },
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
+
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+  };
+
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await mutate(
+      "/admin/users",
+      await axiosPrivate
+        .delete(`/admin/user/${user.id}`)
+        .then((res) => {
+          setRequestMessage({
+            success: `Le compte a bien été supprimé !`,
+            error: "",
+          });
+          return res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          setRequestMessage({
+            success: "",
+            error: "Une erreur est survenue lors de la suppression du compte 🤕.",
+          });
+        }),
+      {
+        optimisticData: (all: Array<IUser>) => all.filter((item: IUser) => item.id !== user.id),
+        populateCache: (result: IUser, all: Array<IUser>) =>
+          all.filter((item: IUser) => item.id !== user.id),
+        revalidate: false,
+        rollbackOnError: true,
+      }
+    );
+
+    setTimeout(() => {
+      setRequestMessage({ success: "", error: "" });
+    }, 10000);
+  };
 
   return (
     <div
@@ -195,22 +237,8 @@ const UserBand = ({
       id="userBand"
       style={toggleChevron === "down" && window.innerWidth > 1000 ? { rowGap: 0 } : undefined}
       onClick={handleClick}
-      // onClick={() => (toggleChevron === "down" ? setToggleChevron("up") : setToggleChevron("down"))}
     >
       <div className="user-identity">{user.firstName + " " + user.lastName}</div>
-
-      {/* <div className="user-date">
-        Demande du{" "}
-        {formatDate(
-          tournamentRegistration.updatedAt || tournamentRegistration.createdAt,
-          undefined
-        )}
-      </div>
-
-      <div className="identity">
-        {tournamentRegistration.user?.firstName || tournamentRegistration.userFirstName}{" "}
-        {tournamentRegistration.user?.lastName || tournamentRegistration.userLastName}
-      </div> */}
 
       <div
         className="details"
@@ -220,107 +248,78 @@ const UserBand = ({
             : { maxHeight: 500, opacity: 1, marginTop: "0.5rem", marginBottom: "0.5rem", zIndex: 0 }
         }
       >
-        {/* <i className="fa-solid fa-font"></i>
-        <div className="tournament-name">
-          {tournamentRegistration.tournament?.name ||
-            tournamentRegistration.tournamentName ||
-            undefined}
-        </div>
-
-        <i className="fa-solid fa-city"></i>
-        <div className="tournament-city">
-          {tournamentRegistration.tournament?.city || tournamentRegistration.tournamentCity}
-        </div>
-
-        <i className="fa-solid fa-calendar-days"></i>
-        <div className="tournament-dates">
-          {tournamentRegistration.tournament?.endDate || tournamentRegistration.tournamentEndDate
-            ? formatDate(
-                String(
-                  tournamentRegistration.tournament?.startDate ||
-                    tournamentRegistration.tournamentStartDate
-                ),
-                String(
-                  tournamentRegistration.tournament?.endDate ||
-                    tournamentRegistration.tournamentEndDate
-                ),
-                "XX & XX xxx XXXX"
-              )
-            : formatDate(
-                String(
-                  tournamentRegistration?.tournament?.startDate ||
-                    tournamentRegistration?.tournamentStartDate
-                ),
-                undefined,
-                "XX xxx XXXX"
-              )}
-        </div>
-
-        {tournamentRegistration.participationSingle && (
+        <i className="fa-solid fa-envelope"></i>
+        <div className="user-email">{user.email}</div>
+        {user.gender && (
           <>
-            <i className="fa-solid fa-user"></i>
-            <div className="single">Simple : oui</div>
+            <i className="fa-solid fa-venus-mars"></i>
+            <div className="user-gender">{user.gender === "male" ? "Masculin" : "Féminin"}</div>
           </>
         )}
-
-        {tournamentRegistration.participationDouble && (
+        {user.birthDate && (
           <>
-            <i className="fa-solid fa-user-group"></i>
-            <div className="double">
-              Double : {tournamentRegistration.doublePartnerName || "X"}
-              {tournamentRegistration.doublePartnerClub
-                ? " / " + tournamentRegistration.doublePartnerClub
-                : ""}
+            <i className="fa-solid fa-cake-candles"></i>
+            <div className="user-birthDate">
+              {formatDate(String(user.birthDate), undefined, "long")}
             </div>
           </>
         )}
-
-        {tournamentRegistration.participationMixed && (
-          <>
-            <i className="fa-solid fa-user-group"></i>
-            <div className="mixed">
-              Mixte : {tournamentRegistration.mixedPartnerName || "X"}
-              {tournamentRegistration.mixedPartnerClub
-                ? " / " + tournamentRegistration.mixedPartnerClub
-                : ""}
-            </div>
-          </>
-        )}
-
-        <i className="fa-solid fa-comment-dots"></i>
-        <div className="comment">{tournamentRegistration.comment || "Aucun commentaire"}</div> */}
+        <i className="fa-solid fa-clipboard-check"></i>
+        <div className="user-state">
+          {user.state === "pending"
+            ? "En attente"
+            : user.state === "active"
+            ? "Activé"
+            : "Désactivé"}
+        </div>
+        <i className="fa-solid fa-user-check"></i>
+        <div className="user-validated-account">
+          {user.validatedAccount ? "Compte validé" : "Compte invalide"}
+        </div>
       </div>
 
-      {!connectedUser?.roles.includes("ROLE_SUPERADMIN") &&
-        (user.roles.toString() === ["ROLE_MEMBER"].toString() ||
-          connectedUser?.id === user?.id) && (
-          // (!user.roles.includes("ROLE_SUPERADMIN") || !user.roles.includes("ROLE_ADMIN")) && (
-          <div className="cta-container">
-            <button className="btn btn-modify" onClick={handleModify}>
-              ✏️
-            </button>
-            <button
-              className="btn btn-success"
-              style={{ display: user.state === "validated" ? "none" : "flex" }}
-              // onClick={handleValidate}
-            >
-              ✅
-            </button>
-            <button
-              className="btn btn-cancel"
-              style={{ display: user.state === "cancelled" ? "none" : "flex" }}
-              // onClick={handleCancel}
-            >
-              ↩️
-            </button>
-            <button
-              className="btn btn-delete"
-              // onClick={handleDelete}
-            >
-              🗑️
-            </button>
-          </div>
-        )}
+      {(connectedUser?.roles.includes("ROLE_SUPERADMIN") ||
+        user.roles.toString() === ["ROLE_MEMBER"].toString() ||
+        connectedUser?.id === user?.id) && (
+        <div className="cta-container">
+          <button className="btn btn-modify" onClick={handleModify}>
+            ✏️
+          </button>
+          <button
+            className="btn btn-success"
+            style={{ display: user.state === "active" ? "none" : "flex" }}
+            onClick={handleActivate}
+          >
+            ✅
+          </button>
+          <button
+            className="btn btn-cancel"
+            style={{ display: user.state === "inactive" ? "none" : "flex" }}
+            onClick={handleInactivate}
+          >
+            🚫
+          </button>
+          <button
+            className="btn btn-modify"
+            style={{ display: user.roles.includes("ROLE_ADMIN") ? "none" : "flex" }}
+            onClick={handlePromote}
+          >
+            ⬆️
+          </button>
+          <button
+            className="btn btn-modify"
+            style={{
+              display: user.roles.toString() === ["ROLE_MEMBER"].toString() ? "none" : "flex",
+            }}
+            onClick={handleDemote}
+          >
+            ⬇️
+          </button>
+          <button className="btn btn-delete" onClick={handleDelete}>
+            🗑️
+          </button>
+        </div>
+      )}
 
       <button onClick={handleClick}>
         <i className={`fa-solid fa-chevron-${toggleChevron}`}></i>

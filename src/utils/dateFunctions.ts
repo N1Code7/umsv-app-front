@@ -26,6 +26,8 @@ export const formatDate = (entryDate1: string, entryDate2?: string, outputFormat
         formattedDate2[2]
       } ${getMonthOfYear(entryDate2)} ${formattedDate[0]}`;
     }
+  } else if (outputFormat === "long") {
+    return `${formattedDate[2]} ${getMonthOfYear(entryDate1, "long")} ${formattedDate[0]}`;
   } else if (outputFormat === "interval" && entryDate2 !== undefined) {
     let formattedDate2 = entryDate2.split("T")[0].split("-");
     if (new Date(entryDate1).getMonth() === new Date(entryDate2).getMonth()) {

@@ -6,6 +6,7 @@ import Switch from "../../components/Switch";
 import { userSchema } from "../../../validations/userSchema";
 import { AuthenticationContext } from "../../../contexts/AuthenticationContext";
 import useAxiosPrivateMultipart from "../../../hooks/useAxiosPrivateMultipart";
+import { formatDate } from "../../../utils/dateFunctions";
 
 interface IProps {
   patchMethod?: boolean;
@@ -71,11 +72,13 @@ const UserForm = ({
           : ["ROLE_MEMBER"]
         : undefined,
       // roles: rolesRef.current?.value || ["ROLE_MEMBER"],
-      gender: genderRef.current?.value || undefined,
-      birthDate: birthDateRef.current?.value || undefined,
+      gender: genderRef.current?.value === "default" ? undefined : genderRef.current?.value,
+      birthDate: birthDateRef.current?.valueAsDate || undefined,
       state: stateRef.current?.value || "inactive",
-      validatedAccount: validatedAccountRef.current?.checked || false,
+      validatedAccount: validatedAccount,
     };
+
+    console.log(bodyRequest);
 
     await userSchema
       .validate(bodyRequest, { abortEarly: false })
@@ -94,14 +97,14 @@ const UserForm = ({
               .then((res) => {
                 setRequestMessage({
                   error: "",
-                  success: `Le compte utilisateur de ${focusedUser?.firstName?.toUpperCase()} a bien été créé ! 👌`,
+                  success: `Le compte utilisateur de ${res.data.firstName?.toUpperCase()} a bien été créé ! 👌`,
                 });
                 return res.data;
               })
               .catch((err) => {
                 console.error(err);
                 setRequestMessage({
-                  error: `Une erreur est survenue lors de la création du compte utilisateur de ${focusedUser?.firstName?.toUpperCase()} 🤕.`,
+                  error: `Une erreur est survenue lors de la création du compte utilisateur 🤕.`,
                   success: "",
                 });
               }),
@@ -128,7 +131,7 @@ const UserForm = ({
               .then((res) => {
                 setRequestMessage({
                   error: "",
-                  success: `Le compte utilisateur de ${focusedUser?.firstName?.toUpperCase()} a bien été modifié ! 👌`,
+                  success: `Le compte utilisateur de ${res.data.firstName?.toUpperCase()} a bien été modifié ! 👌`,
                 });
                 return res.data;
               })
@@ -163,6 +166,8 @@ const UserForm = ({
         window.scrollTo(0, 0);
       })
       .catch((err) => {
+        console.log(err);
+
         err.inner.forEach(
           (err: ValidationError) => (errors = { ...errors, [err.path as string]: err.message })
         );
@@ -260,7 +265,7 @@ const UserForm = ({
           type="date"
           id="userBirthDate"
           className={formErrors.gender ? "form-error" : undefined}
-          defaultValue={focusedUser?.birthDate}
+          defaultValue={formatDate(String(focusedUser?.birthDate), undefined, "XXXX-XX-XX")}
           ref={birthDateRef}
         />
       </div>
@@ -296,314 +301,6 @@ const UserForm = ({
           </span>
         </div>
       </div>
-
-      {/* {!chooseNewUser ? (
-        <div className="form-row">
-          <label htmlFor="selectUser">Sélectionner un utilisateur existant</label>
-          {formErrors.registrationSelectUser && (
-            <div className="form-error-detail">{formErrors.registrationSelectUser}</div>
-          )}
-          <select
-            id="selectUser"
-            ref={registrationSelectUser}
-            className={formErrors.registrationSelectUser ? "form-error" : undefined}
-            defaultValue={focusedRegistration?.user?.id || "null"}
-            autoFocus
-            required
-          >
-            <option value="null">---</option>
-            {usersLoading
-              ? "Chargement..."
-              : !users
-              ? "Aucun utilisateur"
-              : users
-                  // .filter((user: IUser) => user.validatedAccount)
-                  .sort((a: IUser, b: IUser) => a.lastName.localeCompare(b.lastName))
-                  .map((user: IUser) => (
-                    <option key={user.id} value={user.id}>
-                      {`${user.lastName.toUpperCase()} ${user.firstName}`}
-                    </option>
-                  ))}
-          </select>
-        </div>
-      ) : (
-        <>
-          <div className="form-row">
-            <label htmlFor="userLastName">Nom du joueur</label>
-            {formErrors.registrationUserLastName && (
-              <div className="form-error-detail">{formErrors.registrationUserLastName}</div>
-            )}
-            <input
-              type="text"
-              id="userLastName"
-              className={formErrors.registrationUserLastName ? "form-error" : ""}
-              autoFocus
-              defaultValue={focusedRegistration?.userLastName || undefined}
-              ref={registrationUserLastName}
-            />
-          </div>
-          <div className="form-row">
-            <label htmlFor="userFirstName">Prénom du joueur</label>
-            {formErrors.registrationUserFirstName && (
-              <div className="form-error-detail">{formErrors.registrationUserFirstName}</div>
-            )}
-            <input
-              type="text"
-              id="userFirstName"
-              className={formErrors.registrationUserFirstName ? "form-error" : ""}
-              defaultValue={focusedRegistration?.userFirstName || undefined}
-              ref={registrationUserFirstName}
-            />
-          </div>
-          <div className="form-row">
-            <label htmlFor="userEmail">Email du joueur</label>
-            {formErrors.registrationUserEmail && (
-              <div className="form-error-detail">{formErrors.registrationUserEmail}</div>
-            )}
-            <input
-              type="text"
-              id="userEmail"
-              className={formErrors.registrationUserEmail ? "form-error" : ""}
-              defaultValue={focusedRegistration?.userEmail || undefined}
-              ref={registrationUserEmail}
-            />
-          </div>
-        </>
-      )}
-
-      <div className="form-row choose-tournament-identifier">
-        <span onClick={() => setChooseNewTournament(false)} style={{ cursor: "pointer" }}>
-          Tournoi existant
-        </span>
-        <Switch
-          customName="toggle-form"
-          isActive={chooseNewTournament}
-          setIsActive={setChooseNewTournament}
-        />
-        <span onClick={() => setChooseNewTournament(true)} style={{ cursor: "pointer" }}>
-          Nouveau tournoi
-        </span>
-      </div>
-
-      {!chooseNewTournament ? (
-        <div className="form-row">
-          <label htmlFor="selectTournament">Sélectionner un tournoi existant</label>
-          {formErrors.registrationSelectTournament && (
-            <div className="form-error-detail">{formErrors.registrationSelectTournament}</div>
-          )}
-          <select
-            id="selectTournament"
-            ref={registrationSelectTournament}
-            className={formErrors.registrationSelectTournament ? "form-error" : ""}
-            defaultValue={focusedRegistration?.tournament?.id || selectedTournament?.id || "null"}
-            autoFocus
-            required
-          >
-            <option value="null">---</option>
-            {tournamentsLoading
-              ? "Chargement..."
-              : !tournaments
-              ? "Aucun tournoi"
-              : tournaments
-                  .filter(
-                    (tournament: ITournament) =>
-                      (tournament.randomDraw &&
-                        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10) ||
-                      tournament.id === focusedRegistration?.tournament?.id
-                  )
-                  .sort(
-                    (a: ITournament, b: ITournament) =>
-                      Number(new Date(a.startDate)) - Number(new Date(b.startDate))
-                  )
-                  .map((tournament: ITournament) => (
-                    <option key={tournament.id} value={tournament.id}>
-                      {tournament.name?.slice(0, 20) + "..." || "ℹ️"} - {tournament.city} -{" "}
-                      {tournament.endDate
-                        ? formatDate(
-                            String(tournament.startDate),
-                            String(tournament.endDate),
-                            "XX & XX xxx XXXX"
-                          )
-                        : formatDate(String(tournament.startDate), undefined, "XX xxx XXXX")}
-                    </option>
-                  ))}
-          </select>
-        </div>
-      ) : (
-        <>
-          <div className="form-row">
-            <label htmlFor="tournamentName">Nom du tournoi</label>
-            {formErrors.registrationName && (
-              <div className="form-error-detail">{formErrors.registrationName}</div>
-            )}
-            <input
-              type="text"
-              id="tournamentName"
-              className={formErrors.registrationName ? "form-error" : ""}
-              autoFocus
-              defaultValue={focusedRegistration?.tournamentName || undefined}
-              ref={registrationName}
-            />
-          </div>
-          <div className="form-row">
-            <label htmlFor="tournamentCity">Ville du tournoi</label>
-            {formErrors.registrationCity && (
-              <div className="form-error-detail">{formErrors.registrationCity}</div>
-            )}
-            <input
-              type="text"
-              id="tournamentCity"
-              className={formErrors.registrationCity ? "form-error" : ""}
-              ref={registrationCity}
-              defaultValue={focusedRegistration?.tournamentCity || undefined}
-              required
-            />
-          </div>
-          <div className="form-row">
-            {formErrors.registrationStartDate && (
-              <div className="form-error-detail">{formErrors.registrationStartDate}</div>
-            )}
-            {formErrors.registrationEndDate && (
-              <div className="form-error-detail">{formErrors.registrationEndDate}</div>
-            )}
-            <div className="dates">
-              <label htmlFor="startDate">Du </label>
-              <input
-                type="date"
-                id="startDate"
-                ref={registrationStartDate}
-                min={formatDate(new Date().toISOString(), undefined, "XXXX-XX-XX")}
-                defaultValue={
-                  (focusedRegistration?.tournamentStartDate &&
-                    formatDate(
-                      focusedRegistration?.tournamentStartDate,
-                      undefined,
-                      "XXXX-XX-XX"
-                    )) ||
-                  undefined
-                }
-                required
-              />
-              <label htmlFor="endDate"> au </label>
-              <input
-                type="date"
-                id="endDate"
-                ref={registrationEndDate}
-                min={
-                  registrationStartDate.current?.value
-                    ? formatDate(
-                        new Date(
-                          new Date(registrationStartDate.current?.value!).setDate(
-                            new Date(registrationStartDate.current?.value!).getDate() + 1
-                          )
-                        ).toISOString(),
-                        undefined,
-                        "XXXX-XX-XX"
-                      )
-                    : undefined
-                }
-                defaultValue={
-                  (focusedRegistration?.tournamentEndDate &&
-                    formatDate(focusedRegistration?.tournamentEndDate, undefined, "XXXX-XX-XX")) ||
-                  undefined
-                }
-              />
-            </div>
-          </div>
-        </>
-      )}
-
-      <div className="checkboxes-container">
-        {formErrors.checkboxes && <div className="form-error-detail">{formErrors.checkboxes}</div>}
-        <div className="checkboxes">
-          <div className="form-row">
-            <input
-              type="checkbox"
-              name="single"
-              id="single"
-              ref={checkboxSingle}
-              defaultChecked={focusedRegistration?.participationSingle || false}
-            />
-            <label htmlFor="single">Simple</label>
-          </div>
-
-          <div className="form-row">
-            <input
-              type="checkbox"
-              name="double"
-              id="double"
-              defaultChecked={focusedRegistration?.participationDouble || false}
-              onChange={() => setCheckboxDouble((prev) => !prev)}
-            />
-            <label htmlFor="double">Double</label>
-          </div>
-          <div className="form-row">
-            <input
-              type="checkbox"
-              name="mixed"
-              id="mixed"
-              defaultChecked={focusedRegistration?.participationMixed || false}
-              onChange={() => setCheckboxMixed((prev) => !prev)}
-            />
-            <label htmlFor="mixed">Mixte</label>
-          </div>
-        </div>
-      </div>
-
-      {checkboxDouble && (
-        <div className="form-row">
-          <label htmlFor="doublePartner">Partenaire de Double</label>
-          <div className="partner-container">
-            <input
-              type="text"
-              id="doublePartner"
-              placeholder="NOM / Prénom | Laisser vide si X"
-              ref={registrationDoublePartnerName}
-              defaultValue={focusedRegistration?.doublePartnerName || undefined}
-            />
-            <input
-              type="text"
-              placeholder="Club"
-              ref={registrationDoublePartnerClub}
-              defaultValue={focusedRegistration?.doublePartnerClub || undefined}
-            />
-          </div>
-        </div>
-      )}
-
-      {checkboxMixed && (
-        <div className="form-row">
-          <label htmlFor="mixedPartner">Partenaire de mixte</label>
-          <div className="partner-container">
-            <input
-              type="text"
-              id="mixedPartner"
-              placeholder="NOM / Prénom | Laisser vide si X"
-              ref={registrationMixedPartnerName}
-              defaultValue={focusedRegistration?.mixedPartnerName || undefined}
-            />
-            <input
-              type="text"
-              placeholder="Club"
-              ref={registrationMixedPartnerClub}
-              defaultValue={focusedRegistration?.mixedPartnerClub || undefined}
-            />
-          </div>
-        </div>
-      )}
-
-      <div className="form-row">
-        <label htmlFor="comments">Commentaires</label>
-        {formErrors.comment && <div className="form-error-detail">{formErrors.comment}</div>}
-        <textarea
-          id="comments"
-          cols={30}
-          rows={5}
-          className={formErrors.comment ? "form-error" : ""}
-          ref={registrationComment}
-          defaultValue={focusedRegistration?.comment || undefined}
-        ></textarea>
-      </div> */}
 
       <input
         type="submit"

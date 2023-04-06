@@ -34,6 +34,7 @@ const AdminUsersHandle = ({}: IProps) => {
     e.preventDefault();
     setPatchMethod?.(false);
     setIsModalActive?.(true);
+    setFocusedUser({} as IUser);
   };
 
   const handleOpeningSection = (e: MouseEvent<HTMLButtonElement>) => {
@@ -114,9 +115,7 @@ const AdminUsersHandle = ({}: IProps) => {
 
         <div className="pending-block">
           <div className="section-header">
-            <h3>
-              Utilisateurs en attente ({usersLoading ? "..." : displayUsersNumber("pending")})
-            </h3>
+            <h3>Comptes en attente ({usersLoading ? "..." : displayUsersNumber("pending")})</h3>
             <button onClick={handleOpeningSection}>
               <i
                 className={`fa-solid fa-chevron-${isPendingSectionOpened ? "up" : "down"}`}
@@ -145,7 +144,7 @@ const AdminUsersHandle = ({}: IProps) => {
 
         <div className="active-block">
           <div className="section-header">
-            <h3>Utilisateurs traités ({usersLoading ? "..." : displayUsersNumber("active")})</h3>
+            <h3>Comptes actifs ({usersLoading ? "..." : displayUsersNumber("active")})</h3>
             <button onClick={handleOpeningSection}>
               <i
                 className={`fa-solid fa-chevron-${isActiveSectionOpened ? "up" : "down"}`}
@@ -173,7 +172,7 @@ const AdminUsersHandle = ({}: IProps) => {
 
         <div className="inactive-block">
           <div className="section-header">
-            <h3>Utilisateurs annulés ({usersLoading ? "..." : displayUsersNumber("inactive")})</h3>
+            <h3>Comptes désactivés ({usersLoading ? "..." : displayUsersNumber("inactive")})</h3>
             <button onClick={handleOpeningSection}>
               <i
                 className={`fa-solid fa-chevron-${isInactiveSectionOpened ? "up" : "down"}`}

@@ -25,7 +25,7 @@ export interface IUser {
   gender: string;
   avatarFileName: string;
   avatarFileUrl: string;
-  birthDate: string;
+  birthDate: Date;
   state: string;
   validatedAccount: boolean;
   FFBadStats: Array<IFFBadStats>;
