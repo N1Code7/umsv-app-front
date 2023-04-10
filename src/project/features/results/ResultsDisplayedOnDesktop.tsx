@@ -101,7 +101,7 @@ const ResultsDisplayedOnDesktop = ({
       <td>{tournamentRegistration?.result?.areResultsValidated ? "✅" : "🚫"}</td>
       <td>
         <div className="cta-container registrations-actions">
-          <button className="btn modify" onClick={handleClickButton}>
+          <button className="btn btn-modify" onClick={handleClickButton}>
             ✏️
           </button>
         </div>

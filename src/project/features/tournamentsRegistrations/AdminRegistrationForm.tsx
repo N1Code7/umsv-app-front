@@ -407,13 +407,14 @@ const AdminRegistrationForm = ({
               : tournaments
                   .filter(
                     (tournament: ITournament) =>
-                      (tournament.randomDraw &&
-                        new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10) ||
-                      tournament.id === focusedRegistration?.tournament?.id
+                      tournament.season ===
+                      (new Date().getMonth() > 8
+                        ? new Date().getFullYear() + "/" + (new Date().getFullYear() + 1)
+                        : new Date().getFullYear() - 1 + "/" + new Date().getFullYear())
                   )
                   .sort(
                     (a: ITournament, b: ITournament) =>
-                      Number(new Date(a.startDate)) - Number(new Date(b.startDate))
+                      Number(new Date(b.startDate)) - Number(new Date(a.startDate))
                   )
                   .map((tournament: ITournament) => (
                     <option key={tournament.id} value={tournament.id}>

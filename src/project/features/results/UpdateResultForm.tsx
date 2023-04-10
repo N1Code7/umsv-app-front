@@ -34,9 +34,9 @@ const UpdateResultForm = ({ focusedRegistration, setRequestMessage, setIsModalAc
     setIsModalActive?.(false);
 
     await mutate(
-      "tournament-registrations",
+      "/tournament-registrations",
       await axiosPrivate
-        .patch(`result/${focusedRegistration.result?.id}`, {
+        .patch(`/result/${focusedRegistration.result?.id}`, {
           singleStageReached: singleRef.current?.value || "",
           doubleStageReached: doubleRef.current?.value || "",
           mixedStageReached: mixedRef.current?.value || "",
@@ -104,57 +104,67 @@ const UpdateResultForm = ({ focusedRegistration, setRequestMessage, setIsModalAc
   return (
     <form className="form" onSubmit={handleFormSubmit}>
       <div className="form-row">
-        <label htmlFor="tournament-name">Nom du tournoi</label>
+        <label>Nom du tournoi</label>
         <p>{focusedRegistration.tournament?.name || focusedRegistration.tournamentName}</p>
       </div>
       <div className="form-row">
-        <label htmlFor="singleSelect">Simple</label>
-        <select
-          name="singleSelect"
-          id="singleSelect"
-          defaultValue={focusedRegistration.result?.singleStageReached || ""}
-          ref={singleRef}
-        >
-          <option value="">---</option>
-          {resultRanks.map((rank: string, index: number) => (
-            <option key={index} value={rank.toLowerCase()}>
-              {rank}
-            </option>
-          ))}
-        </select>
+        <label>Ville du tournoi</label>
+        <p>{focusedRegistration.tournament?.city || focusedRegistration.tournamentCity}</p>
       </div>
-      <div className="form-row">
-        <label htmlFor="doubleSelect">Double</label>
-        <select
-          name="doubleSelect"
-          id="doubleSelect"
-          defaultValue={focusedRegistration.result?.doubleStageReached || ""}
-          ref={doubleRef}
-        >
-          <option value="">---</option>
-          {resultRanks.map((rank: string, index: number) => (
-            <option key={index} value={rank.toLowerCase()}>
-              {rank}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="form-row">
-        <label htmlFor="mixedSelect">Mixte</label>
-        <select
-          name="mixedSelect"
-          id="mixedSelect"
-          defaultValue={focusedRegistration.result?.mixedStageReached || ""}
-          ref={mixedRef}
-        >
-          <option value="">---</option>
-          {resultRanks.map((rank: string, index: number) => (
-            <option key={index} value={rank.toLowerCase()}>
-              {rank}
-            </option>
-          ))}
-        </select>
-      </div>
+      {focusedRegistration.participationSingle && (
+        <div className="form-row">
+          <label htmlFor="singleSelect">Simple</label>
+          <select
+            name="singleSelect"
+            id="singleSelect"
+            defaultValue={focusedRegistration.result?.singleStageReached || ""}
+            ref={singleRef}
+          >
+            <option value="">---</option>
+            {resultRanks.map((rank: string, index: number) => (
+              <option key={index} value={rank.toLowerCase()}>
+                {rank}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      {focusedRegistration.participationDouble && (
+        <div className="form-row">
+          <label htmlFor="doubleSelect">Double</label>
+          <select
+            name="doubleSelect"
+            id="doubleSelect"
+            defaultValue={focusedRegistration.result?.doubleStageReached || ""}
+            ref={doubleRef}
+          >
+            <option value="">---</option>
+            {resultRanks.map((rank: string, index: number) => (
+              <option key={index} value={rank.toLowerCase()}>
+                {rank}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      {focusedRegistration.participationMixed && (
+        <div className="form-row">
+          <label htmlFor="mixedSelect">Mixte</label>
+          <select
+            name="mixedSelect"
+            id="mixedSelect"
+            defaultValue={focusedRegistration.result?.mixedStageReached || ""}
+            ref={mixedRef}
+          >
+            <option value="">---</option>
+            {resultRanks.map((rank: string, index: number) => (
+              <option key={index} value={rank.toLowerCase()}>
+                {rank}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       <div className="form-row">
         <label htmlFor="comment">Commentaire(s)</label>
         <textarea

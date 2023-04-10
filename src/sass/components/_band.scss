@@ -28,8 +28,13 @@
     font-style: italic;
   }
 
-  .middle {
+  .left {
+    padding-left: 1rem;
+  }
+
+  .right {
     min-width: 6rem;
+    padding-right: 1rem;
   }
 
   .checked {

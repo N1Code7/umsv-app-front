@@ -21,7 +21,7 @@ const Results = ({ deviceDisplay }: IProps) => {
   const [requestMessage, setRequestMessage] = useState({ success: "", error: "" });
 
   const { data: tournamentsRegistrations, mutate: registrationsMutate } = useSWR(
-    "tournament-registrations",
+    "/tournament-registrations",
     async (url: string) =>
       await sleep(2000)
         .then(() => axiosPrivate.get(url))
@@ -67,8 +67,8 @@ const Results = ({ deviceDisplay }: IProps) => {
             break;
           default:
             return (
-              Number(new Date(a.tournament?.startDate || a.tournamentStartDate)) -
-              Number(new Date(b.tournament?.startDate || b.tournamentStartDate))
+              Number(new Date(b.tournament?.startDate || b.tournamentStartDate)) -
+              Number(new Date(a.tournament?.startDate || a.tournamentStartDate))
             );
             break;
         }
@@ -101,14 +101,15 @@ const Results = ({ deviceDisplay }: IProps) => {
               tournamentsRegistrations
                 .filter(
                   (registration: ITournamentRegistration) =>
-                    registration?.tournament?.endDate &&
-                    new Date() > new Date(registration.tournament.endDate) &&
-                    registration.requestState === "validated"
+                    new Date() >
+                      new Date(
+                        registration.tournament?.startDate || registration.tournamentStartDate
+                      ) && registration.requestState === "validated"
                 )
                 .sort(
                   (a: ITournamentRegistration, b: ITournamentRegistration) =>
-                    Number(new Date(a.tournament?.startDate || a.tournamentStartDate)) -
-                    Number(new Date(b.tournament?.startDate || b.tournamentStartDate))
+                    Number(new Date(b.tournament?.startDate || b.tournamentStartDate)) -
+                    Number(new Date(a.tournament?.startDate || a.tournamentStartDate))
                 )
                 .map((tournamentRegistration: ITournamentRegistration) => (
                   <ResultsDisplayedOnMobile
@@ -167,9 +168,10 @@ const Results = ({ deviceDisplay }: IProps) => {
                 sortRegistrations(
                   tournamentsRegistrations.filter(
                     (registration: ITournamentRegistration) =>
-                      registration.tournament?.endDate &&
-                      new Date() > new Date(registration.tournament.endDate) &&
-                      registration.requestState === "validated"
+                      new Date() >
+                        new Date(
+                          registration.tournament?.endDate || registration.tournamentEndDate
+                        ) && registration.requestState === "validated"
                   )
                 ).map((tournamentRegistration: ITournamentRegistration) => (
                   <ResultsDisplayedOnDesktop
