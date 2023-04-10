@@ -294,14 +294,24 @@ const UserBand = ({
           </button>
           <button
             className="btn btn-cancel"
-            style={{ display: user.state === "inactive" ? "none" : "flex" }}
+            style={{
+              display:
+                user.state === "inactive" || user.roles.includes("ROLE_SUPERADMIN")
+                  ? "none"
+                  : "flex",
+            }}
             onClick={handleInactivate}
           >
             🚫
           </button>
           <button
             className="btn btn-modify"
-            style={{ display: user.roles.includes("ROLE_ADMIN") ? "none" : "flex" }}
+            style={{
+              display:
+                user.roles.includes("ROLE_ADMIN") || user.roles.includes("ROLE_SUPERADMIN")
+                  ? "none"
+                  : "flex",
+            }}
             onClick={handlePromote}
           >
             ⬆️
@@ -309,7 +319,11 @@ const UserBand = ({
           <button
             className="btn btn-modify"
             style={{
-              display: user.roles.toString() === ["ROLE_MEMBER"].toString() ? "none" : "flex",
+              display:
+                user.roles.toString() === ["ROLE_MEMBER"].toString() ||
+                user.roles.includes("ROLE_SUPERADMIN")
+                  ? "none"
+                  : "flex",
             }}
             onClick={handleDemote}
           >
