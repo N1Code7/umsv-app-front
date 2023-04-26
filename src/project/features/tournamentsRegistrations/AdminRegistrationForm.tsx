@@ -7,17 +7,17 @@ import {
   useRef,
   useState,
 } from "react";
-import { SelectedTournamentContext } from "../../../../contexts/SelectedTournamentContext";
-import { formatDate } from "../../../../utils/dateFunctions";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useSWR from "swr";
-import Switch from "../../../components/Switch";
-import { ITournament, ITournamentRegistration } from "../../../../interfaces/interfaces";
 import { ValidationError } from "yup";
-import { newTournamentRegistrationSchema } from "../../../../validations/tournamentRegistrationSchema";
 import { mutate } from "swr";
+import { ITournament, ITournamentRegistration, IUser } from "../../../interfaces/interfaces";
+import { SelectedTournamentContext } from "../../../contexts/SelectedTournamentContext";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import Switch from "../../components/Switch";
+import { formatDate } from "../../../utils/dateFunctions";
+import { adminTournamentRegistrationSchema } from "../../../validations/adminTournamentRegistrationSchema";
 
-interface IRegistrationFormProps {
+interface IProps {
   patchMethod?: boolean;
   focusedRegistration?: ITournamentRegistration;
   isModalActive?: boolean;
@@ -26,6 +26,10 @@ interface IRegistrationFormProps {
 }
 
 interface IFormErrors {
+  registrationSelectUser: string;
+  registrationUserLastName: string;
+  registrationUserFirstName: string;
+  registrationUserEmail: string;
   registrationSelectTournament: string;
   registrationName: string;
   registrationCity: string;
@@ -39,13 +43,13 @@ interface IFormErrors {
   comment: string;
 }
 
-const RegistrationForm = ({
+const AdminRegistrationForm = ({
   patchMethod,
   focusedRegistration,
   setRequestMessage,
   isModalActive,
   setIsModalActive,
-}: IRegistrationFormProps) => {
+}: IProps) => {
   const { selectedTournament } = useContext(SelectedTournamentContext);
   const checkboxSingle = useRef<HTMLInputElement>(null);
   const [checkboxDouble, setCheckboxDouble] = useState(
@@ -55,11 +59,20 @@ const RegistrationForm = ({
     focusedRegistration?.participationMixed || false
   );
   const [chooseNewTournament, setChooseNewTournament] = useState(
-    (focusedRegistration?.tournament?.id ||
-      (selectedTournament && Object.keys(selectedTournament).length)) !== 0
+    !focusedRegistration?.id
+      ? false
+      : (focusedRegistration?.tournament?.id ||
+          (selectedTournament && Object.keys(selectedTournament).length)) !== 0
       ? false
       : true
   );
+  const [chooseNewUser, setChooseNewUser] = useState(
+    !focusedRegistration?.id ? false : focusedRegistration?.user?.id ? false : true
+  );
+  const registrationSelectUser = useRef<HTMLSelectElement>(null);
+  const registrationUserLastName = useRef<HTMLInputElement>(null);
+  const registrationUserFirstName = useRef<HTMLInputElement>(null);
+  const registrationUserEmail = useRef<HTMLInputElement>(null);
   const registrationSelectTournament = useRef<HTMLSelectElement>(null);
   const registrationName = useRef<HTMLInputElement>(null);
   const registrationCity = useRef<HTMLInputElement>(null);
@@ -79,8 +92,8 @@ const RegistrationForm = ({
       .get(url)
       .then((res) => res.data)
       .catch((err) => {});
-  //  console.error(err));
-  const { data: tournaments, mutate: tournamentsMutate } = useSWR("tournaments", fetcher);
+  const { data: tournaments, isLoading: tournamentsLoading } = useSWR("/tournaments", fetcher);
+  const { data: users, isLoading: usersLoading } = useSWR("/admin/users", fetcher);
 
   /** Validation of form fields before fetch the post route */
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
@@ -89,44 +102,46 @@ const RegistrationForm = ({
 
     /** Body of post request */
     const bodyRequest = {
+      userLastName: registrationSelectUser.current?.value
+        ? users.filter(
+            (user: IUser) => user.id === Number(registrationSelectUser.current?.value)
+          )[0]?.lastName
+        : registrationUserLastName.current?.value || null,
+      userFirstName: registrationSelectUser.current?.value
+        ? users.filter(
+            (user: IUser) => user.id === Number(registrationSelectUser.current?.value)
+          )[0]?.firstName
+        : registrationUserFirstName.current?.value || null,
+      userEmail: registrationSelectUser.current?.value
+        ? users.filter(
+            (user: IUser) => user.id === Number(registrationSelectUser.current?.value)
+          )[0]?.email
+        : registrationUserEmail.current?.value || null,
       tournamentName: registrationSelectTournament.current?.value
-        ? tournaments
-            .filter(
-              (tournament: ITournament) =>
-                tournament.id == Number(registrationSelectTournament.current?.value)
-            )
-            .map((tournament: ITournament) => tournament.name)[0]
-        : registrationName.current
-        ? registrationName.current?.value
-        : null,
+        ? tournaments.filter(
+            (tournament: ITournament) =>
+              tournament.id === Number(registrationSelectTournament.current?.value)
+          )[0]?.name || ""
+        : registrationName.current?.value || null,
       tournamentCity: registrationSelectTournament.current?.value
-        ? tournaments
-
-            .filter(
-              (tournament: ITournament) =>
-                tournament.id == Number(registrationSelectTournament.current?.value)
-            )
-            .map((tournament: ITournament) => tournament.city)[0]
-        : registrationCity.current
-        ? registrationCity.current?.value
-        : null,
+        ? tournaments.filter(
+            (tournament: ITournament) =>
+              tournament.id == Number(registrationSelectTournament.current?.value)
+          )[0]?.city
+        : registrationCity.current?.value || null,
       tournamentStartDate: registrationSelectTournament.current?.value
-        ? tournaments
-            .filter(
-              (tournament: ITournament) =>
-                tournament.id == Number(registrationSelectTournament.current?.value)
-            )
-            .map((tournament: ITournament) => tournament.startDate)[0]
+        ? tournaments.filter(
+            (tournament: ITournament) =>
+              tournament.id == Number(registrationSelectTournament.current?.value)
+          )[0]?.startDate
         : registrationStartDate.current?.value
         ? new Date(registrationStartDate.current?.value).toISOString()
         : null,
       tournamentEndDate: registrationSelectTournament.current?.value
-        ? tournaments
-            .filter(
-              (tournament: ITournament) =>
-                tournament.id == Number(registrationSelectTournament.current?.value)
-            )
-            .map((tournament: ITournament) => tournament.endDate)[0]
+        ? tournaments.filter(
+            (tournament: ITournament) =>
+              tournament.id == Number(registrationSelectTournament.current?.value)
+          )[0]?.endDate
         : registrationEndDate.current?.value && registrationEndDate.current.value !== ""
         ? new Date(registrationEndDate.current?.value).toISOString()
         : null,
@@ -141,9 +156,14 @@ const RegistrationForm = ({
       comment: registrationComment.current?.value || null,
     };
 
-    await newTournamentRegistrationSchema
+    await adminTournamentRegistrationSchema
       .validate(
         {
+          chooseNewUser: chooseNewUser,
+          registrationSelectUser: registrationSelectUser.current?.value,
+          registrationUserLastName: registrationUserLastName.current?.value,
+          registrationUserFirstName: registrationUserFirstName.current?.value,
+          registrationUserEmail: registrationUserEmail.current?.value,
           chooseNewTournament: chooseNewTournament,
           registrationSelectTournament: registrationSelectTournament.current?.value,
           registrationName: registrationName.current?.value,
@@ -161,39 +181,56 @@ const RegistrationForm = ({
         { abortEarly: false }
       )
       .then(async () => {
+        isModalActive && setIsModalActive?.(false);
         if (!patchMethod) {
-          await axiosPrivate
-            .post("tournament-registration", bodyRequest)
-            .then(() =>
-              setRequestMessage({
-                error: "",
-                success: "Votre demande d'inscription a bien été créée ! 👌",
-              })
-            )
-            .catch((err) => {
-              console.error(err);
-              setRequestMessage({
-                error:
-                  "Une erreur est survenue lors de l'envoi de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur.",
-                success: "",
-              });
-            });
-        } else {
-          isModalActive && setIsModalActive?.(false);
-
           await mutate(
-            "tournament-registrations",
+            "/admin/tournament-registrations",
             await axiosPrivate
-              .patch(`tournament-registration/${focusedRegistration?.id}`, bodyRequest)
+              .post("/admin/tournament-registration", bodyRequest)
               .then((res) => {
                 setRequestMessage({
                   error: "",
-                  success: "Votre demande d'inscription a bien été modifiée ! 👌",
+                  success: "La demande d'inscription a bien été créée ! 👌",
                 });
                 return res.data;
               })
               .catch((err) => {
-                // console.error(err)
+                console.error(err);
+                setRequestMessage({
+                  error:
+                    "Une erreur est survenue lors de la création de la demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter le web master 😉.",
+                  success: "",
+                });
+              }),
+            {
+              optimisticData: (all: Array<ITournamentRegistration>) =>
+                [...all, bodyRequest as ITournamentRegistration].sort(
+                  (a: ITournamentRegistration, b: ITournamentRegistration) =>
+                    Number(new Date(b.updatedAt || b.createdAt)) -
+                    Number(new Date(a.updatedAt || a.createdAt))
+                ),
+              populateCache: (
+                result: ITournamentRegistration,
+                currentRegistrations: Array<ITournamentRegistration>
+              ) => [...currentRegistrations, result],
+            }
+          );
+        } else {
+          await mutate(
+            "/admin/tournament-registrations",
+            await axiosPrivate
+              .patch(`/admin/tournament-registration/${focusedRegistration?.id}`, bodyRequest)
+              .then((res) => {
+                setRequestMessage({
+                  error: "",
+                  success: `La demande d'inscription de ${(
+                    focusedRegistration?.user.firstName || focusedRegistration?.userFirstName
+                  )?.toUpperCase()} a bien été modifiée ! 👌`,
+                });
+                return res.data;
+              })
+              .catch((err) => {
+                console.error(err);
                 setRequestMessage({
                   error:
                     "Une erreur est survenue lors de la modification de votre demande d'inscription 🤕. Merci de réitérer l'opération. Si le problème persiste, contacter l'administrateur.",
@@ -201,29 +238,35 @@ const RegistrationForm = ({
                 });
               }),
             {
-              optimisticData: (tournamentsRegistrations: Array<ITournamentRegistration>) => {
-                const prevRegistrations = tournamentsRegistrations.filter(
+              optimisticData: (registrations: Array<ITournamentRegistration>) => {
+                const prev = registrations.filter(
                   (registration: ITournamentRegistration) =>
                     registration.id !== focusedRegistration?.id
                 );
-                return [...prevRegistrations, { ...focusedRegistration, ...bodyRequest }];
+                return [
+                  ...prev,
+                  { ...focusedRegistration, ...bodyRequest } as ITournamentRegistration,
+                ].sort(
+                  (a: ITournamentRegistration, b: ITournamentRegistration) =>
+                    Number(new Date(b.updatedAt || b.createdAt)) -
+                    Number(new Date(a.updatedAt || a.createdAt))
+                );
               },
               populateCache: (
-                updated: ITournamentRegistration,
+                newRegistration: ITournamentRegistration,
                 tournamentsRegistrations: Array<ITournamentRegistration>
               ) => {
-                const prevRegistrations = tournamentsRegistrations.filter(
+                const prev = tournamentsRegistrations.filter(
                   (registration: ITournamentRegistration) =>
                     registration.id !== focusedRegistration?.id
                 );
-                return [...prevRegistrations, updated];
+                return [...prev, newRegistration];
               },
               rollbackOnError: true,
               revalidate: false,
             }
           );
         }
-
         setTimeout(() => {
           setRequestMessage({ success: "", error: "" });
         }, 10000);
@@ -240,10 +283,94 @@ const RegistrationForm = ({
 
   useEffect(() => {
     setFormErrors({} as IFormErrors);
-  }, [chooseNewTournament]);
+  }, [chooseNewTournament, chooseNewUser]);
 
   return (
     <form className="form registration-form" onSubmit={handleSubmitForm}>
+      <div className="form-row choose-user-identifier">
+        <span onClick={() => setChooseNewUser(false)} style={{ cursor: "pointer" }}>
+          Membre existant
+        </span>
+        <Switch customName="toggle-form" isActive={chooseNewUser} setIsActive={setChooseNewUser} />
+        <span onClick={() => setChooseNewUser(true)} style={{ cursor: "pointer" }}>
+          Nouveau membre
+        </span>
+      </div>
+
+      {!chooseNewUser ? (
+        <div className="form-row">
+          <label htmlFor="selectUser">Sélectionner un utilisateur existant</label>
+          {formErrors.registrationSelectUser && (
+            <div className="form-error-detail">{formErrors.registrationSelectUser}</div>
+          )}
+          <select
+            id="selectUser"
+            ref={registrationSelectUser}
+            className={formErrors.registrationSelectUser ? "form-error" : undefined}
+            defaultValue={focusedRegistration?.user?.id || "null"}
+            autoFocus
+            required
+          >
+            <option value="null">---</option>
+            {usersLoading
+              ? "Chargement..."
+              : !users
+              ? "Aucun utilisateur"
+              : users
+                  // .filter((user: IUser) => user.validatedAccount)
+                  .sort((a: IUser, b: IUser) => a.lastName.localeCompare(b.lastName))
+                  .map((user: IUser) => (
+                    <option key={user.id} value={user.id}>
+                      {`${user.lastName.toUpperCase()} ${user.firstName}`}
+                    </option>
+                  ))}
+          </select>
+        </div>
+      ) : (
+        <>
+          <div className="form-row">
+            <label htmlFor="userLastName">Nom du joueur</label>
+            {formErrors.registrationUserLastName && (
+              <div className="form-error-detail">{formErrors.registrationUserLastName}</div>
+            )}
+            <input
+              type="text"
+              id="userLastName"
+              className={formErrors.registrationUserLastName ? "form-error" : ""}
+              autoFocus
+              defaultValue={focusedRegistration?.userLastName || undefined}
+              ref={registrationUserLastName}
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="userFirstName">Prénom du joueur</label>
+            {formErrors.registrationUserFirstName && (
+              <div className="form-error-detail">{formErrors.registrationUserFirstName}</div>
+            )}
+            <input
+              type="text"
+              id="userFirstName"
+              className={formErrors.registrationUserFirstName ? "form-error" : ""}
+              defaultValue={focusedRegistration?.userFirstName || undefined}
+              ref={registrationUserFirstName}
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="userEmail">Email du joueur</label>
+            {formErrors.registrationUserEmail && (
+              <div className="form-error-detail">{formErrors.registrationUserEmail}</div>
+            )}
+            <input
+              type="text"
+              id="userEmail"
+              className={formErrors.registrationUserEmail ? "form-error" : ""}
+              defaultValue={focusedRegistration?.userEmail || undefined}
+              ref={registrationUserEmail}
+            />
+          </div>
+        </>
+      )}
+
       <div className="form-row choose-tournament-identifier">
         <span onClick={() => setChooseNewTournament(false)} style={{ cursor: "pointer" }}>
           Tournoi existant
@@ -273,24 +400,32 @@ const RegistrationForm = ({
             required
           >
             <option value="null">---</option>
-            {!tournaments
+            {tournamentsLoading
               ? "Chargement..."
+              : !tournaments
+              ? "Aucun tournoi"
               : tournaments
                   .filter(
                     (tournament: ITournament) =>
-                      new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 ||
-                      tournament.id === focusedRegistration?.tournament?.id
+                      tournament.season ===
+                      (new Date().getMonth() > 8
+                        ? new Date().getFullYear() + "/" + (new Date().getFullYear() + 1)
+                        : new Date().getFullYear() - 1 + "/" + new Date().getFullYear())
                   )
                   .sort(
                     (a: ITournament, b: ITournament) =>
-                      Number(new Date(a.startDate)) - Number(new Date(b.startDate))
+                      Number(new Date(b.startDate)) - Number(new Date(a.startDate))
                   )
                   .map((tournament: ITournament) => (
                     <option key={tournament.id} value={tournament.id}>
                       {tournament.name?.slice(0, 20) + "..." || "ℹ️"} - {tournament.city} -{" "}
                       {tournament.endDate
-                        ? formatDate(tournament.startDate, tournament.endDate, "XX & XX xxx XXXX")
-                        : formatDate(tournament.startDate, undefined, "XX xxx XXXX")}
+                        ? formatDate(
+                            String(tournament.startDate),
+                            String(tournament.endDate),
+                            "XX & XX xxx XXXX"
+                          )
+                        : formatDate(String(tournament.startDate), undefined, "XX xxx XXXX")}
                     </option>
                   ))}
           </select>
@@ -471,14 +606,13 @@ const RegistrationForm = ({
         ></textarea>
       </div>
 
-      {/* <div className="form-row"></div> */}
       <input
         type="submit"
-        value={(patchMethod ? "Modifier" : "Envoyer") + " ma demande d'inscription"}
+        value={(patchMethod ? "Modifier" : "Créer") + " la demande d'inscription"}
         className="btn btn-primary"
       />
     </form>
   );
 };
 
-export default RegistrationForm;
+export default AdminRegistrationForm;

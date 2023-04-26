@@ -1,0 +1,324 @@
+.admin-space {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .global-actions {
+    display: flex;
+    flex-direction: row;
+
+    button {
+      flex-grow: 2;
+
+      @include ptt {
+        flex-grow: 0;
+      }
+    }
+  }
+
+  // h2 {
+  //   margin: 0;
+  // }
+
+  .seasons-filter {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    button {
+      padding: 0.5rem 0.7rem;
+      border-radius: 20px;
+      background: $primary-1;
+      color: $content-light;
+      font-weight: 500;
+
+      &.selected {
+        background: $content-light;
+        color: $primary-1;
+        border: 2px solid $primary-1;
+      }
+    }
+  }
+
+  .list,
+  .tournaments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    @include from(1300) {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .sections-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+
+    @include ptt {
+      gap: 5rem;
+    }
+  }
+
+  .registrations-container,
+  .results-container,
+  .users-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 1rem;
+  }
+
+  .users-container {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  // .grid-container {
+  //   /**
+  //  * User input values.
+  //  */
+  //   --grid-layout-gap: 10px;
+  //   --grid-column-count: 4;
+  //   --grid-item--min-width: 100px;
+
+  //   /**
+  //  * Calculated values.
+  //  */
+  //   --gap-count: calc(var(--grid-column-count) - 1);
+  //   --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+  //   --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+
+  //   grid-template-columns: repeat(
+  //     auto-fill,
+  //     minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr)
+  //   );
+  //   grid-gap: var(--grid-layout-gap);
+  // }
+
+  .blocks,
+  .registrations-blocks {
+    // display: grid;
+
+    // $column-min-width: 18rem;
+    // $column-number: 3;
+    // $gap: 1.5rem;
+
+    // grid-template-columns: repeat(
+    //   auto-fill,
+    //   minmax(
+    //     max($column-min-width, calc((100% - ($column-number - 1) * $gap) / $column-number)),
+    //     1fr
+    //   )
+    // );
+
+    // gap: 1.5rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      margin-bottom: 1rem;
+
+      &::after {
+        content: "";
+        width: 100%;
+        height: 2px;
+        border-radius: 20px;
+        background-color: #000;
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+      }
+
+      button {
+        padding: 0.1rem 0.5rem;
+        background: transparent;
+        font-size: 1.1rem;
+      }
+    }
+
+    h3 {
+      display: inline-block;
+      position: relative;
+      text-transform: capitalize;
+      font-family: $font-body;
+      font-weight: 600;
+    }
+
+    .section-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      //   height: auto;
+      //   transform-origin: top;
+      overflow: hidden;
+    }
+
+    // & > div {
+    //   display: flex;
+    //   flex-direction: column;
+    //   gap: 0.5rem;
+    // }
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    // grid-template-rows: repeat(auto-fit, minmax(2rem, 1fr));
+    width: auto;
+
+    & > div {
+      text-align: left;
+    }
+
+    & > * {
+      padding: 0.5rem 0;
+    }
+  }
+
+  button.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 6rem;
+    background-color: $primary-1;
+    color: $content-light;
+    font-weight: 500;
+  }
+
+  .band {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+
+    @include from(1000) {
+      display: grid;
+      grid-template-columns: repeat(2, 33%);
+      grid-template-rows: repeat(2, auto);
+      justify-content: start;
+      align-content: center;
+
+      &.tournament {
+        grid-template-columns: repeat(3, 25%);
+      }
+
+      &.article,
+      &.club-event {
+        grid-template-columns: repeat(3, 20%);
+      }
+    }
+
+    @include from(1300) {
+      &.tournament {
+        min-height: 10rem;
+        height: fit-content;
+      }
+    }
+
+    .abstract {
+      grid-column: 1/4;
+      margin-right: 2rem;
+
+      @include from(1000) {
+        align-items: flex-start;
+        margin-right: 0;
+      }
+
+      .tournament-date {
+        font-weight: 500;
+      }
+    }
+
+    .registration-date {
+      font-weight: 500;
+    }
+
+    .identity {
+      font-style: oblique;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      grid-auto-rows: minmax(1.5rem, auto);
+      grid-column: 1/4;
+      justify-items: start;
+      transition: all 0.5s;
+      overflow: hidden;
+
+      i {
+        justify-self: center;
+      }
+    }
+
+    @include from(1000) {
+      flex-direction: row;
+      padding: 1.5rem 4rem 1.5rem 1rem;
+    }
+
+    & > button {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      color: $bg-1;
+      background: inherit;
+      padding: 0.5rem;
+    }
+  }
+
+  .registration-modalities,
+  .prices,
+  .contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .cta-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin: 0.5rem 0 0;
+
+    @include from(1000) {
+      position: absolute;
+      top: 50%;
+      right: 4rem;
+      transform: translateY(-50%);
+      margin: 0;
+    }
+
+    button {
+      width: 3rem;
+      padding: 0.5rem;
+      aspect-ratio: 1 / 1;
+      font-size: 1.5rem;
+      border-radius: 20px;
+    }
+  }
+}

@@ -7,6 +7,7 @@ import { IUser } from "../../interfaces/interfaces";
 import { getRefreshTokenFromCookie } from "../../utils/cookies";
 
 const Logout = () => {
+  const { user } = useContext(AuthenticationContext);
   const navigate = useNavigate();
   const location = useLocation();
   const axiosPrivate = useAxiosPrivate();
@@ -26,6 +27,8 @@ const Logout = () => {
     setAuth?.({});
     setUser?.({} as IUser);
     document.cookie = `refreshToken=;expires=${new Date(-1)};SameSite=strict`;
+    // localStorage.removeItem("isAdminViewActive");
+    user && localStorage.setItem("lastConnected", user.firstName + user.id);
     clearCache();
     navigate("/se_connecter", { replace: true });
   };

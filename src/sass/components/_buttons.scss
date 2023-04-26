@@ -7,9 +7,15 @@
   padding: 0.6rem 0.9rem;
   border-radius: 6px;
   border: none;
+  text-align: center;
   font-size: 1rem;
   font-family: inherit;
   cursor: pointer;
+
+  &-small {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
 
   &-primary {
     background: $primary-1;
@@ -21,31 +27,35 @@
     color: $content-light;
   }
 
-  &-small {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
+  &-success {
+    background: $success-2;
+    border: 1px solid $success-1;
+  }
+
+  &-see-file {
+    background: rgba($infos, 0.35);
+    border: 1px solid darken($infos, 0.2);
+  }
+
+  &-modify {
+    background: $warning-2;
+    border: 1px solid $warning;
+  }
+
+  &-cancel {
+    background: $cancelled-2;
+    border: 1px solid $cancelled;
+  }
+
+  &-delete {
+    background: $danger-2;
+    border: 1px solid $danger-1;
   }
 }
 
 .registrations-actions {
   display: flex;
   justify-content: center;
-
-  .see-file {
-    background: rgba($infos, 0.35);
-    border: 1px solid darken($infos, 0.2);
-  }
-
-  .modify {
-    background: rgba($warning, 0.35);
-    border: 1px solid darken($warning, 0.05);
-    // box-shadow: 2px 2px 6px 1px darken(rgba($warning, 0.35), 20%);
-  }
-
-  .cancel {
-    background: rgba($cancelled, 0.35);
-    border: 1px solid darken($cancelled, 0.05);
-  }
 
   button,
   a {

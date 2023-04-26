@@ -1,7 +1,7 @@
 import { MouseEvent } from "react";
-import { ITournamentRegistration } from "../../../../interfaces/interfaces";
-import { formatDate } from "../../../../utils/dateFunctions";
 import RegistrationCTA from "./RegistrationCTA";
+import { ITournamentRegistration } from "../../../interfaces/interfaces";
+import { formatDate } from "../../../utils/dateFunctions";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;
@@ -50,8 +50,8 @@ const RegistrationMobileDisplay = ({
       >
         {tournamentRegistration.tournament
           ? formatDate(
-              tournamentRegistration.tournament.startDate,
-              tournamentRegistration.tournament.endDate,
+              String(tournamentRegistration.tournament.startDate),
+              String(tournamentRegistration.tournament.endDate),
               "XX & XX xxx XXXX"
             )
           : tournamentRegistration.tournamentEndDate

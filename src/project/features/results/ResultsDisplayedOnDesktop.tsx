@@ -33,8 +33,8 @@ const ResultsDisplayedOnDesktop = ({
       >
         {tournamentRegistration.tournament
           ? formatDate(
-              tournamentRegistration.tournament.startDate,
-              tournamentRegistration.tournament.endDate,
+              String(tournamentRegistration.tournament.startDate),
+              String(tournamentRegistration.tournament.endDate),
               "XX & XX xxx XXXX"
             )
           : tournamentRegistration.tournamentEndDate
@@ -101,7 +101,7 @@ const ResultsDisplayedOnDesktop = ({
       <td>{tournamentRegistration?.result?.areResultsValidated ? "✅" : "🚫"}</td>
       <td>
         <div className="cta-container registrations-actions">
-          <button className="btn modify" onClick={handleClickButton}>
+          <button className="btn btn-modify" onClick={handleClickButton}>
             ✏️
           </button>
         </div>

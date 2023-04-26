@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Event from "../../../components/Event";
 import { IClubEvent, ITournament } from "../../../../interfaces/interfaces";
 import Tournament from "../../../components/Tournament";
@@ -36,10 +36,10 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
         searchByYear !== "default"
       ) {
         return (
-          (new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          (tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
             tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
           (tournament.name?.toLowerCase().includes(searchByText.toLowerCase()) &&
-            new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+            tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
             new Date(tournament.startDate).getDate() === Number(searchByDay) &&
             getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
               searchByMonth &&
@@ -51,10 +51,10 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       ) {
         /** Search by name/city and one of date parameter */
         return (
-          ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          ((tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
             tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
             tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
-          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
           (new Date(tournament.startDate).getDate() === Number(searchByDay) ||
             getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
               searchByMonth ||
@@ -67,10 +67,10 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       ) {
         /** Search by name/city, day AND month */
         return (
-          ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          ((tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
             tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
             tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
-          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
           new Date(tournament.startDate).getDate() === Number(searchByDay) &&
           getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
             searchByMonth
@@ -82,10 +82,10 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       ) {
         /** Search by name/city, day AND year */
         return (
-          ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          ((tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
             tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
             tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
-          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
           new Date(tournament.startDate).getDate() === Number(searchByDay) &&
           new Date(tournament.startDate).getFullYear() === Number(searchByYear)
         );
@@ -96,7 +96,7 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       ) {
         /** Search by name/city, year AND month */
         return (
-          ((new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          ((tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
             tournament.city?.toLowerCase().includes(searchByText.toLowerCase())) ||
             tournament.name?.toLowerCase().includes(searchByText.toLowerCase())) &&
           getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
@@ -110,7 +110,7 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       ) {
         /** Search only by full date */
         return (
-          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
           new Date(tournament.startDate).getDate() === Number(searchByDay) &&
           getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
             searchByMonth &&
@@ -119,7 +119,7 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       } else if (searchByDay !== "default" && searchByMonth !== "default") {
         /** Search only by day AND month */
         return (
-          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
           new Date(tournament.startDate).getDate() === Number(searchByDay) &&
           getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
             searchByMonth
@@ -127,14 +127,14 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       } else if (searchByDay !== "default" && searchByYear !== "default") {
         /** Search only by day AND year */
         return (
-          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
           new Date(tournament.startDate).getDate() === Number(searchByDay) &&
           new Date(tournament.startDate).getFullYear() === Number(searchByYear)
         );
       } else if (searchByYear !== "default" && searchByMonth !== "default") {
         /** Search only by year AND month */
         return (
-          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
           getMonthOfYear(String(new Date(tournament.startDate)), "long").toLowerCase() ===
             searchByMonth &&
           new Date(tournament.startDate).getFullYear() === Number(searchByYear)
@@ -147,7 +147,7 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
       ) {
         /** Search by city/name OR day OR month OR year */
         return (
-          new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10 &&
+          tournament.randomDraw!.getTime() - new Date().getTime() > -10 &&
           ((searchByText.length >= 3 &&
             (tournament.city?.toLowerCase().includes(searchByText.toLowerCase()) ||
               tournament.name?.toLowerCase().includes(searchByText.toLowerCase()))) ||
@@ -157,14 +157,14 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
             new Date(tournament.startDate).getFullYear() === Number(searchByYear))
         );
       } else {
-        return new Date(tournament.randomDraw).getTime() - new Date().getTime() > -10;
+        return new Date(tournament.randomDraw || 0).getTime() - new Date().getTime() > -10;
       }
     });
   };
 
   /** Sort tournaments depending on the selected sort button */
   const sortTournaments = (tournaments: Array<ITournament>) => {
-    return tournaments?.sort((a: ITournament, b: ITournament) => {
+    return tournaments.sort((a: ITournament, b: ITournament) => {
       switch (activeSort) {
         case "startDate-ascending":
           return Number(new Date(a.startDate)) - Number(new Date(b.startDate));
@@ -173,10 +173,10 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
           return Number(new Date(b.startDate)) - Number(new Date(a.startDate));
           break;
         case "name-ascending":
-          return a.name?.localeCompare(b.name);
+          return a.name!.localeCompare(b.name!);
           break;
         case "name-descending":
-          return b.name?.localeCompare(a.name);
+          return b.name!.localeCompare(a.name!);
           break;
         case "city-ascending":
           return a.city.localeCompare(b.city);
@@ -185,22 +185,16 @@ const Homepage = ({ deviceDisplay }: IHomepageProps) => {
           return b.city.localeCompare(a.city);
           break;
         case "registrationClosingDate-ascending":
-          return (
-            Number(new Date(a.registrationClosingDate)) -
-            Number(new Date(b.registrationClosingDate))
-          );
+          return Number(a.registrationClosingDate!) - Number(b.registrationClosingDate!);
           break;
         case "registrationClosingDate-descending":
-          return (
-            Number(new Date(b.registrationClosingDate)) -
-            Number(new Date(a.registrationClosingDate))
-          );
+          return Number(b.registrationClosingDate!) - Number(a.registrationClosingDate!);
           break;
         case "randomDraw-ascending":
-          return Number(new Date(a.randomDraw)) - Number(new Date(b.randomDraw));
+          return Number(a.randomDraw!) - Number(b.randomDraw!);
           break;
         case "randomDraw-descending":
-          return Number(new Date(b.randomDraw)) - Number(new Date(a.randomDraw));
+          return Number(b.randomDraw!) - Number(a.randomDraw!);
           break;
         case "playersAlreadyRegistered-ascending":
           return a.tournamentRegistrations.length - b.tournamentRegistrations.length;

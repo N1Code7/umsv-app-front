@@ -24,37 +24,39 @@ const Tournament = ({ tournament, displayOnMobile }: ITournamentProps) => {
       <div className="name">{tournament.name}</div>
       <div className="city">{tournament.city}</div>
       <div className="dates">
-        {formatDate(tournament.startDate, tournament.endDate, "XX & XX xxx XXXX")}
+        {formatDate(String(tournament.startDate), String(tournament.endDate), "XX & XX xxx XXXX")}
       </div>
       <div className="cta-container">
         <a
           // HAVE TO CHANGE URL !!!!!!
           href="https://www.lifb.org/wp-content/uploads/2022/09/OPS_Reglement_Autorisations_Tournois_2022-2023_NVF-1.pdf"
-          className="btn see-file"
+          className="btn btn-see-file"
           target="_blank"
           rel="noopener noreferrer"
         >
           📄
         </a>
-        <button className="btn register" onClick={handleRegister}>
+        <button className="btn btn-success" onClick={handleRegister}>
           ➕
         </button>
       </div>
     </div>
   ) : (
     <tr className="tournament">
-      <td>{formatDate(tournament.startDate, tournament.endDate, "XX & XX xxx XXXX")}</td>
+      <td>
+        {formatDate(String(tournament.startDate), String(tournament.endDate), "XX & XX xxx XXXX")}
+      </td>
       <td>{tournament.name}</td>
       <td>{tournament.city}</td>
       <td>
-        {new Date(tournament.registrationClosingDate).getTime() - new Date().getTime() < 0
+        {new Date(tournament.registrationClosingDate || 0).getTime() - new Date().getTime() < 0
           ? "🙅"
-          : formatDate(tournament.registrationClosingDate, "XX/XX/XX")}
+          : formatDate(String(tournament.registrationClosingDate), "XX/XX/XX")}
       </td>
       <td>
-        {new Date(tournament.randomDraw).getTime() - new Date().getTime() < 0
+        {new Date(tournament.randomDraw || 0).getTime() - new Date().getTime() < 0
           ? "🙅"
-          : formatDate(tournament.randomDraw, "XX/XX/XX")}
+          : formatDate(String(tournament.randomDraw), "XX/XX/XX")}
       </td>
       <td>
         {
@@ -70,13 +72,13 @@ const Tournament = ({ tournament, displayOnMobile }: ITournamentProps) => {
           <a
             // HAVE TO CHANGE URL !!!!!!
             href="https://www.lifb.org/wp-content/uploads/2022/09/OPS_Reglement_Autorisations_Tournois_2022-2023_NVF-1.pdf"
-            className="btn see-file"
+            className="btn btn-see-file"
             target="_blank"
             rel="noopener noreferrer"
           >
             📄
           </a>
-          <button className="btn register" onClick={handleRegister}>
+          <button className="btn btn-success" onClick={handleRegister}>
             ➕
           </button>
         </div>

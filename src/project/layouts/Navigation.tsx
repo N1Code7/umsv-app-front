@@ -10,13 +10,13 @@ const Navigation = ({ displayNavigation = false, isAdminViewActive }: INavigatio
     <nav className={displayNavigation ? "nav nav-mobile" : "nav"}>
       <ul>
         <li>
-          <NavLink to="/admin">
+          <NavLink to="/admin/">
             <span>🛎️</span>
             <span>Accueil</span>
           </NavLink>
         </li>
         <li>
-          <NavLink to="/admin/demandes_inscriptions">
+          <NavLink to="/admin/demandes_inscription">
             <span>📥</span>
             <span>Demandes d&apos;inscription</span>
           </NavLink>
@@ -36,13 +36,13 @@ const Navigation = ({ displayNavigation = false, isAdminViewActive }: INavigatio
         <li>
           <NavLink to="/admin/gestion_evenements">
             <span>🗓️</span>
-            <span>Gestions événements</span>
+            <span>Gestion événements</span>
           </NavLink>
         </li>
         <li>
           <NavLink to="/admin/gestion_utilisateurs">
             <span>👤</span>
-            <span>Gestions utilisateurs</span>
+            <span>Gestion utilisateurs</span>
           </NavLink>
         </li>
       </ul>

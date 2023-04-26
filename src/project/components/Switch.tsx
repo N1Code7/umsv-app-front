@@ -9,7 +9,11 @@ interface ISwitchProps {
 
 /**
  * Display a customizable switch component.
- * @param custom name of customization which correspond to class name
+ * @param {ISwitchProps} param0
+ * @param param0.customName name of customization which correspond to class name
+ * @param param0.clickAction function to link to the switch
+ * @param param0.isActive active state
+ * @param param0.setIsActive set the active state
  */
 const Switch = ({ customName, isActive, setIsActive, clickAction }: ISwitchProps) => {
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {

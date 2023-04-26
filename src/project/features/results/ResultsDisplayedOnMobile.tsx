@@ -52,8 +52,8 @@ const ResultsDisplayedOnMobile = ({
         <div className="dates">
           {tournamentRegistration.tournament
             ? formatDate(
-                tournamentRegistration.tournament.startDate,
-                tournamentRegistration.tournament.endDate,
+                String(tournamentRegistration.tournament.startDate),
+                String(tournamentRegistration.tournament.endDate),
                 "XX & XX xxx XXXX"
               )
             : tournamentRegistration.tournamentEndDate
@@ -65,7 +65,7 @@ const ResultsDisplayedOnMobile = ({
             : formatDate(tournamentRegistration.tournamentStartDate, undefined, "XX xxx XXXX")}
         </div>
       </div>
-      <div className="middle">
+      <div className="right">
         {tournamentRegistration.participationSingle && (
           <div className="single">
             Simple :{" "}

@@ -11,7 +11,7 @@ const RegistrationCTA = ({ tournamentRegistration, handleCancel, handleModify }:
   return (
     <div className="cta-container registrations-actions">
       <button
-        className="btn  modify"
+        className="btn btn-modify"
         onClick={handleModify}
         disabled={
           new Date(
@@ -23,7 +23,7 @@ const RegistrationCTA = ({ tournamentRegistration, handleCancel, handleModify }:
         ✏️
       </button>
       <button
-        className="btn cancel"
+        className="btn btn-cancel"
         onClick={handleCancel}
         disabled={
           new Date(
@@ -37,7 +37,7 @@ const RegistrationCTA = ({ tournamentRegistration, handleCancel, handleModify }:
       <a
         // HAVE TO CHANGE URL !!!!!!
         href="https://www.lifb.org/wp-content/uploads/2022/09/OPS_Reglement_Autorisations_Tournois_2022-2023_NVF-1.pdf"
-        className="btn see-file"
+        className="btn btn-see-file"
         target="_blank"
         rel="noopener noreferrer"
       >
