@@ -147,11 +147,11 @@ const RegistrationBand = ({
       axiosPrivate
         .delete(`/admin/tournament-registration/${tournamentRegistration.id}`)
         .then((res) => {
-          console.log(res.data);
           setRequestMessage({
             success: "La demande d'inscription a bien été supprimée.",
             error: "",
           });
+          return res.data;
         })
         .catch((err) => {
           console.error(err);

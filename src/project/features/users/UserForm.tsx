@@ -44,7 +44,6 @@ const UserForm = ({
   const genderRef = useRef<HTMLSelectElement>(null);
   const birthDateRef = useRef<HTMLInputElement>(null);
   const stateRef = useRef<HTMLSelectElement>(null);
-  const validatedAccountRef = useRef<HTMLInputElement>(null);
   const [userTypeSelected, setUserTypeSelected] = useState(
     focusedUser?.roles?.includes("ROLE_SUPERADMIN") || focusedUser?.roles?.includes("ROLE_ADMIN")
       ? "admin"
@@ -52,8 +51,6 @@ const UserForm = ({
   );
   const [validatedAccount, setValidatedAccount] = useState(focusedUser?.validatedAccount || false);
   const [formErrors, setFormErrors] = useState({} as IFormErrors);
-
-  console.log(userTypeSelected);
 
   /** Validation of form fields before fetch the post route */
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
@@ -77,8 +74,6 @@ const UserForm = ({
       state: stateRef.current?.value || "inactive",
       validatedAccount: validatedAccount,
     };
-
-    console.log(bodyRequest);
 
     await userSchema
       .validate(bodyRequest, { abortEarly: false })

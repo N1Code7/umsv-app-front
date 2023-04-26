@@ -55,8 +55,6 @@ const Login = () => {
         document.cookie = `refreshToken=${loginResponse.data.refreshToken};max-age=2592000;SameSite=strict;secure;path=/`;
         setUser?.(userResponse.data);
 
-        console.log(from);
-
         if (
           userResponse.data.firstName + userResponse.data.id ===
           localStorage.getItem("lastConnected")
