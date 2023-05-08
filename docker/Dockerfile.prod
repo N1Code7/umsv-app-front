@@ -1,0 +1,21 @@
+FROM node:16-alpine as build
+
+RUN apk update && apk add bash && apk add --no-cache yarn
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+EXPOSE 3000
+
+# FROM nginx
+
+# COPY --from=build /app/.next /usr/share/nginx/html
+
+CMD [ "yarn", "start" ]

@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  webapp:
+    image: usmv-app-front-prod-i
+    build: 
+      dockerfile: docker/Dockerfile.prod
+    container_name: usmv-app-front-prod-c
+    ports:
+      - "3000:3000"
+networks:
+  usmv-app_default:
+    

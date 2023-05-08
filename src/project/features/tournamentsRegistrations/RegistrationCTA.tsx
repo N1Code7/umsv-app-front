@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import { ITournamentRegistration } from "../../../../interfaces/interfaces";
+import { ITournamentRegistration } from "../../../interfaces/interfaces";
 
 interface IProps {
   tournamentRegistration: ITournamentRegistration;
@@ -10,6 +10,7 @@ interface IProps {
 const RegistrationCTA = ({ tournamentRegistration, handleCancel, handleModify }: IProps) => {
   return (
     <div className="cta-container registrations-actions">
+      <div className="tets">HELLOOOOOO</div>
       <button
         className="btn btn-modify"
         onClick={handleModify}
